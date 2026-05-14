@@ -1,0 +1,12 @@
+# [TEMPLATE] The name of the virtual environment to be created.
+name: template_env
+
+# [TEMPLATE] The package channels Conda should search. Usually bioconda and conda-forge.
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+# [TEMPLATE] List the exact tools and versions required for this step.
+dependencies:
+  - coreutils
