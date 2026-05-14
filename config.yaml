@@ -1,19 +1,34 @@
 # ==============================================================================
-# BDB Genomics - ATAC-seq Pipeline Configuration
+# BDB Genomics - ATAC-seq Framework Configuration
 # ==============================================================================
 
-# --- Project Metadata ---------------------------------------------------------
+# ==============================================================================
+# Project Metadata
+# ==============================================================================
 global:
   samples: "data/fastp/samples.tsv"
   envs:
     main: "envs/main.yaml"
+  references:
+    genome_fa: &GENOME_FA "data/reference/genome.fa"
+    genome_sizes: &GENOME_SIZES "data/reference/genome.chrom.sizes"
+    bowtie2_index: &BOWTIE2_INDEX "data/reference/index/genome"
+    blacklist: &BLACKLIST "data/reference/ENCODE_blacklist.bed"
+    annotation_gtf: &ANNOTATION_GTF "data/reference/annotation.gtf"
+    motif_db: &MOTIF_DB "data/motifs/jaspar_vertebrates.meme"
+    txdb: &TXDB "TxDb.Hsapiens.UCSC.hg38.knownGene"
 
-# --- Tool Specific Configurations ---------------------------------------------
+# ==============================================================================
+# Tool Specific Configurations
+# ==============================================================================
 
+# ------------------------------------------------------------------------------
 # Preprocessing
+# ------------------------------------------------------------------------------
 fastp:
-  output:
-    dir: "results/fastp"
+  # NOTE: No 'input' key here. Raw FASTQ paths are resolved dynamically
+  # from the sample sheet defined in global.samples (samples.tsv).
+  output: "results/preprocessing/fastp"
   params:
     trim_front1: 5
     trim_front2: 5
@@ -25,32 +40,36 @@ fastp:
 
 fastqc:
   input:
-    R1: "results/fastp"
-    R2: "results/fastp"
-  output: "results/fastqc"
+    R1: "results/preprocessing/fastp"
+    R2: "results/preprocessing/fastp"
+  output: "results/preprocessing/fastqc"
   threads: 4
   resources:
     mem_mb: 2000
     time: "00:30:00"
 
+# ------------------------------------------------------------------------------
 # Alignment
+# ------------------------------------------------------------------------------
 bowtie2:
-  input: "results/fastp"
-  output: "results/bowtie2"
+  input: "results/preprocessing/fastp"
+  output: "results/alignment/bowtie2"
   params:
-    index: "data/02_alignment/bowtie2/index/genome"
+    index: *BOWTIE2_INDEX
     sensitive: "--very-sensitive"
   threads: 8
   resources:
     mem_mb: 16000
     time: "04:00:00"
 
+# ------------------------------------------------------------------------------
 # Post-alignment
+# ------------------------------------------------------------------------------
 samtools_sort:
   input:
-    unsorted_bam: "results/bowtie2"
+    unsorted_bam: "results/alignment/bowtie2"
   output:
-    sorted_bam: "results/samtools_sort"
+    sorted_bam: "results/post_alignment/samtools_sort"
   threads: 4
   resources:
     mem_mb: 8000
@@ -58,9 +77,9 @@ samtools_sort:
 
 mitoATAC_calculate:
   input: 
-    sorted_bam: "results/samtools_sort"
+    sorted_bam: "results/post_alignment/samtools_sort"
   output: 
-    mito_stats: "results/mito-ATAC"
+    mito_stats: "results/post_alignment/mito-ATAC"
   params: 
     mito_chr: "MT" 
   threads: 2
@@ -70,9 +89,9 @@ mitoATAC_calculate:
 
 remove_mito_reads:
   input:
-    sorted_bam: "results/samtools_sort"
+    sorted_bam: "results/post_alignment/samtools_sort"
   output: 
-    noMT_sorted_bam: "results/remove_mito_reads"
+    noMT_sorted_bam: "results/post_alignment/remove_mito_reads"
   params: 
     mito_chr: "MT"
   threads: 2
@@ -82,9 +101,9 @@ remove_mito_reads:
 
 samtools_index: 
   input:
-    sorted_bam_noMT: "results/remove_mito_reads"
+    sorted_bam_noMT: "results/post_alignment/remove_mito_reads"
   output:
-    index: "results/samtools_index"
+    index: "results/post_alignment/samtools_index"
   threads: 2
   resources:
     mem_mb: 2000
@@ -92,9 +111,9 @@ samtools_index:
 
 samtools_fixmate:
   input:
-    sorted_bam_noMT: "results/remove_mito_reads"
+    sorted_bam_noMT: "results/post_alignment/remove_mito_reads"
   output:
-    sorted_bam_noMT_fixmate: "results/samtools_fixmate"
+    sorted_bam_noMT_fixmate: "results/post_alignment/samtools_fixmate"
   threads: 2 
   resources:
     mem_mb: 2000
@@ -102,9 +121,9 @@ samtools_fixmate:
 
 samtools_markdup:
   input:
-    sorted_bam_noMT_fixmate: "results/samtools_fixmate"
+    sorted_bam_noMT_fixmate: "results/post_alignment/samtools_fixmate"
   output:
-    markdup_bam: "results/samtools_markdup"
+    markdup_bam: "results/post_alignment/samtools_markdup"
   params:
     remove_duplicates: "r"
   threads: 4
@@ -112,21 +131,11 @@ samtools_markdup:
     mem_mb: 8000
     time: "02:00:00"
 
-samtools_index_after_markdup: 
-  input:
-    markdup_bam: "results/samtools_markdup"
-  output:
-    index: "results/samtools_index/post_markdup"
-  threads: 2
-  resources:
-    mem_mb: 2000
-    time: "00:30:00"
-
 samtools_index_post_markdup:
   input:
-    markdup_bam: "results/samtools_markdup"
+    markdup_bam: "results/post_alignment/samtools_markdup"
   output:
-    index: "results/samtools_index/post_markdup"
+    index: "results/post_alignment/samtools_index/post_markdup"
   threads: 2
   resources:
     mem_mb: 2000
@@ -134,9 +143,9 @@ samtools_index_post_markdup:
 
 samtools_view:
   input:
-    markdup_bam: "results/samtools_markdup"
+    markdup_bam: "results/post_alignment/samtools_markdup"
   output:
-    filtered_bam: "results/samtools_view"
+    filtered_bam: "results/post_alignment/samtools_view"
   params:
     MAPQ: 30
     flags: 3844
@@ -147,9 +156,10 @@ samtools_view:
 
 samtools_index_post_filter:
   input: 
-    filtered_bam: "results/samtools_view"
+    filtered_bam: "results/post_alignment/samtools_view"
+  # NOTE: Output matches input because .bai files must sit beside .bam files.
   output:
-    filtered_bam_indexed: "results/samtools_view"
+    filtered_bam_indexed: "results/post_alignment/samtools_view"
   threads: 2
   resources:
     mem_mb: 2000
@@ -157,10 +167,10 @@ samtools_index_post_filter:
 
 tn5_shift:
   input:
-    filtered_bam: "results/samtools_view"
+    filtered_bam: "results/post_alignment/samtools_view"
   output:
-    shifted_bam: "results/tn5_shift"
-    shifted_bam_index: "results/tn5_shift"
+    shifted_bam: "results/post_alignment/tn5_shift"
+    shifted_bam_index: "results/post_alignment/tn5_shift"
   threads: 4
   resources:
     mem_mb: 4000
@@ -168,19 +178,21 @@ tn5_shift:
 
 samtools_stats:
   input:
-    filtered_bam: "results/samtools_view"
+    filtered_bam: "results/post_alignment/samtools_view"
   output:
-    stats: "results/samtools_stats"
+    stats: "results/post_alignment/samtools_stats"
   threads: 2
   resources:
     mem_mb: 2000
     time: "00:30:00"
 
+# ------------------------------------------------------------------------------
 # Metrics & QC
+# ------------------------------------------------------------------------------
 fragment_size_analysis: 
   input: 
-    metrics: "results/picard/CollectInsertSizeMetrics"
-  output: "results/fragment_size_analysis" 
+    metrics: "results/metrics_qc/picard/CollectInsertSizeMetrics"
+  output: "results/metrics_qc/fragment_size_analysis" 
   threads: 4
   params:
     min_length: 30
@@ -192,13 +204,13 @@ fragment_size_analysis:
 
 tss_enrichment:
   input: 
-    shifted_bam: "results/tn5_shift"
-    shifted_bam_index: "results/tn5_shift"
-  output: "results/tss_enrichment"
+    shifted_bam: "results/post_alignment/tn5_shift"
+    shifted_bam_index: "results/post_alignment/tn5_shift"
+  output: "results/metrics_qc/tss_enrichment"
   script: "rules/scripts/tss_enrichment.R"
   threads: 4
   params:
-    txdb: "TxDb.Hsapiens.UCSC.hg38.knownGene"
+    txdb: *TXDB
     upstream: 2000
     downstream: 2000
   resources:
@@ -208,11 +220,11 @@ tss_enrichment:
 picard:
   alignment_metrics:
     input:
-      markdup_bam: "results/samtools_markdup"
+      markdup_bam: "results/post_alignment/samtools_markdup"
     output:
-      alignment_metrics: "results/picard/CollectAlignmentSummaryMetrics"
+      alignment_metrics: "results/metrics_qc/picard/CollectAlignmentSummaryMetrics"
     params:
-      reference_genome: "data/reference/genome.fa"
+      reference_genome: *GENOME_FA
       validation_stringency: "LENIENT"
     resources:
       mem_mb: 4000
@@ -220,10 +232,10 @@ picard:
     threads: 4
   insert_metrics:
     input:
-      markdup_bam: "results/samtools_markdup"
+      markdup_bam: "results/post_alignment/samtools_markdup"
     output:
-      metrics: "results/picard/CollectInsertSizeMetrics"
-      histogram: "results/picard/CollectInsertSizeMetrics"
+      metrics: "results/metrics_qc/picard/CollectInsertSizeMetrics"
+      histogram: "results/metrics_qc/picard/CollectInsertSizeMetrics"
     params:
       M: 0.05
       validation_stringency: "LENIENT"
@@ -232,12 +244,14 @@ picard:
       time: "01:00:00"
     threads: 4
 
+# ------------------------------------------------------------------------------
 # Visualization
+# ------------------------------------------------------------------------------
 bedtools_genomecov:
   input:
-    shifted_bam: "results/tn5_shift" 
+    shifted_bam: "results/post_alignment/tn5_shift" 
   output: 
-    bedgraph: "results/bedtools_genomecov"
+    bedgraph: "results/visualization/bedtools_genomecov"
   params:
     extra: "-bg"
   threads: 4
@@ -247,23 +261,23 @@ bedtools_genomecov:
 
 sorted_bedgraph:
   input: 
-    bedgraph: "results/bedtools_genomecov"
+    bedgraph: "results/visualization/bedtools_genomecov"
   output:
-    sorted_bedgraph: "results/sorted_bedgraph_file"
+    sorted_bedgraph: "results/visualization/sorted_bedgraph_file"
   params:
-    mem_mb: 2000
+    mem_mb: 2000 # Internal memory buffer for the 'sort' command (-S flag)
   threads: 4
   resources:
-    mem_mb: 4000
+    mem_mb: 4000 # Total memory allocation for the job scheduler (e.g., SLURM)
     time: "01:00:00"
 
 bigwig:
   input:
-    sorted_bedgraph: "results/sorted_bedgraph_file"
+    sorted_bedgraph: "results/visualization/sorted_bedgraph_file"
   output:
-    bigwig: "results/bigwig"
+    bigwig: "results/visualization/bigwig"
   params:
-    genome: "data/reference/genome.chrom.sizes"
+    genome: *GENOME_SIZES
   threads: 4
   resources:
     mem_mb: 4000
@@ -271,8 +285,8 @@ bigwig:
 
 correlation_analysis:
   input: 
-    bigwig: "results/bigwig"
-  output: "results/correlation_analysis"
+    bigwig: "results/visualization/bigwig"
+  output: "results/visualization/correlation_analysis"
   params: 
     bin_size: 1000
   threads: 4
@@ -282,9 +296,9 @@ correlation_analysis:
 
 normalized_coverage:
   input:
-    shifted_bam: "results/tn5_shift"
+    shifted_bam: "results/post_alignment/tn5_shift"
   output:
-    normalized_coverage: "results/normalized_coverage"
+    normalized_coverage: "results/visualization/normalized_coverage"
   params:
     method: "CPM"
   threads: 4
@@ -294,27 +308,29 @@ normalized_coverage:
 
 heatmap:
   input:
-    filtered_peaks: "results/filtered_peaks"
-    bigwig: "results/bigwig" 
+    filtered_peaks: "results/peak_calling/filtered_peaks"
+    bigwig: "results/visualization/bigwig" 
   output:
-    plot: "results/heatmap/plot"
-    matrix: "results/heatmap/matrix"
-    regions: "results/heatmap"
-    color: "coolwarm"
+    plot: "results/visualization/heatmap/plot"
+    matrix: "results/visualization/heatmap/matrix"
+    regions: "results/visualization/heatmap"
   threads: 8
   resources:
     mem_mb: 16000
     time: "04:00:00"
   params: 
+    color: "coolwarm"
     upstream: 3000
     downstream: 3000
 
+# ------------------------------------------------------------------------------
 # Peak Calling
+# ------------------------------------------------------------------------------
 macs2:
   input:
-    shifted_bam: "results/tn5_shift"
+    shifted_bam: "results/post_alignment/tn5_shift"
   output: 
-    peaks: "results/macs2_peakcall"
+    peaks: "results/peak_calling/macs2_peakcall"
   params:
     genome_size: "hs"
     qvalue: 0.01
@@ -327,11 +343,11 @@ macs2:
 
 blacklist_filter:
   input:
-    peaks: "results/macs2_peakcall"
+    peaks: "results/peak_calling/macs2_peakcall"
   output:
-    filtered_peaks: "results/filtered_peaks"
+    filtered_peaks: "results/peak_calling/filtered_peaks"
   params:
-    blacklist: "data/reference/ENCODE_blacklist.bed"
+    blacklist: *BLACKLIST
   threads: 4
   resources:
     mem_mb: 4000
@@ -339,9 +355,9 @@ blacklist_filter:
 
 frip_calculation:
   input:
-    filtered_peaks: "results/filtered_peaks"
-    shifted_bam: "results/tn5_shift"
-  output: "results/frip_calculation"
+    filtered_peaks: "results/peak_calling/filtered_peaks"
+    shifted_bam: "results/post_alignment/tn5_shift"
+  output: "results/peak_calling/frip_calculation"
   threads: 4
   resources:
     mem_mb: 2000
@@ -349,11 +365,11 @@ frip_calculation:
 
 peak_annotation:
   input:
-    filtered_peaks: "results/filtered_peaks"
-  output: "results/peak_annotation" 
+    filtered_peaks: "results/peak_calling/filtered_peaks"
+  output: "results/peak_calling/peak_annotation" 
   params:
-    gff: "data/reference/annotation.gtf"
-    genome: "data/reference/genome.fa"
+    gff: *ANNOTATION_GTF
+    genome: *GENOME_FA
     feature_types: "gene, exon, CDS"
   threads: 8
   resources:
@@ -362,45 +378,49 @@ peak_annotation:
 
 motif_analysis:
   input:
-    filtered_peaks: "results/filtered_peaks"
-    genome: "data/reference/genome.fa"
-  output: "results"
+    filtered_peaks: "results/peak_calling/filtered_peaks"
+    genome: *GENOME_FA
+  output: "results/peak_calling/motif_analysis"
+  params:
+    motif_db: *MOTIF_DB
   threads: 8
   resources:
     mem_mb: 16000
     time: "04:00:00"
-  params:
-    motif_db: "data/motifs/jaspar_vertebrates.meme"
 
+# ------------------------------------------------------------------------------
 # Reporting & QC Metrics
+# ------------------------------------------------------------------------------
 preseq:
   input: 
-    markdup_bam: "results/samtools_markdup"
-    markdup_bam_index: "results/samtools_index/post_markdup"
+    markdup_bam: "results/post_alignment/samtools_markdup"
+    markdup_bam_index: "results/post_alignment/samtools_index/post_markdup"
   output:
-    predicted_complexity: "results/preseq"
+    predicted_complexity: "results/reporting_qc/preseq"
+  threads: 1
   resources:
     mem_mb: 4000
     time: "01:00:00"  
 
 qualimap_bamqc:
   input:
-    markdup_bam: "results/samtools_markdup"
+    markdup_bam: "results/post_alignment/samtools_markdup"
   output:
-    qc_dir: "results/qualimap"
+    qc_dir: "results/reporting_qc/qualimap"
   threads: 4
   resources:
     mem_mb: 4000
     time: "01:00:00"
 
-# --- QC Gate ------------------------------------------------------------------
+# ==============================================================================
+# QC Gate
+# ==============================================================================
 qc_gate:
   input:
-    frip: "results/frip_calculation"
-    tss: "results/tss_enrichment"
-    stats: "results/samtools_stats"
-  output:
-    dir: "results/qc_gate"
+    frip: "results/peak_calling/frip_calculation"
+    tss: "results/metrics_qc/tss_enrichment"
+    stats: "results/post_alignment/samtools_stats"
+  output: "results/qc_gate"
   params:
     min_frip: 0.2
     min_tss_enr: 7.0
@@ -411,13 +431,35 @@ qc_gate:
     mem_mb: 1000
     time: "00:10:00"
 
-# --- Reporting ----------------------------------------------------------------
+# ==============================================================================
+# Reporting
+# ==============================================================================
 multiqc:
   input:
     reports_dir: "results/"
-  output:
-    report: "results/multiqc"
+  output: "results/reporting/multiqc"
   threads: 2
   resources:
     mem_mb: 4000
     time: "00:30:00"
+
+
+# ==============================================================================
+# Boilerplate / Template Configuration
+# Use this block as a guide when adding new tools to the pipeline.
+# ==============================================================================
+template_category: # [REPLACE] The broad category folder for your new tool (e.g., 'peak_calling', 'qc')
+  template_tool: # [REPLACE] The name of your new tool (e.g., 'macs3', 'homer')
+    # [REPLACE] The input directory path. Often points to a previous tool's output directory.
+    input: "results/preprocessing/fastp" 
+    # [REPLACE] The output directory path where this tool will save its results.
+    output: "results/template_category/template_tool"
+    # [OPTIONAL] Any specific parameters or flags the tool needs to run.
+    params:
+      message: "This is a boilerplate template."
+    # [REPLACE] Number of CPU threads to allocate to this specific tool.
+    threads: 1
+    # [REPLACE] Memory and time limits for cluster execution (e.g., Slurm).
+    resources:
+      mem_mb: 1000
+      time: "00:10:00"
