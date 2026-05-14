@@ -1,7 +1,44 @@
 # ==============================================================================
-# BDB Genomics - ATAC-seq Framework Configuration
+# BDB Genomics — ATAC-seq Framework Configuration
 # ==============================================================================
-
+#
+# This file is the single source of truth for the BDB-Genomics ATAC-seq
+# framework. Every tool, path, resource limit, and QC threshold is declared
+# here; the Snakemake rules themselves are stateless wrappers that read
+# from this config at runtime.
+#
+# --- Framework Architecture ---
+#
+# The pipeline is organised as a six-stage directed acyclic graph (DAG):
+#
+#   Preprocessing → Alignment → Post-alignment → Metrics & QC
+#                                                  ↓
+#                                    Visualization ← Peak Calling
+#
+# An automated QC Gate sits between metrics collection and downstream
+# analysis. Samples that fail user-defined thresholds (FRiP, TSS
+# enrichment, mapping rate, duplication rate) are flagged before
+# expensive peak calling and visualisation steps execute.
+#
+# --- Modality Switching (bulk ↔ scATAC-seq) ---
+#
+# The framework is modality-agnostic by design. Switching from bulk
+# ATAC-seq to scATAC-seq requires only:
+#   1. Swapping the sample sheet (global.samples) to a per-barcode manifest.
+#   2. Replacing the aligner block (bowtie2 → chromap / cellranger-atac).
+#   3. Adjusting peak caller params (e.g., MACS2 → MACS3 / ArchR / SnapATAC2).
+# All downstream stages — QC gating, visualisation, reporting — remain
+# unchanged because they operate on standard BAM/BED/bigWig contracts.
+#
+# --- Design Conventions ---
+#
+# • YAML anchors (&GENOME_FA, *GENOME_FA, etc.) centralise reference paths.
+#   Changing a reference once propagates everywhere automatically.
+# • Every tool block follows a uniform schema:
+#     input → output → params → threads → resources
+# • The boilerplate template at the bottom of this file documents how to
+#   add a new tool without modifying existing blocks.
+#
 # ==============================================================================
 # Project Metadata
 # ==============================================================================
