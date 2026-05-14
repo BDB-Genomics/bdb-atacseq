@@ -500,3 +500,4 @@ template_category: # [REPLACE] The broad category folder for your new tool (e.g.
     resources:
       mem_mb: 1000
       time: "00:10:00"
+
