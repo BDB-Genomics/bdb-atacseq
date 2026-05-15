@@ -2,27 +2,32 @@ name: Snakemake Linting
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+      branches: [ main ]
+        pull_request:
+            branches: [ main ]
 
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-        
-    - name: Install Snakemake & YAML
-      run: |
-        python -m pip install --upgrade pip
-        pip install "snakemake" "pulp<2.8.0" "pyyaml"
-        
-    - name: Validate Workflow (Dry-run)
-      run: |
-                  touch ci_r1.fq.gz ci_r2.fq.gz
-                  snakemake -n
+            jobs:
+              lint:
+                  runs-on: ubuntu-latest
+                      steps:
+                            - uses: actions/checkout@v3
+
+                                  - name: Set up Python
+                                          uses: actions/setup-python@v4
+                                                  with:
+                                                            python-version: '3.10'
+
+                                                                  - name: Install Snakemake & YAML
+                                                                          run: |
+                                                                                    python -m pip install --upgrade pip
+                                                                                              pip install "snakemake" "pulp<2.8.0" "pyyaml"
+
+                                                                                                    - name: Validate Workflow (Dry-run)
+                                                                                                            run: |
+                                                                                                                      mkdir -p data/reference data/motifs data/reference/index
+                                                                                                                                touch ci_r1.fq.gz ci_r2.fq.gz
+                                                                                                                                          touch data/reference/genome.fa data/reference/genome.chrom.sizes data/reference/ENCODE_blacklist.bed data/reference/annotation.gtf
+                                                                                                                                                    touch data/motifs/jaspar_vertebrates.meme
+                                                                                                                                                              touch data/reference/index/genome.1.bt2 data/reference/index/genome.2.bt2 data/reference/index/genome.3.bt2 data/reference/index/genome.4.bt2 data/reference/index/genome.rev.1.bt2 data/reference/index/genome.rev.2.bt2
+                                                                                                                                                                        snakemake -n
+                                                                                                                                                                        
