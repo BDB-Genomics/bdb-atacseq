@@ -24,8 +24,7 @@ rule template_tool:
     threads: config['template_category']['template_tool']['threads']
 
     # [TEMPLATE] Specify where logs and benchmarks will be saved.
-    benchmark:
-        "benchmarks/template_category/template_tool/{sample}.txt"
+    benchmark: "benchmarks/template_category/template_tool/{sample}.txt"
     
     # [TEMPLATE] Provide the path to the isolated Conda environment file.
     

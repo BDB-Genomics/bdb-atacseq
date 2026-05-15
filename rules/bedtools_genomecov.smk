@@ -19,7 +19,6 @@ rule bedtools_genomecov:
     threads: config['bedtools_genomecov']['threads']
     message: "[bedtools genomecov] sample: {wildcards.sample} | BAM : {input.shifted_bam}| Output: {output.bedgraph}..."
 
-
     shell:
         """
         bedtools genomecov \
