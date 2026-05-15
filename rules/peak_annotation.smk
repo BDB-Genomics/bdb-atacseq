@@ -14,8 +14,7 @@ rule peak_annotation:
     resources:
         mem_mb=config['peak_annotation']['resources']['mem_mb'],
         time=config['peak_annotation']['resources']['time']
-                 
-
+        
     log: "logs/peak_annotation/{sample}.err"
     benchmark: "benchmarks/peak_annotation/{sample}.txt"
     conda: "envs/05_peak_calling/chipseeker.yaml"

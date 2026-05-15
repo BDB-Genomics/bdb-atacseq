@@ -15,18 +15,14 @@ rule macs2_peak_calling:
     resources:
         mem_mb=config['macs2']['resources']['mem_mb'], 
         time=config['macs2']['resources']['time']
-            
 
     log: "logs/macs2/{sample}.err"
+    benchmark: "benchmarks/macs2/{sample}.txt"
     conda: "envs/05_peak_calling/macs2.yaml"
     container: "https://depot.galaxyproject.org/singularity/macs2:2.2.7.1--py38h4a9c2d4_3"
     threads: config['macs2']['threads']
     message: "[MACS2 PEAKCALLING] SAMPLE:  {wildcards.sample} | Markdup_Bam: {input.shifted_bam} | Peaks: {output.peaks} | Genome Size: {params.gsize} | QVal: {params.qval} | Nomodel: {params.nomodel} | Model: {params.format}]"
-
-    benchmark:
-        "benchmarks/macs2/{sample}.txt"
         
-
     shell: 
         """
         macs2 callpeak \

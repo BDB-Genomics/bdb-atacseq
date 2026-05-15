@@ -16,16 +16,13 @@ rule heatmap:
     resources:
         mem_mb=config['heatmap']['resources']['mem_mb'], 
         time=config['heatmap']['resources']['time']
-        
-
+    
     log: matrix="logs/heatmap/matrix/{sample}.err", plot="logs/heatmap/plot/{sample}.err"
+    benchmark: "benchmarks/heatmap/{sample}.txt"
     conda: "envs/06_visualization/deeptools.yaml"
     container: "https://depot.galaxyproject.org/singularity/deeptools:3.5.1--py_0"
     threads: config['heatmap']['threads']
     message: "[deepTools heatmap] Sample: {wildcards.sample} | BigWig: {input.bigwig} | Peaks: {input.filtered_peaks} | Output: {output.plot}"
-
-    benchmark:
-        "benchmarks/heatmap/{sample}.txt"
         
     shell:
         """

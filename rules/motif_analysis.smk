@@ -13,20 +13,13 @@ rule motif_analysis:
         mem_mb=config['motif_analysis']['resources']['mem_mb'],
         time=config['motif_analysis']['resources']['time']
             
-    
-
     log: "logs/motif_analysis/motif_analysis.log"
+    benchmark: "benchmarks/motif_analysis/motif_analysis.txt" 
     conda: "envs/05_peak_calling/homer.yaml"
     container: "https://depot.galaxyproject.org/singularity/homer:4.11--pl526hc9558a2_3"
     threads: config['motif_analysis']['threads']
     message: "[Motif analysis] Sample: All combined | Peaks: {input.filtered_peaks} | Output: {output.html}"
-
-    benchmark:
-        "benchmarks/motif_analysis/motif_analysis.txt"
-        
-
     
-
     shell:
         """
         cat {input.filtered_peaks} > merged_peaks.tmp

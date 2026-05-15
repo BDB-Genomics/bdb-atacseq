@@ -12,7 +12,6 @@ rule samtools_markdup:
         mem_mb=config['samtools_markdup']['resources']['mem_mb'], 
         time=config['samtools_markdup']['resources']['time']
         
-
     log: "logs/samtools_markdup/{sample}.err"
     benchmark: "benchmarks/samtools_markdup/{sample}.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
