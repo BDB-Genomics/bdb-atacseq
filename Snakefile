@@ -1,9 +1,9 @@
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#>              Modular ATACseq Pipleine                                                                         #>
-#>              Author: Himanshu Bhandary          
-#>              Mail: 2032ushimanshu@gmail.com                                                              #>
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#>              Modular ATACseq Framework                                                                        #>
+#>              Author: Himanshu Bhandary                                                                        #>
+#>              Mail: 2032ushimanshu@gmail.com                                                                   #>
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #restartable: True
 
 import csv
@@ -11,11 +11,15 @@ import subprocess
 from pathlib import Path
 
 configfile: "config.yaml"
-
-subprocess.run(
-    ["python3", "rules/scripts/validate_config.py", "config.yaml"],
-    check=True,
-)
+try:
+    subprocess.run(
+        ["python3", "rules/scripts/validate_config.py", "config.yaml"],
+        check=True,
+    )
+except subprocess.CalledProcessError as e:
+    print(f"\n[CRITICAL ERROR] Configuration validation failed for 'config.yaml'.")
+    print(f"Please check the validation script output above for specific missing keys or errors.\n")
+    raise e
 
 SAMPLES_TSV = Path(config["global"]["samples"])
 with SAMPLES_TSV.open(newline="") as handle:
@@ -41,6 +45,7 @@ include: "rules/samtools_fixmate.smk"
 include: "rules/samtools_markdup.smk"
 include: "rules/samtools_view.smk"
 include: "rules/samtools_index_post_filter.smk"
+include: "rules/samtools_index_after_markdup.smk"
 include: "rules/tn5_shift.smk"
 include: "rules/samtools_stats.smk"
 include: "rules/fragment_size_analysis.smk"
@@ -63,60 +68,60 @@ include: "rules/qualimap_bamqc.smk"
 include: "rules/qc_gate.smk"
 include: "rules/multiqc.smk"
 # [TEMPLATE] Include your new rule file here so Snakemake can read it.
-include: "rules/template_tool.smk"
+#include: "rules/template_tool.smk"
 
 # --- Targets -------------------------------------------------------------------
 QC_GATE_TARGETS = [
-    expand("results/qc_gate/{sample}_qc_pass.txt", sample=SAMPLES)
+    expand("{path}/{sample}_qc_pass.txt", path=config['qc_gate']['output'], sample=SAMPLES)
  ]
 PREPROCESSING_TARGETS = [
-    expand("results/preprocessing/fastp/{sample}_R1_trimmed.fastq.gz", sample=SAMPLES),
-    expand("results/preprocessing/fastqc/{sample}_R1_trimmed_fastqc.html", sample=SAMPLES)
+    expand("{path}/{sample}_R1_trimmed.fastq.gz", path=config['fastp']['output'], sample=SAMPLES),
+    expand("{path}/{sample}_R1_trimmed_fastqc.html", path=config['fastqc']['output'], sample=SAMPLES)
 ]
 
 ALIGNMENT_TARGETS = [
-    expand("results/alignment/bowtie2/{sample}.bam", sample=SAMPLES),
-    expand("results/post_alignment/samtools_sort/{sample}.sorted.bam", sample=SAMPLES)
+    expand("{path}/{sample}.bam", path=config['bowtie2']['output'], sample=SAMPLES),
+    expand("{path}/{sample}.sorted.bam", path=config['samtools_sort']['output']['sorted_bam'], sample=SAMPLES)
 ]
 
 POST_FILTERING_TARGETS = [
-    expand("results/post_alignment/mito-ATAC/{sample}_mito_stats.txt", sample=SAMPLES),
-    expand("results/post_alignment/remove_mito_reads/{sample}_noMT.sorted.bam", sample=SAMPLES),
-    expand("results/post_alignment/samtools_markdup/{sample}_noMT.sorted.dedup.bam", sample=SAMPLES),
-    expand("results/post_alignment/samtools_view/{sample}.filtered.bam", sample=SAMPLES),
-    expand("results/post_alignment/tn5_shift/{sample}.filtered.shifted.bam", sample=SAMPLES)
+    expand("{path}/{sample}_mito_stats.txt", path=config['mitoATAC_calculate']['output']['mito_stats'], sample=SAMPLES),
+    expand("{path}/{sample}_noMT.sorted.bam", path=config['remove_mito_reads']['output']['noMT_sorted_bam'], sample=SAMPLES),
+    expand("{path}/{sample}_noMT.sorted.dedup.bam", path=config['samtools_markdup']['output']['markdup_bam'], sample=SAMPLES),
+    expand("{path}/{sample}.filtered.bam", path=config['samtools_view']['output']['filtered_bam'], sample=SAMPLES),
+    expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=SAMPLES)
 ]
 
 QC_METRICS_TARGETS = [
-    expand("results/post_alignment/samtools_stats/{sample}_postFiltering.stats.txt", sample=SAMPLES),
-    expand("results/metrics_qc/fragment_size_analysis/{sample}_fragment_stats.txt", sample=SAMPLES),
-    expand("results/metrics_qc/picard/CollectAlignmentSummaryMetrics/{sample}.alignment_metrics.txt", sample=SAMPLES),
-    expand("results/metrics_qc/picard/CollectInsertSizeMetrics/{sample}.insert_metrics.txt", sample=SAMPLES),
-    expand("results/metrics_qc/tss_enrichment/{sample}_tss_enrichment.txt", sample=SAMPLES),
-    expand("results/reporting_qc/qualimap/{sample}_qualimap_report", sample=SAMPLES),
-    expand("results/reporting_qc/preseq/{sample}.ccurve.txt", sample=SAMPLES)
+    expand("{path}/{sample}_postFiltering.stats.txt", path=config['samtools_stats']['output']['stats'], sample=SAMPLES),
+    expand("{path}/{sample}_fragment_stats.txt", path=config['fragment_size_analysis']['output'], sample=SAMPLES),
+    expand("{path}/{sample}.alignment_metrics.txt", path=config['picard']['alignment_metrics']['output']['alignment_metrics'], sample=SAMPLES),
+    expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
+    expand("{path}/{sample}_tss_enrichment.txt", path=config['tss_enrichment']['output'], sample=SAMPLES),
+    expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES),
+    expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES)
 ]
 
 VISUALIZATION_TARGETS = [
-    expand("results/visualization/bigwig/{sample}.bw", sample=SAMPLES),
-    expand("results/visualization/normalized_coverage/{sample}_CPM.bw", sample=SAMPLES),
-    "results/visualization/correlation_analysis/correlation_heatmap.png",
-    expand("results/visualization/heatmap/plot/{sample}_tss_heatmap.pdf", sample=SAMPLES)
+    expand("{path}/{sample}.bw", path=config['bigwig']['output']['bigwig'], sample=SAMPLES),
+    expand("{path}/{sample}_{method}.bw", path=config['normalized_coverage']['output']['normalized_coverage'], method=config['normalized_coverage']['params']['method'], sample=SAMPLES),
+    f"{config['correlation_analysis']['output']}/correlation_heatmap.png",
+    expand("{path}/{sample}_tss_heatmap.pdf", path=config['heatmap']['output']['plot'], sample=SAMPLES)
 ]
 
 PEAK_TARGETS = [
-    expand("results/peak_calling/macs2_peakcall/{sample}_peaks.narrowPeak", sample=SAMPLES),
-    expand("results/peak_calling/filtered_peaks/{sample}_filtered_peaks.bed", sample=SAMPLES),
-    expand("results/peak_calling/frip_calculation/{sample}_frip.txt", sample=SAMPLES),
-    expand("results/peak_calling/peak_annotation/{sample}_peak_annotation.txt", sample=SAMPLES),
-    expand("results/peak_calling/motif_analysis")
+    expand("{path}/{sample}_peaks.narrowPeak", path=config['macs2']['output']['peaks'], sample=SAMPLES),
+    expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES),
+    expand("{path}/{sample}_frip.txt", path=config['frip_calculation']['output'], sample=SAMPLES),
+    expand("{path}/{sample}_peak_annotation.txt", path=config['peak_annotation']['output'], sample=SAMPLES),
+    config['motif_analysis']['output']
 ]
 
 # [TEMPLATE] Define the expected final output files of your new tool here.
 # Snakemake needs to know what files to create to trigger the rule.
-TEMPLATE_TARGETS = [
-    expand("results/template_category/template_tool/{sample}_template.txt", sample=SAMPLES)
-]
+#TEMPLATE_TARGETS = [
+#    expand("results/template_category/template_tool/{sample}_template.txt", sample=SAMPLES)
+#]
 
 rule all:
     input:
@@ -124,9 +129,24 @@ rule all:
         ALIGNMENT_TARGETS,
         POST_FILTERING_TARGETS,
         QC_METRICS_TARGETS,
+        QC_GATE_TARGETS,
         VISUALIZATION_TARGETS,
         PEAK_TARGETS,
-        QC_GATE_TARGETS,
-        "results/reporting/multiqc",
+        config['multiqc']['output'],
         # [TEMPLATE] Add your target list here so the pipeline explicitly demands those files.
-        TEMPLATE_TARGETS
+        #TEMPLATE_TARGETS
+
+
+# --- Lifecycle Hooks -----------------------------------------------------------
+
+onstart:
+    print(f"\n[START] BDB-Genomics ATAC-seq Framework")
+    print(f"Samples: {len(SAMPLES)} samples detected\n")
+
+onsuccess:
+    print(f"\n[SUCCESS] Pipeline completed successfully!")
+    print(f"Final MultiQC report: {config['multiqc']['output']}/multiqc_report.html\n")
+
+onerror:
+    print(f"\n[ERROR] Pipeline encountered an error.")
+    print(f"Please check the log files in 'logs/' for details.\n")
