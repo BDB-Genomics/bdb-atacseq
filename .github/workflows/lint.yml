@@ -20,7 +20,7 @@ jobs:
     - name: Install Snakemake & YAML
       run: |
         python -m pip install --upgrade pip
-        pip install snakemake pyyaml
+        pip install "snakemake" "pulp<2.8.0" "pyyaml"
         
     - name: Lint Workflow
       run: |
