@@ -29,9 +29,50 @@ PATH_CHECKS = (
 )
 
 
+# ANSI Color codes
+class Colors:
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+
 def fail(errors: list[str]) -> None:
-    for message in errors:
-        print(f"[CONFIG VALIDATION ERROR] {message}", file=sys.stderr)
+    print(f"\n{Colors.BOLD}{Colors.RED}┏━ CONFIGURATION VALIDATION FAILED ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓{Colors.ENDC}")
+    
+    # Categorize errors
+    categories = {
+        "Reference Files": [],
+        "Sample Sheet": [],
+        "Schema/Keys": [],
+        "Parameters": []
+    }
+    
+    for msg in errors:
+        if any(x in msg for x in ["path not found", "index prefix", "not a file"]):
+            categories["Reference Files"].append(msg)
+        elif "Sample sheet" in msg or "sample ID" in msg or "FASTQ" in msg:
+            categories["Sample Sheet"].append(msg)
+        elif "Missing config key" in msg:
+            categories["Schema/Keys"].append(msg)
+        else:
+            categories["Parameters"].append(msg)
+
+    for cat, msgs in categories.items():
+        if msgs:
+            print(f"\n  {Colors.BOLD}{Colors.YELLOW}[{cat}]{Colors.ENDC}")
+            for m in msgs:
+                print(f"    • {m}")
+                # Add specific hints
+                if "data/" in m:
+                    path_part = m.split(':')[-1].strip()
+                    print(f"      {Colors.CYAN}Hint: Check if the file exists at: {Path(path_part).absolute()}{Colors.ENDC}")
+
+    print(f"\n{Colors.BOLD}{Colors.RED}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛{Colors.ENDC}")
+    print(f"\n{Colors.YELLOW}Check your 'config.yaml' and ensure all required data is in the 'data/' directory.{Colors.ENDC}\n")
     sys.exit(1)
 
 
