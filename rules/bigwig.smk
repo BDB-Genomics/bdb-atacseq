@@ -10,9 +10,10 @@ rule bigwig_conversion:
         time=config['bigwig']['resources']['time']
             
 
-    log: "logs/bigwig/{sample}.err" 
-    conda: "envs/06_visualization/bedGraph_to_bigwig.yaml" 
-    threads: config['bigwig']['threads'] 
+    log: "logs/bigwig/{sample}.err"
+    conda: "envs/06_visualization/bedGraph_to_bigwig.yaml"
+    container: "https://depot.galaxyproject.org/singularity/ucsc-bedgraphtobigwig:377--h4463345_0"
+    threads: config['bigwig']['threads']
 
     params:
         genome=config['bigwig']['params']['genome']

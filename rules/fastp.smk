@@ -19,6 +19,8 @@ rule fastp_trim :
         time=config['fastp']['resources']['time']
           
 
+    container: "https://depot.galaxyproject.org/singularity/fastp:0.24.0--heae3180_1"
+
     benchmark:
       "benchmarks/fastp/{sample}.txt"
    

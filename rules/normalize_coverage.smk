@@ -14,6 +14,7 @@ rule normalize_coverage:
        
 
     log: "logs/normalized_coverage/{sample}.err"
+    container: "https://depot.galaxyproject.org/singularity/deeptools:3.5.1--py_0"
     threads: config['normalized_coverage']['threads']
 
     benchmark:

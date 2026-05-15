@@ -18,10 +18,11 @@ rule heatmap:
         time=config['heatmap']['resources']['time']
         
 
-    log: matrix="logs/heatmap/matrix/{sample}.err", plot="logs/heatmap/plot/{sample}.err" 
-    conda: "envs/06_visualization/deeptools.yaml" 
-    threads: config['heatmap']['threads'] 
-    message: "[deepTools heatmap] Sample: {wildcards.sample} | BigWig: {input.bigwig} | Peaks: {input.filtered_peaks} | Output: {output.plot}" 
+    log: matrix="logs/heatmap/matrix/{sample}.err", plot="logs/heatmap/plot/{sample}.err"
+    conda: "envs/06_visualization/deeptools.yaml"
+    container: "https://depot.galaxyproject.org/singularity/deeptools:3.5.1--py_0"
+    threads: config['heatmap']['threads']
+    message: "[deepTools heatmap] Sample: {wildcards.sample} | BigWig: {input.bigwig} | Peaks: {input.filtered_peaks} | Output: {output.plot}"
 
     benchmark:
         "benchmarks/heatmap/{sample}.txt"

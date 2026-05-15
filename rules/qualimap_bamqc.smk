@@ -13,10 +13,11 @@ rule qualimap_bamqc:
         time=config['qualimap_bamqc']['resources']['time'] 
            
 
-    log: "logs/qualimap/{sample}.err" 
-    conda: "envs/04_metrics_qc/qualimap.yaml" 
-    threads: config['qualimap_bamqc']['threads'] 
-    message: "[qualimap] Sample: {wildcards.sample} | Markdup Bam: {input.markdup_bam} | Reports: {output.qc_dir} | Extra: {params.extra}..." 
+    log: "logs/qualimap/{sample}.err"
+    conda: "envs/04_metrics_qc/qualimap.yaml"
+    container: "https://depot.galaxyproject.org/singularity/qualimap:2.2.2d--1"
+    threads: config['qualimap_bamqc']['threads']
+    message: "[qualimap] Sample: {wildcards.sample} | Markdup Bam: {input.markdup_bam} | Reports: {output.qc_dir} | Extra: {params.extra}..."
 
     benchmark:
         "benchmarks/qualimap/{sample}.txt"

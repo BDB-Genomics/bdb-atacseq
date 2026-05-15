@@ -17,9 +17,10 @@ rule tss_enrichment:
         time=config['tss_enrichment']['resources']['time']
   
 
-    log: "logs/tss_enrichment/{sample}.err" 
-    conda: "envs/04_metrics_qc/tss_enrichment.yaml" 
-    threads: config['tss_enrichment']['threads'] 
+    log: "logs/tss_enrichment/{sample}.err"
+    conda: "envs/04_metrics_qc/tss_enrichment.yaml"
+    container: "https://depot.galaxyproject.org/singularity/r-base:4.2.1"
+    threads: config['tss_enrichment']['threads']
     message: "[TSS ENRICHMENT] SAMPLE: {wildcards.sample}| INPUT: {input.shifted_bam} {input.shifted_bam_index} | OUTPUT: {output.text} {output.pdf}| T XDB: {params.txdb}| UPSTREAM: {params.upstream}| DOWNSTREAM: {params.downstream}  "
 
     benchmark:

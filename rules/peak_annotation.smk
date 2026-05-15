@@ -16,10 +16,11 @@ rule peak_annotation:
         time=config['peak_annotation']['resources']['time']
                  
 
-    log: "logs/peak_annotation/{sample}.err" 
-    conda: "envs/05_peak_calling/chipseeker.yaml" 
-    threads: config['peak_annotation']['threads'] 
-    message: "[Peak annotation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.annotation}" 
+    log: "logs/peak_annotation/{sample}.err"
+    conda: "envs/05_peak_calling/chipseeker.yaml"
+    container: "https://depot.galaxyproject.org/singularity/bioconductor-chipseeker:1.34.1--r42hdfd78af_0"
+    threads: config['peak_annotation']['threads']
+    message: "[Peak annotation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.annotation}"
 
     benchmark:
         "benchmarks/peak_annotation/{sample}.txt"

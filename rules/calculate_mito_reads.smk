@@ -13,10 +13,11 @@ rule calculate_mito_reads:
         time=config['mitoATAC_calculate']['resources']['time']
             
 
-    log: "logs/mitoATAC_calculate/{sample}.err" 
+    log: "logs/mitoATAC_calculate/{sample}.err"
     conda: "envs/03_post_alignment/samtools.yaml"
-    threads: config['mitoATAC_calculate']['threads'] 
-    message: "[MITOCHONDRIAL READS] SAMPLES: {wildcards.sample}|INPUT: {input.sorted_bam}|OUTPUT: {output.mito_stats}|PATTERN: {params.mito_chr}" 
+    container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
+    threads: config['mitoATAC_calculate']['threads']
+    message: "[MITOCHONDRIAL READS] SAMPLES: {wildcards.sample}|INPUT: {input.sorted_bam}|OUTPUT: {output.mito_stats}|PATTERN: {params.mito_chr}"
 
     benchmark:
         "benchmarks/mitoATAC_calculate/{sample}.txt"

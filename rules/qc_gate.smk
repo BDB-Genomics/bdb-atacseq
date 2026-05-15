@@ -21,6 +21,7 @@ rule qc_gate:
     
 
     log: f"logs/qc_gate/{{sample}}.log"
+    container: "https://depot.galaxyproject.org/singularity/python:3.10.4"
     threads: config['qc_gate']['threads']
     message: "[QC GATE] Checking ATAC-seq metrics for Sample: {wildcards.sample}"
 

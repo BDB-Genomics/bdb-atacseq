@@ -18,8 +18,9 @@ rule fastqc:
                             
 
     log: "logs/fastqc/{sample}.err"
-    conda: "envs/01_preprocessing/fastqc.yaml" 
-    threads: config["fastqc"]["threads"] 
+    conda: "envs/01_preprocessing/fastqc.yaml"
+    container: "https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0"
+    threads: config["fastqc"]["threads"]
     message: "[FASTQC] SAMPLES: {wildcards.sample}|INPUT: {input.R1_trimmed} {input.R2_trimmed}|OUTPUT: {output.R1_report} {output.R1_zip} {output.R2_report} {output.R2_zip}|DIRECTORY: {params.out_dir}"
 
     benchmark:

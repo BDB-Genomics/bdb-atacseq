@@ -10,10 +10,11 @@ rule sorted_bedgraph:
         time=config['sorted_bedgraph']['resources']['time']
     
 
-    log: "logs/sorted_bedgraph/{sample}.err" 
+    log: "logs/sorted_bedgraph/{sample}.err"
     conda: "envs/06_visualization/sorted_bedgraph.yaml"
-    threads: config['sorted_bedgraph']['threads'] 
-    message: "[sort]  Sample:  {wildcards.sample} | BedGraph: {input.bedgraph} | Sorted BedGraph: {output.sorted_bedgraph} | Resources: {resources.mem_mb}...  " 
+    container: "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h468198e_3"
+    threads: config['sorted_bedgraph']['threads']
+    message: "[sort]  Sample:  {wildcards.sample} | BedGraph: {input.bedgraph} | Sorted BedGraph: {output.sorted_bedgraph} | Resources: {resources.mem_mb}...  "
 
     benchmark:
         "benchmarks/sorted_bedgraph/{sample}.txt"

@@ -11,10 +11,11 @@ rule tn5_shift:
         mem_mb=config['tn5_shift']['resources']['mem_mb'], 
         time=config['tn5_shift']['resources']['time']
 
-    log: "logs/tn5_shift/{sample}.err" 
-    conda: "envs/06_visualization/deeptools.yaml" 
-    threads: config['tn5_shift']['threads'] 
-    message: "[TN5 SHIFT: Adjusting ATAC-seq read positions by +4-5 bp to reflect true Tn5 cut sites] SAMPLE:  {wildcards.sample}| INPUT: {input.filtered_bam} {input.filtered_bam_index} | OUTPUT: {output.shifted_filtered_bam} {output.shifted_filtered_bam_index}" 
+    log: "logs/tn5_shift/{sample}.err"
+    conda: "envs/06_visualization/deeptools.yaml"
+    container: "https://depot.galaxyproject.org/singularity/mulled-v2-ac74a7f02306649ee64e819b8830f69904d48507:6c2688b7762696e16544521798e29a9b1c76949b-0"
+    threads: config['tn5_shift']['threads']
+    message: "[TN5 SHIFT: Adjusting ATAC-seq read positions by +4-5 bp to reflect true Tn5 cut sites] SAMPLE:  {wildcards.sample}| INPUT: {input.filtered_bam} {input.filtered_bam_index} | OUTPUT: {output.shifted_filtered_bam} {output.shifted_filtered_bam_index}"
 
     benchmark:
         "benchmarks/tn5_shift/{sample}.txt"

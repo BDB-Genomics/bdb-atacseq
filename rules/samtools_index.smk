@@ -10,10 +10,11 @@ rule samtools_index:
         time=config['samtools_index']['resources']['time']     
         
 
-    log: "logs/samtools_index/{sample}.err" 
-    conda: "envs/03_post_alignment/samtools.yaml" 
-    threads: config['samtools_index']['threads'] 
-    message: "[SAMTOOLS INDEX] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT}| OUTPUT: {output.indexed_bam}" 
+    log: "logs/samtools_index/{sample}.err"
+    conda: "envs/03_post_alignment/samtools.yaml"
+    container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
+    threads: config['samtools_index']['threads']
+    message: "[SAMTOOLS INDEX] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT}| OUTPUT: {output.indexed_bam}"
 
     benchmark:
         "benchmarks/samtools_index/{sample}.txt"

@@ -17,6 +17,7 @@ rule motif_analysis:
 
     log: "logs/motif_analysis/motif_analysis.log"
     conda: "envs/05_peak_calling/homer.yaml"
+    container: "https://depot.galaxyproject.org/singularity/homer:4.11--pl526hc9558a2_3"
     threads: config['motif_analysis']['threads']
     message: "[Motif analysis] Sample: All combined | Peaks: {input.filtered_peaks} | Output: {output.html}"
 
