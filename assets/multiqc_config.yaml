@@ -1,0 +1,24 @@
+report_header_info:
+  - Pipeline: "BDB-Genomics ATAC-seq"
+  - Contact: "Himanshu Bhandary (2032ushimanshu@gmail.com)"
+
+custom_content:
+  qc_gate:
+    parent_id: "qc_gate_summary"
+    parent_name: "Pipeline QC Gate Status"
+    parent_description: "Custom biological quality control thresholds (FRiP, TSS, Mapping, Duplicates)"
+    section_name: "Sample Status"
+    file_format: "json"
+    plot_type: "table"
+    pconfig:
+      id: "qc_gate_table"
+      title: "ATAC-seq QC Gate Metrics"
+      namespace: "QC Gate"
+
+table_columns_visible:
+  QC Gate:
+    frip: True
+    tss: True
+    mapping: True
+    duplicates: True
+    status: True

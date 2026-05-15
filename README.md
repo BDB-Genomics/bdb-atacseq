@@ -2,176 +2,72 @@
   <img src="assets/pipeline_diagram.svg" alt="Pipeline DAG" width="860" />
 </p>
 
-# BDB-Genomics ATAC-seq Pipeline
+# BDB-Genomics ATAC-seq Pipeline (V1.1.0)
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
-  <a href="https://github.com/BDB-Genomics/atacseq-pipeline/actions"><img src="https://img.shields.io/badge/Status-Integration_Testing-orange" alt="Status"></a>
+  <a href="https://github.com/BDB-Genomics/atacseq-pipeline/actions"><img src="https://img.shields.io/badge/Status-Production_Ready-brightgreen" alt="Status"></a>
   <a href="https://snakemake.readthedocs.io"><img src="https://img.shields.io/badge/Snakemake-≥7.0-brightgreen.svg" alt="Snakemake"></a>
 </p>
 
-<p align="center">
-  <img src="assets/readme_animation.svg" alt="ATAC-seq Pipeline Overview" width="820" />
-</p>
-
 > **Mentorship & Guidance**
-> This pipeline was developed under the guidance of **Jessica Evangeline KC**, PhD Student,
-> Institute of Bioinformatics and Applied Biotechnology (IBAB), Bangalore.
-> Her mentorship shaped the design principles, QC strategy, and analytical rigor of this workflow.
+> This pipeline was developed under the guidance of **Jessica Evangeline KC**, PhD Student, IBAB, Bangalore.
 
-> A modular Snakemake workflow for paired-end ATAC-seq processing, from raw FASTQ files to QC, peak calling, annotation, motif discovery, and reporting.
+## Overview
+A production-grade, modular, and containerized Snakemake workflow for paired-end ATAC-seq data. From raw reads to biological insights, every step is standardized for reproducibility and performance.
 
-## Status
+### ✨ Key Features
+- **Dynamic Architecture**: Fully reactive DAG driven by `config.yaml`.
+- **Global Containerization**: Integrated with **Biocontainers** (Singularity/Docker) for portable execution.
+- **Smart Validation**: Proactive config & sample sheet validator with categorized hints.
+- **Biological QC Gate**: Automated checkpoints for TSS Enrichment and FRiP metrics.
+- **Advanced Reporting**: Custom MultiQC integration with PASS/FAIL/WARN status.
 
-- DAG-resolved on the current workflow layout.
-- Smoke tests, benchmark baselines, and regression coverage are still pending.
-
-## Repository Layout
-
+## 📁 Repository Layout
 ```text
-Snakefile                 # Main Snakemake entry point
-config.yaml               # Workflow configuration
-data/                     # Input FASTQs, references, motif database
-rules/                    # Rule files and helper scripts
-rules/envs/               # Rule-specific conda environments
-scripts/run_pipeline.sh   # Wrapper for validation and execution
-results/                  # Generated outputs
-logs/                     # Per-rule logs
-benchmarks/               # Per-rule benchmark files
+Snakefile                 # Dynamic entry point with lifecycle hooks
+config.yaml               # Central Source of Truth
+data/                     # Input directory (FASTQs, References, Motifs)
+rules/                    # Modularized Snakemake rules
+rules/envs/               # Hierarchical Conda/Singularity definitions
+rules/scripts/            # Advanced Python/R logic (Validation, QC, TSS)
+assets/                   # Custom MultiQC configs and diagrams
 ```
 
-## Inputs
+## 🚀 Quick Start
 
-The workflow expects these inputs:
+1. **Configure**: Review `config.yaml` and populate `data/fastp/samples.tsv`.
+2. **Validate**:
+   ```bash
+   snakemake -n
+   ```
+   *Our validator will guide you if any reference files or config keys are missing.*
 
-- `config.yaml`
-- `data/fastp/samples.tsv`
-- Reference files under `data/reference/`
-- Motif database under `data/motifs/`
+3. **Execute**:
+   ```bash
+   snakemake --use-conda --use-singularity --cores 16
+   ```
 
-### Sample Sheet Format
+## 📊 Inputs
+The workflow expects a Tab-Separated sample sheet at `data/fastp/samples.tsv`:
+| sample | fastq_r1 | fastq_r2 | replicate | condition |
+| :--- | :--- | :--- | :--- | :--- |
+| WT_rep1 | path/r1.fq.gz | path/r2.fq.gz | 1 | WT |
 
-`data/fastp/samples.tsv` must contain at least these columns:
+## 🧬 QC Gate
+The pipeline implements an automated gating system:
+- **TSS Enrichment**: Validates signal-to-noise ratio at transcription start sites.
+- **FRiP**: Fraction of Reads in Peaks validation.
+- **Mapping & Duplication**: Ensures alignment quality meets research standards.
+*Results are exported as JSON and aggregated in the final MultiQC report.*
 
-- `sample`
-- `fastq_r1`
-- `fastq_r2`
-- `replicate`
-- `condition`
-
-Optional:
-
-- `control`
-
-Rules enforced by the validator:
-
-- Sample names must match `^[A-Za-z0-9._-]+$`
-- `replicate` must be a positive integer
-- `condition` must be present
-- `fastq_r1` and `fastq_r2` must resolve to real files
-- `control`, if present, must refer to another sample ID or `NONE`
-
-Example:
-
-```tsv
-sample	fastq_r1	fastq_r2	replicate	condition
-sample1	data/fastp/input/sample1_R1.fastq.gz	data/fastp/input/sample1_R2.fastq.gz	1	ATACseq
-sample2	data/fastp/input/sample2_R1.fastq.gz	data/fastp/input/sample2_R2.fastq.gz	2	ATACseq
+## 📜 Citation
+If you use this pipeline, please cite it as:
+```text
+Bhandary, H. (2026). BDB-Genomics ATAC-seq Framework (Version 1.1.0). GitHub. 
+https://github.com/BDB-Genomics/atacseq-pipeline
 ```
+*See [CITATION.cff](CITATION.cff) for more details.*
 
-## Quick Start
-
-1. Ensure either `snakemake` is on `PATH` or Conda can provide the `snakemake_runner` environment.
-2. Review `config.yaml` and `data/fastp/samples.tsv`.
-3. Run a dry run:
-
-```bash
-scripts/run_pipeline.sh --dry-run
-```
-
-4. Run the workflow:
-
-```bash
-scripts/run_pipeline.sh --cores 8
-```
-
-The wrapper script:
-
-- validates the config before Snakemake starts
-- uses `--use-conda` by default
-- writes a combined log to `pipeline.log`
-- supports `--unlock`, `--no-use-conda`, `--keep-going`, and `--no-rerun-incomplete`
-
-## Configuration
-
-`config.yaml` is organized by rule/module:
-
-- `global`
-- `fastp`
-- `fastqc`
-- `bowtie2`
-- `samtools_*`
-- `tss_enrichment`
-- `bedtools_genomecov`
-- `bigwig`
-- `correlation_analysis`
-- `normalize_coverage`
-- `macs2`
-- `blacklist_filter`
-- `frip_calculation`
-- `peak_annotation`
-- `motif_analysis`
-- `preseq`
-- `qualimap_bamqc`
-- `qc_gate`
-- `multiqc`
-
-The per-rule conda environment files are kept under `rules/envs/` and are referenced from the rule files.
-
-## Outputs
-
-Typical output directories include:
-
-- `results/fastp/`
-- `results/fastqc/`
-- `results/bowtie2/`
-- `results/samtools_sort/`
-- `results/remove_mito_reads/`
-- `results/samtools_markdup/`
-- `results/samtools_view/`
-- `results/tn5_shift/`
-- `results/samtools_stats/`
-- `results/fragment_size_analysis/`
-- `results/picard/`
-- `results/tss_enrichment/`
-- `results/bedtools_genomecov/`
-- `results/sorted_bedgraph_file/`
-- `results/bigwig/`
-- `results/normalized_coverage/`
-- `results/correlation_analysis/`
-- `results/heatmap/`
-- `results/macs2_peakcall/`
-- `results/filtered_peaks/`
-- `results/frip_calculation/`
-- `results/peak_annotation/`
-- `results/motif_analysis/`
-- `results/preseq/`
-- `results/qualimap/`
-- `results/qc_gate/`
-- `results/multiqc/`
-
-Logs and benchmarks are written to:
-
-- `logs/`
-- `benchmarks/`
-
-## Notes
-
-- The workflow validates its config at startup through `rules/scripts/validate_config.py`.
-- `rules/envs/` is the intended environment location for this tree.
-- `backup/` contains historical snapshots and is not used by the main workflow.
-- If you move files around, update `config.yaml`, `Snakefile`, and the rule paths together.
-
-## License
-
-See [LICENSE](LICENSE).
+## ⚖️ License
+Distributed under the **MIT License**. See `LICENSE` for more information.

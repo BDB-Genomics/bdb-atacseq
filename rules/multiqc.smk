@@ -3,6 +3,7 @@ rule multiqc:
         expand("{path}/{sample}_R1_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
         expand("{path}/{sample}_R2_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
         expand("{path}/{sample}.json", path=config['fastp']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_qc_pass.json", path=config['qc_gate']['output'], sample=SAMPLES),
         expand("{path}/{sample}_postFiltering.stats.txt", path=config['samtools_stats']['output']['stats'], sample=SAMPLES),
         expand("{path}/{sample}.alignment_metrics.txt", path=config['picard']['alignment_metrics']['output']['alignment_metrics'], sample=SAMPLES),
         expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
@@ -25,6 +26,7 @@ rule multiqc:
     shell:
         """
         multiqc {input} -o {output.report_dir} \
+            -c assets/multiqc_config.yaml \
             --title "ATAC-seq Pipeline QC Report" \
             --comment "Comprehensive quality control metrics for ATAC-seq analysis" \
             2> {log}
