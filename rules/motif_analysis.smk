@@ -1,6 +1,6 @@
 rule motif_analysis:
     input:
-        filtered_peaks=expand("results/filtered_peaks/{sample}_filtered_peaks.bed", sample=SAMPLES),
+        filtered_peaks=expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES),
         genome=config['motif_analysis']['input']['genome']
 
     output:
@@ -13,22 +13,18 @@ rule motif_analysis:
         mem_mb=config['motif_analysis']['resources']['mem_mb'],
         time=config['motif_analysis']['resources']['time']
             
-    conda:
-        "envs/05_peak_calling/homer.yaml"
     
+
+    log: "logs/motif_analysis/motif_analysis.log"
+    conda: "envs/05_peak_calling/homer.yaml"
+    threads: config['motif_analysis']['threads']
+    message: "[Motif analysis] Sample: All combined | Peaks: {input.filtered_peaks} | Output: {output.html}"
+
     benchmark:
         "benchmarks/motif_analysis/motif_analysis.txt"
         
-    log:
-        "logs/motif_analysis/motif_analysis.log"
 
-
-    threads:
-        config['motif_analysis']['threads']
     
-
-    message:
-        "[Motif analysis] Sample: All combined | Peaks: {input.filtered_peaks} | Output: {output.html}"
 
     shell:
         """

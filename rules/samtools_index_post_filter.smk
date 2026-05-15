@@ -9,20 +9,13 @@ rule samtools_index_post_filter:
         mem_mb=config['samtools_index_post_filter']['resources']['mem_mb'], 
         time=config['samtools_index_post_filter']['resources']['time']
 
+    log: "logs/samtools_index_post_filter/{sample}.out" 
+    conda: "envs/03_post_alignment/samtools.yaml" 
+    threads: config['samtools_index_post_filter']['threads'] 
+    message: "[SAMTOOLS INDEX POST FILTER] SAMPLE: {wildcards.sample}| INPUT: {input.filtered_bam}| OUTPUT: {output.filtered_bam_indexed}" 
+
     benchmark:
         "benchmarks/samtools_index_post_filter/{sample}.txt"
-        
-    log:
-        "logs/samtools_index_post_filter/{sample}.out"
-             
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-        
-    threads:
-        config['samtools_index_post_filter']['threads']
-        
-    message:
-        "[SAMTOOLS INDEX POST FILTER] SAMPLE: {wildcards.sample}| INPUT: {input.filtered_bam}| OUTPUT: {output.filtered_bam_indexed}"
         
     shell:
         """

@@ -13,18 +13,16 @@ rule preseq:
         mem_mb=config['preseq']['resources']['mem_mb'], 
         time=config['preseq']['resources']['time']
         
+
+    log: "logs/preseq/{sample}.err"
+    conda: "envs/04_metrics_qc/preseq.yaml"
+    message: "[Preseq Sample: {wildcards.sample} | Markedup Bam Index: {input.markdup_bam_index} , Markedup Bam: {input.markdup_bam} | Complexity: {output.complexity} | Extra: {params.extra} ]" 
+
     benchmark:
         "benchmarks/preseq/{sample}.txt"
     
-    log:
-        "logs/preseq/{sample}.err"
   
-    conda:
-        "envs/04_metrics_qc/preseq.yaml"
 
-    message:
-        "[Preseq Sample: {wildcards.sample} | Markedup Bam Index: {input.markdup_bam_index} , Markedup Bam: {input.markdup_bam} | Complexity: {output.complexity} | Extra: {params.extra} ]"
-        
     shell:
         """
         preseq {params.extra} \

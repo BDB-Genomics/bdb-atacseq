@@ -12,20 +12,13 @@ rule bedtools_genomecov:
         mem_mb=config['bedtools_genomecov']['resources']['mem_mb'], 
         time=config['bedtools_genomecov']['resources']['time']
 
+    log: "logs/bedtools_genomecov/{sample}.err"
+    conda: "envs/03_post_alignment/bedtools.yaml"
+    threads: config['bedtools_genomecov']['threads']
+    message: "[bedtools genomecov] sample: {wildcards.sample} | BAM : {input.shifted_bam}| Output: {output.bedgraph}..."
+
     benchmark:
         "benchmarks/bedtools_genomecov/{sample}.txt"
-
-    log:
-        "logs/bedtools_genomecov/{sample}.err"
-
-    conda:
-        "envs/03_post_alignment/bedtools.yaml"
-
-    threads:
-        config['bedtools_genomecov']['threads']
-
-    message:
-        "[bedtools genomecov] sample: {wildcards.sample} | BAM : {input.shifted_bam}| Output: {output.bedgraph}..."
 
     shell:
         """

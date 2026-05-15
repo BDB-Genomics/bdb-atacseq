@@ -12,20 +12,14 @@ rule qualimap_bamqc:
         mem_mb=config['qualimap_bamqc']['resources']['mem_mb'], 
         time=config['qualimap_bamqc']['resources']['time'] 
            
+
+    log: "logs/qualimap/{sample}.err" 
+    conda: "envs/04_metrics_qc/qualimap.yaml" 
+    threads: config['qualimap_bamqc']['threads'] 
+    message: "[qualimap] Sample: {wildcards.sample} | Markdup Bam: {input.markdup_bam} | Reports: {output.qc_dir} | Extra: {params.extra}..." 
+
     benchmark:
         "benchmarks/qualimap/{sample}.txt"
-        
-    log:
-        "logs/qualimap/{sample}.err"
-        
-    conda:
-        "envs/04_metrics_qc/qualimap.yaml"
-        
-    threads:
-        config['qualimap_bamqc']['threads']
-        
-    message:
-        "[qualimap] Sample: {wildcards.sample} | Markdup Bam: {input.markdup_bam} | Reports: {output.qc_dir} | Extra: {params.extra}..."
         
     shell:
         """

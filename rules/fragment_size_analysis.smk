@@ -17,20 +17,13 @@ rule fragment_size_analysis:
         mem_mb=config['fragment_size_analysis']['resources']['mem_mb'], 
         time=config['fragment_size_analysis']['resources']['time']
 
+    log: "logs/fragment_size_analysis/{sample}.err" 
+    conda: "envs/03_post_alignment/samtools.yaml" 
+    threads: config['fragment_size_analysis']['threads'] 
+    message: "[FRAGMENT SIZE ANALYSIS] SAMPLES: {wildcards.sample}| INPUT: {input.metrics}| OUTPUT: {output.fragment_sizes} {output.histogram} {output.stats}|MIN LENGTH: {params.min_length}| MAX LENGTH: {params.max_length}| MAX FRAGMENT: {params.max_fragment} " 
+
     benchmark:
         "benchmarks/fragment_size_analysis/{sample}.txt"
-        
-    log:
-        "logs/fragment_size_analysis/{sample}.err"
-        
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-        
-    threads:
-        config['fragment_size_analysis']['threads']
-        
-    message:
-        "[FRAGMENT SIZE ANALYSIS] SAMPLES: {wildcards.sample}| INPUT: {input.metrics}| OUTPUT: {output.fragment_sizes} {output.histogram} {output.stats}|MIN LENGTH: {params.min_length}| MAX LENGTH: {params.max_length}| MAX FRAGMENT: {params.max_fragment} "
         
     shell:
         """

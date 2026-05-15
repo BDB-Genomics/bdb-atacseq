@@ -12,21 +12,16 @@ rule calculate_mito_reads:
         mem_mb=config['mitoATAC_calculate']['resources']['mem_mb'],
         time=config['mitoATAC_calculate']['resources']['time']
             
+
+    log: "logs/mitoATAC_calculate/{sample}.err" 
+    conda: "envs/03_post_alignment/samtools.yaml"
+    threads: config['mitoATAC_calculate']['threads'] 
+    message: "[MITOCHONDRIAL READS] SAMPLES: {wildcards.sample}|INPUT: {input.sorted_bam}|OUTPUT: {output.mito_stats}|PATTERN: {params.mito_chr}" 
+
     benchmark:
         "benchmarks/mitoATAC_calculate/{sample}.txt"
         
-    log:
-        "logs/mitoATAC_calculate/{sample}.err"
-        
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
 
-    threads:
-        config['mitoATAC_calculate']['threads']
-        
-    message:
-        "[MITOCHONDRIAL READS] SAMPLES: {wildcards.sample}|INPUT: {input.sorted_bam}|OUTPUT: {output.mito_stats}|PATTERN: {params.mito_chr}"
-        
     shell:
         """
         #Index BAM if not already indexed

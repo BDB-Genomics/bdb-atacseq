@@ -23,21 +23,15 @@ rule correlation_analysis:
         mem_mb=config['correlation_analysis']['resources']['mem_mb'], 
         time=config['correlation_analysis']['resources']['time']
 
+    log: "logs/correlation_analysis/correlation_analysis.err" 
+    conda: "envs/06_visualization/deeptools.yaml" 
+    threads: config['correlation_analysis']['threads']
+    message: "[multiBigwigSummary +  plotCorrelation] | BigWigs: {input.bigwig} | Outputs: {output.npz}, {output.tab}, {output.heatmap} | Binsize: {params.bin_size} ..." 
+
     benchmark:
         "benchmarks/correlation_analysis/correlation_analysis.txt"
          
-    log:
-        "logs/correlation_analysis/correlation_analysis.err"
-         
-    threads:
-        config['correlation_analysis']['threads']
        
-    conda:
-        "envs/06_visualization/deeptools.yaml"
-         
-    message:
-        "[multiBigwigSummary +  plotCorrelation] | BigWigs: {input.bigwig} | Outputs: {output.npz}, {output.tab}, {output.heatmap} | Binsize: {params.bin_size} ..."
-         
     shell: 
         """
         multiBigwigSummary bins \

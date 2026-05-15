@@ -18,19 +18,16 @@ rule fastp_trim :
         mem_mb=config['fastp']['resources']['mem_mb'], 
         time=config['fastp']['resources']['time']
           
+
     benchmark:
       "benchmarks/fastp/{sample}.txt"
    
-    log:      
       "logs/fastp/{sample}.err"
      
-    conda:
       "envs/01_preprocessing/fastp.yaml"
     
-    threads:
       config["fastp"]["threads"]
     
-    message:
       "[FASTP] SAMPLES: {input.R1} {input.R2}|OUTPUT: {output.R1_trimmed} {output.R2_trimmed} {output.html} {output.json}| TRIMFRONT1: {params.trim_front1}| TRIMFRONT2: {params.trim_front2}|LENGTH REQUIRED: {params.length_required}"
     
     shell:
@@ -50,8 +47,6 @@ rule fastp_trim :
       > {log} 2>&1
      """
 #Syntactically and logically correct. 
-
-
 
  
     

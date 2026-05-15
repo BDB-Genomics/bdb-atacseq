@@ -9,20 +9,14 @@ rule samtools_stats:
         mem_mb=config['samtools_stats']['resources']['mem_mb'], 
         time=config['samtools_stats']['resources']['time']
                     
+
+    log: "logs/samtools_stats/{sample}.err" 
+    conda: "envs/03_post_alignment/samtools.yaml" 
+    threads: config['samtools_stats']['threads'] 
+    message: "[SAMTOOLS STATISTICS] SAMPLE: {wildcards.sample}| INPUT: {input.filtered_bam}| OUTPUT: {output.stats}" 
+
     benchmark:
         "benchmarks/samtools_stats/{sample}.txt"
-        
-    log:
-        "logs/samtools_stats/{sample}.err"
-        
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-        
-    threads:
-        config['samtools_stats']['threads']
-        
-    message:
-        "[SAMTOOLS STATISTICS] SAMPLE: {wildcards.sample}| INPUT: {input.filtered_bam}| OUTPUT: {output.stats}"
         
     shell:
         """

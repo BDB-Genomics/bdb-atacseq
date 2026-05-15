@@ -17,13 +17,15 @@ rule qc_gate:
         mem_mb=config['qc_gate']['resources']['mem_mb'],
         time=config['qc_gate']['resources']['time']
         
-    threads: config['qc_gate']['threads']
     
+    
+
     log: f"logs/qc_gate/{{sample}}.log"
-    
+    threads: config['qc_gate']['threads']
+    message: "[QC GATE] Checking ATAC-seq metrics for Sample: {wildcards.sample}"
+
     benchmark: f"benchmarks/qc_gate/{{sample}}.txt"
     
-    message: "[QC GATE] Checking ATAC-seq metrics for Sample: {wildcards.sample}"
     
     shell:
         """

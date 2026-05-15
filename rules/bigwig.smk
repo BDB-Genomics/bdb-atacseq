@@ -9,22 +9,17 @@ rule bigwig_conversion:
         mem_mb=config['bigwig']['resources']['mem_mb'], 
         time=config['bigwig']['resources']['time']
             
+
+    log: "logs/bigwig/{sample}.err" 
+    conda: "envs/06_visualization/bedGraph_to_bigwig.yaml" 
+    threads: config['bigwig']['threads'] 
+
     params:
         genome=config['bigwig']['params']['genome']
         
     benchmark:
         "benchmarks/bigwig/{sample}.txt"
         
-    log:
-        "logs/bigwig/{sample}.err"
-         
-    conda:
-        "envs/06_visualization/bedGraph_to_bigwig.yaml"
-        
-    threads:
-        config['bigwig']['threads']
-            
-    message:
        "[bedGraphToBigWig] Sample: {wildcards.sample} | Sorted BedGraph: {input.sorted_bedgraph} | BigWig: {output.bigwig} | Genome: {params.genome}... "
        
     shell:

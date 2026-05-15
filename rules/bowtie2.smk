@@ -14,20 +14,16 @@ rule bowtie2_align:
         mem_mb=config['bowtie2']['resources']['mem_mb'], 
         time=config['bowtie2']['resources']['time']
         
+
+    log: "logs/bowtie2/{sample}.err" 
+    conda: "envs/02_alignment/bowtie2.yaml" 
+    threads: config['bowtie2']['threads']
+    message: "[BOWTIE2 ALIGN] SAMPLE: {wildcards.sample} |INPUT: {input.R1_fastp} {input.R2_fastp}|OUTPUT: {output.BAM}|PARAMS: {params.index}" 
+
     benchmark: 
         "benchmarks/bowtie2/{sample}.txt"
         
-    log: 
-        "logs/bowtie2/{sample}.err"
         
-    conda: 
-        "envs/02_alignment/bowtie2.yaml"
-        
-    threads: config['bowtie2']['threads']
-        
-    message:
-        "[BOWTIE2 ALIGN] SAMPLE: {wildcards.sample} |INPUT: {input.R1_fastp} {input.R2_fastp}|OUTPUT: {output.BAM}|PARAMS: {params.index}"
-         
     shell:
         r"""
         set -o pipefail 

@@ -11,20 +11,13 @@ rule frip_calculation:
         mem_mb=config['frip_calculation']['resources']['mem_mb'], 
         time=config['frip_calculation']['resources']['time']
 
+    log: "logs/frip/{sample}.err" 
+    conda: "envs/03_post_alignment/bedtools.yaml" 
+    threads: config['frip_calculation']['threads'] 
+    message: "[FRiP calculation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | BAM: {input.shifted_bam} | Output: {output.frip}" 
+
     benchmark:
         "benchmarks/frip/{sample}.txt"
-        
-    log:
-        "logs/frip/{sample}.err"
-        
-    threads:
-        config['frip_calculation']['threads']
-                    
-    conda:
-        "envs/03_post_alignment/bedtools.yaml"
-        
-    message:
-        "[FRiP calculation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | BAM: {input.shifted_bam} | Output: {output.frip}"
         
     shell:
         """

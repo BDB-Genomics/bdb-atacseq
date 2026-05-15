@@ -16,18 +16,11 @@ rule picard_CollectAlignmentSummaryMetrics:
         mem_mb=config['picard']['alignment_metrics']['resources']['mem_mb'], 
         time=config['picard']['alignment_metrics']['resources']['time']
 
-    log: 
-        "logs/picard/CollectAlignmentSummaryMetrics/{sample}.err"
-        
-    conda:
-        "envs/04_metrics_qc/picard.yaml"
-        
-    threads:
-        config['picard']['alignment_metrics']['threads']
-        
-    message:
-        "[PICARD COLLECTALIGNMENTSUMMARYMETRICS] SAMPLE: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.alignment_metrics}| REFERENCE GENOME: {params.reference_genome}| VALIDATION STRINGENCY: {params.validation_stringency}."
-        
+    log: "logs/picard/CollectAlignmentSummaryMetrics/{sample}.err" 
+    conda: "envs/04_metrics_qc/picard.yaml" 
+    threads: config['picard']['alignment_metrics']['threads'] 
+    message: "[PICARD COLLECTALIGNMENTSUMMARYMETRICS] SAMPLE: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.alignment_metrics}| REFERENCE GENOME: {params.reference_genome}| VALIDATION STRINGENCY: {params.validation_stringency}." 
+
     shell:
         """
         PICARD_VERSION=$(picard --help 2>&1 | head -n 1 || echo "Picard Version Unknown" )

@@ -16,20 +16,16 @@ rule fastqc:
         mem_mb=config['fastqc']['resources']['mem_mb'], 
         time=config['fastqc']['resources']['time']
                             
+
+    log: "logs/fastqc/{sample}.err"
+    conda: "envs/01_preprocessing/fastqc.yaml" 
+    threads: config["fastqc"]["threads"] 
+    message: "[FASTQC] SAMPLES: {wildcards.sample}|INPUT: {input.R1_trimmed} {input.R2_trimmed}|OUTPUT: {output.R1_report} {output.R1_zip} {output.R2_report} {output.R2_zip}|DIRECTORY: {params.out_dir}"
+
     benchmark:
         "benchmarks/fastqc/{sample}.txt"
         
-    log:
-        "logs/fastqc/{sample}.err"
     
-    threads:
-        config["fastqc"]["threads"]
-        
-    conda:
-        "envs/01_preprocessing/fastqc.yaml"
-        
-    message:
-        "[FASTQC] SAMPLES: {wildcards.sample}|INPUT: {input.R1_trimmed} {input.R2_trimmed}|OUTPUT: {output.R1_report} {output.R1_zip} {output.R2_report} {output.R2_zip}|DIRECTORY: {params.out_dir}"
     
     shell:
         """

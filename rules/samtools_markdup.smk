@@ -12,20 +12,14 @@ rule samtools_markdup:
         mem_mb=config['samtools_markdup']['resources']['mem_mb'], 
         time=config['samtools_markdup']['resources']['time']
         
+
+    log: "logs/samtools_markdup/{sample}.err" 
+    conda: "envs/03_post_alignment/samtools.yaml" 
+    threads: config['samtools_markdup']['threads'] 
+    message: "[SAMTOOLS MARKDUP] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT_fixmate}| OUTPUT: {output.deduplicated_bam}" 
+
     benchmark:
         "benchmarks/samtools_markdup/{sample}.txt"
-        
-    log:
-        "logs/samtools_markdup/{sample}.err"
-        
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-        
-    threads:
-        config['samtools_markdup']['threads']
-        
-    message:
-        "[SAMTOOLS MARKDUP] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT_fixmate}| OUTPUT: {output.deduplicated_bam}"
         
     shell:
         """

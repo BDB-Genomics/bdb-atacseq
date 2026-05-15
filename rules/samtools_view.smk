@@ -12,20 +12,14 @@ rule samtools_view:
     resources:
         mem_mb=config['samtools_view']['resources']['mem_mb'], 
         time=config['samtools_view']['resources']['time']            
+
+    log: "logs/samtools_view/{sample}.out" 
+    conda: "envs/03_post_alignment/samtools.yaml" 
+    threads: config['samtools_view']['threads'] 
+    message: "[SAMTOOLS VIEW] SAMPLE: {wildcards.sample} | INPUT: {input.dedup_bam} | OUTPUT: {output.filtered_bam}| MINIMUM MAPQ: {params.minimum_mapq} | FILTER FLAGS: {params.filter_flags}" 
+
     benchmark:
         "benchmarks/samtools_view/{sample}.txt"
-        
-    log:
-        "logs/samtools_view/{sample}.out"
-             
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-        
-    threads:
-        config['samtools_view']['threads']
-        
-    message:
-        "[SAMTOOLS VIEW] SAMPLE: {wildcards.sample} | INPUT: {input.dedup_bam} | OUTPUT: {output.filtered_bam}| MINIMUM MAPQ: {params.minimum_mapq} | FILTER FLAGS: {params.filter_flags}"
         
     shell:
         """

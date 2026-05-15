@@ -14,21 +14,14 @@ rule picard_CollectInsertSizeMetrics:
         mem_mb=config['picard']['insert_metrics']['resources']['mem_mb'], 
         time=config['picard']['insert_metrics']['resources']['time']
 
+    log: "logs/picard/CollectInsertSizeMetrics/{sample}.err" 
+    conda: "envs/04_metrics_qc/picard.yaml"
+    threads: config['picard']['insert_metrics']['threads'] 
+    message: "[PICARD COLLECTINSERTSIZEMETRICS] SAMPLES: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.insert_metrics} {output.insert_histogram}|m: {params.m}| VALIDATION STRINGENCY: {params.validation_stringency}" 
+
     benchmark:
         "benchmarks/picard/CollectInsertSizeMetrics/{sample}.txt"        
 
-    log:
-        "logs/picard/CollectInsertSizeMetrics/{sample}.err"
-        
-    conda:
-        "envs/04_metrics_qc/picard.yaml"
-
-    threads:
-        config['picard']['insert_metrics']['threads']
-        
-    message:
-        "[PICARD COLLECTINSERTSIZEMETRICS] SAMPLES: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.insert_metrics} {output.insert_histogram}|m: {params.m}| VALIDATION STRINGENCY: {params.validation_stringency}"
-        
     shell:
         """
         VERSION=$(picard --help  2>&1 | head -n 1 || echo "Picard Version Unknown")

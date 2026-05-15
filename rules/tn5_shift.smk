@@ -11,20 +11,13 @@ rule tn5_shift:
         mem_mb=config['tn5_shift']['resources']['mem_mb'], 
         time=config['tn5_shift']['resources']['time']
 
+    log: "logs/tn5_shift/{sample}.err" 
+    conda: "envs/06_visualization/deeptools.yaml" 
+    threads: config['tn5_shift']['threads'] 
+    message: "[TN5 SHIFT: Adjusting ATAC-seq read positions by +4-5 bp to reflect true Tn5 cut sites] SAMPLE:  {wildcards.sample}| INPUT: {input.filtered_bam} {input.filtered_bam_index} | OUTPUT: {output.shifted_filtered_bam} {output.shifted_filtered_bam_index}" 
+
     benchmark:
         "benchmarks/tn5_shift/{sample}.txt"
-        
-    log:
-        "logs/tn5_shift/{sample}.err"
-        
-    conda:
-        "envs/06_visualization/deeptools.yaml"
-        
-    threads:
-        config['tn5_shift']['threads']
-        
-    message:
-        "[TN5 SHIFT: Adjusting ATAC-seq read positions by +4-5 bp to reflect true Tn5 cut sites] SAMPLE:  {wildcards.sample}| INPUT: {input.filtered_bam} {input.filtered_bam_index} | OUTPUT: {output.shifted_filtered_bam} {output.shifted_filtered_bam_index}"
         
     shell:
         """

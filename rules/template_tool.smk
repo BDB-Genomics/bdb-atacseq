@@ -13,21 +13,20 @@ rule template_tool:
         message=config['template_category']['template_tool']['params']['message']
     
     # [TEMPLATE] Link threads and resources to ensure the scheduler allocates properly.
-    threads:
-        config['template_category']['template_tool']['threads']
     resources:
         mem_mb=config['template_category']['template_tool']['resources']['mem_mb'],
         time=config['template_category']['template_tool']['resources']['time']
     
+
+    log: "logs/template_category/template_tool/{sample}.log"
+    conda: "envs/misc/template_tool.yaml"
+    threads: config['template_category']['template_tool']['threads']
+
     # [TEMPLATE] Specify where logs and benchmarks will be saved.
-    log:
-        "logs/template_category/template_tool/{sample}.log"
     benchmark:
         "benchmarks/template_category/template_tool/{sample}.txt"
     
     # [TEMPLATE] Provide the path to the isolated Conda environment file.
-    conda:
-        "envs/misc/template_tool.yaml"
     
     # [TEMPLATE] The actual bash commands to run the tool. Use {input}, {output}, {params}, etc.
     shell:

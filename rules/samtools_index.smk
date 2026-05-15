@@ -9,20 +9,14 @@ rule samtools_index:
         mem_mb=config['samtools_index']['resources']['mem_mb'], 
         time=config['samtools_index']['resources']['time']     
         
+
+    log: "logs/samtools_index/{sample}.err" 
+    conda: "envs/03_post_alignment/samtools.yaml" 
+    threads: config['samtools_index']['threads'] 
+    message: "[SAMTOOLS INDEX] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT}| OUTPUT: {output.indexed_bam}" 
+
     benchmark:
         "benchmarks/samtools_index/{sample}.txt"
-        
-    log:
-        "logs/samtools_index/{sample}.err"
-        
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-        
-    threads:
-        config['samtools_index']['threads']
-        
-    message:
-        "[SAMTOOLS INDEX] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT}| OUTPUT: {output.indexed_bam}"
         
     shell:
         """

@@ -9,21 +9,16 @@ rule sorted_bedgraph:
         mem_mb=config['sorted_bedgraph']['resources']['mem_mb'],
         time=config['sorted_bedgraph']['resources']['time']
     
+
+    log: "logs/sorted_bedgraph/{sample}.err" 
+    conda: "envs/06_visualization/sorted_bedgraph.yaml"
+    threads: config['sorted_bedgraph']['threads'] 
+    message: "[sort]  Sample:  {wildcards.sample} | BedGraph: {input.bedgraph} | Sorted BedGraph: {output.sorted_bedgraph} | Resources: {resources.mem_mb}...  " 
+
     benchmark:
         "benchmarks/sorted_bedgraph/{sample}.txt"
             
-    log:
-        "logs/sorted_bedgraph/{sample}.err"
-        
-    threads:
-        config['sorted_bedgraph']['threads']
-        
-    conda:
-        "envs/06_visualization/sorted_bedgraph.yaml"
 
-    message:
-        "[sort]  Sample:  {wildcards.sample} | BedGraph: {input.bedgraph} | Sorted BedGraph: {output.sorted_bedgraph} | Resources: {resources.mem_mb}...  "
-        
     shell:
         """
         sort \

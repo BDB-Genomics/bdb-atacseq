@@ -11,27 +11,20 @@ rule heatmap:
     params:
         upstream=config['heatmap']['params'].get('upstream', 3000),
         downstream=config['heatmap']['params'].get('downstream', 3000), 
-        colormap=config['heatmap']['params'].get("colormap", "coolwarm")
+        colormap=config['heatmap']['params'].get("color", "coolwarm")
 
     resources:
         mem_mb=config['heatmap']['resources']['mem_mb'], 
         time=config['heatmap']['resources']['time']
         
+
+    log: matrix="logs/heatmap/matrix/{sample}.err", plot="logs/heatmap/plot/{sample}.err" 
+    conda: "envs/06_visualization/deeptools.yaml" 
+    threads: config['heatmap']['threads'] 
+    message: "[deepTools heatmap] Sample: {wildcards.sample} | BigWig: {input.bigwig} | Peaks: {input.filtered_peaks} | Output: {output.plot}" 
+
     benchmark:
         "benchmarks/heatmap/{sample}.txt"
-        
-    log:
-        matrix="logs/heatmap/matrix/{sample}.err", 
-        plot="logs/heatmap/plot/{sample}.err"
-        
-    conda:
-        "envs/06_visualization/deeptools.yaml"
-        
-    threads:
-        config['heatmap']['threads']    
-        
-    message:
-        "[deepTools heatmap] Sample: {wildcards.sample} | BigWig: {input.bigwig} | Peaks: {input.filtered_peaks} | Output: {output.plot}"
         
     shell:
         """

@@ -13,20 +13,14 @@ rule remove_mito_reads:
         mem_mb=config['remove_mito_reads']['resources']['mem_mb'], 
         time=config['remove_mito_reads']['resources']['time']
         
+
+    log: "logs/remove_mito_reads/{sample}_noMT_sorted_bam.err"
+    conda: "envs/03_post_alignment/samtools.yaml"
+    threads: config['remove_mito_reads']['threads']
+    message: "[REMOVE MITOCHONDRIAL READS] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam}|OUTPUT: {output.noMT_sorted_bam}| PATTERN: {params.mito_chr}|"
+
     benchmark:
         "benchmarks/remove_mito_reads/{sample}_noMT_sorted_bam.txt"
-
-    log:
-        "logs/remove_mito_reads/{sample}_noMT_sorted_bam.err"
-
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-
-    threads:
-        config['remove_mito_reads']['threads']
-
-    message:
-        "[REMOVE MITOCHONDRIAL READS] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam}|OUTPUT: {output.noMT_sorted_bam}| PATTERN: {params.mito_chr}|" 
 
     shell:
         """

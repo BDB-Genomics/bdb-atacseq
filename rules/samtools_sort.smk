@@ -9,21 +9,16 @@ rule samtools_sort:
         mem_mb=config['samtools_sort']['resources']['mem_mb'], 
         time=config['samtools_sort']['resources']['time']
             
+
+    log: "logs/samtools_sort/{sample}.err"
+    conda: "envs/03_post_alignment/samtools.yaml" 
+    threads: config["samtools_sort"]["threads"] 
+    message: "[SAMTOOLS SORT] SAMPLE: {wildcards.sample}| INPUT: {input.unsorted_bam}| OUTPUT: {output.bam_sorted}" 
+
     benchmark:
         "benchmarks/samtools_sort/{sample}.txt"
         
-    log:
-        "logs/samtools_sort/{sample}.err"
       
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-        
-    threads:
-        config["samtools_sort"]["threads"]
-        
-    message:
-        "[SAMTOOLS SORT] SAMPLE: {wildcards.sample}| INPUT: {input.unsorted_bam}| OUTPUT: {output.bam_sorted}"
-        
     shell:
         """
         samtools sort \

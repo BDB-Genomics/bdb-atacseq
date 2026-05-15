@@ -11,20 +11,14 @@ rule blacklist_region_filter:
         mem_mb=config['blacklist_filter']['resources']['mem_mb'], 
         time=config['blacklist_filter']['resources']['time']
 
+    log: "logs/blacklist_region_filter/{sample}.err" 
+    conda: "envs/03_post_alignment/bedtools.yaml"
+    threads: config['blacklist_filter']['threads'] 
+    message: "[Bedtools intersect] Sample: {wildcards.sample} | Peaks: {input.peaks} | Filtered Peaks: {output.filtered_peaks} | Blacklist: {params.blacklist}"
+
     benchmark:
         "benchmarks/blacklist_region_filter/{sample}.txt"
         
-    log:
-        "logs/blacklist_region_filter/{sample}.err"
-            
-    conda:  
-        "envs/03_post_alignment/bedtools.yaml"
-
-    threads: 
-        config['blacklist_filter']['threads']
-        
-    message:
-        "[Bedtools intersect] Sample: {wildcards.sample} | Peaks: {input.peaks} | Filtered Peaks: {output.filtered_peaks} | Blacklist: {params.blacklist}"
 
     shell:
         """

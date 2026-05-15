@@ -15,20 +15,14 @@ rule peak_annotation:
         mem_mb=config['peak_annotation']['resources']['mem_mb'],
         time=config['peak_annotation']['resources']['time']
                  
-    threads:
-        config['peak_annotation']['threads']
-        
+
+    log: "logs/peak_annotation/{sample}.err" 
+    conda: "envs/05_peak_calling/chipseeker.yaml" 
+    threads: config['peak_annotation']['threads'] 
+    message: "[Peak annotation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.annotation}" 
+
     benchmark:
         "benchmarks/peak_annotation/{sample}.txt"
-        
-    log:
-        "logs/peak_annotation/{sample}.err"
-        
-    conda:
-        "envs/05_peak_calling/chipseeker.yaml"
-        
-    message:
-        "[Peak annotation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.annotation}"
         
     shell:
         """

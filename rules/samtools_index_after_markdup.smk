@@ -9,20 +9,14 @@ rule samtools_index_postmarkdup:
         mem_mb=config['samtools_index_post_markdup']['resources']['mem_mb'], 
         time=config['samtools_index_post_markdup']['resources']['time']
              
+
+    log: "logs/samtools_index/post_markdup/{sample}.err" 
+    conda: "envs/03_post_alignment/samtools.yaml" 
+    threads: config['samtools_index_post_markdup']['threads'] 
+    message: "[SAMTOOLS INDEX POST MARKDUP] SAMPLE: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.indexed_markdup_bam}" 
+
     benchmark:
         "benchmarks/samtools_index/post_markdup/{sample}.txt"
-        
-    log:
-        "logs/samtools_index/post_markdup/{sample}.err"
-        
-    conda:
-        "envs/03_post_alignment/samtools.yaml"
-        
-    threads:
-        config['samtools_index_post_markdup']['threads']
-        
-    message:
-        "[SAMTOOLS INDEX POST MARKDUP] SAMPLE: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.indexed_markdup_bam}"
         
     shell:
         """

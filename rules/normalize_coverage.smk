@@ -12,19 +12,17 @@ rule normalize_coverage:
         mem_mb=config['normalized_coverage']['resources']['mem_mb'],
         time=config['normalized_coverage']['resources']['time']    
        
+
+    log: "logs/normalized_coverage/{sample}.err"
+    threads: config['normalized_coverage']['threads']
+
     benchmark:
         "benchmarks/normalized_coverage/{sample}.txt"
        
-    log:
-        "logs/normalized_coverage/{sample}.err"
        
-    conda:
        "envs/06_visualization/deeptools.yaml"
        
-    threads:
-        config['normalized_coverage']['threads']
        
-    message:
        "[Normalize Coverage] Sample: {wildcards.sample} | Shifted Bam: {input.shifted_bam} | NormalizedCoverage: {output.normalized_coverage} |Method: {params.method}]..."
        
        
