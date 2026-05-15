@@ -18,11 +18,13 @@ CONFIG_ACCESS_PATTERN = re.compile(r"config((?:\[['\"][^'\"]+['\"]\])+)")
 CONFIG_KEY_PATTERN = re.compile(r"\[['\"]([^'\"]+)['\"]\]")
 SAMPLES_LIST_USAGE_PATTERN = re.compile(r"sample\s*=\s*config\[['\"]samples['\"]\]")
 PATH_CHECKS = (
-    (("global", "bowtie_index"), "bowtie2_index"),
-    (("global", "genome_fa"), "file"),
-    (("bigwig", "params", "genome"), "file"),
-    (("global", "blacklist"), "file"),
-    (("global", "annotation_gtf"), "file"),
+    (("global", "references", "bowtie2_index"), "bowtie2_index"),
+    (("global", "references", "genome_fa"), "file"),
+    (("global", "references", "genome_sizes"), "file"),
+    (("global", "references", "blacklist"), "file"),
+    (("global", "references", "annotation_gtf"), "file"),
+    (("global", "references", "motif_db"), "file"),
+    (("global", "envs", "main"), "file"),
     (("motif_analysis", "input", "genome"), "file"),
 )
 
@@ -138,12 +140,19 @@ def validate_required_config_paths(
 
 def validate_scalar_config_values(config: dict[str, Any], errors: list[str]) -> None:
     positive_int_suffixes = ("threads", "mem_mb", "trim_front1", "trim_front2", "length_required")
+    positive_float_suffixes = ("min_frip", "min_tss_enr", "min_mapping_rate", "max_duplicate_rate")
 
     for suffix in positive_int_suffixes:
         for path_keys in iter_matching_paths(config, suffix):
             value = get_config_value(config, path_keys)
             if not isinstance(value, int) or value <= 0:
                 errors.append(f"Config value '{'.'.join(path_keys)}' must be a positive integer.")
+
+    for suffix in positive_float_suffixes:
+        for path_keys in iter_matching_paths(config, suffix):
+            value = get_config_value(config, path_keys)
+            if not isinstance(value, (int, float)) or value < 0:
+                errors.append(f"Config value '{'.'.join(path_keys)}' must be a non-negative number.")
 
     for path_keys in iter_matching_paths(config, "time"):
         value = get_config_value(config, path_keys)
