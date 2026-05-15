@@ -16,7 +16,7 @@ rule samtools_index_postmarkdup:
         "logs/samtools_index/post_markdup/{sample}.err"
         
     conda:
-        "envs/02_alignment/post_alignment/samtools/samtools.yaml"
+        "envs/03_post_alignment/samtools.yaml"
         
     threads:
         config['samtools_index_post_markdup']['threads']

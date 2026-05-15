@@ -19,7 +19,7 @@ rule qualimap_bamqc:
         "logs/qualimap/{sample}.err"
         
     conda:
-        "envs/03_quality_control/qualimap_bamqc.yaml"
+        "envs/04_metrics_qc/qualimap.yaml"
         
     threads:
         config['qualimap_bamqc']['threads']

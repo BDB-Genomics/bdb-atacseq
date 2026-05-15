@@ -1,8 +1,0 @@
-name: chipseeker_env
-channels: 
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies: 
-  - bioconductor = 1.42.0
-  

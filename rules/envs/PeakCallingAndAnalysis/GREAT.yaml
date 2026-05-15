@@ -1,7 +1,0 @@
-name: rgreat_env 
-channels: 
-  - bioconda 
-  - conda-forge 
-  - defaults
-dependencies:
-  - bioconductor-rgreat = 2.8.0

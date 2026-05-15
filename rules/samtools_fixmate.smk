@@ -16,7 +16,7 @@ rule samtools_fixmate:
         "logs/samtools_fixmate/{sample}_noMT.sorted.fixmate.bam.log"
 
     conda:
-        "envs/02_alignment/post_alignment/samtools/samtools.yaml"
+        "envs/03_post_alignment/samtools.yaml"
 
     threads:
         config["samtools_fixmate"]["threads"]

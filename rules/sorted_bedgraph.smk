@@ -18,6 +18,9 @@ rule sorted_bedgraph:
     threads:
         config['sorted_bedgraph']['threads']
         
+    conda:
+        "envs/06_visualization/sorted_bedgraph.yaml"
+
     message:
         "[sort]  Sample:  {wildcards.sample} | BedGraph: {input.bedgraph} | Sorted BedGraph: {output.sorted_bedgraph} | Resources: {resources.mem_mb}...  "
         

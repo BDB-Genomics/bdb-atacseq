@@ -16,7 +16,7 @@ rule samtools_index:
         "logs/samtools_index/{sample}.err"
         
     conda:
-        "envs/02_alignment/post_alignment/samtools/samtools.yaml"
+        "envs/03_post_alignment/samtools.yaml"
         
     threads:
         config['samtools_index']['threads']

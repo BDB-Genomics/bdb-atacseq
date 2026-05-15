@@ -21,7 +21,7 @@ rule frip_calculation:
         config['frip_calculation']['threads']
                     
     conda:
-        "envs/02_alignment/post_alignment/bedtools.yaml"
+        "envs/03_post_alignment/bedtools.yaml"
         
     message:
         "[FRiP calculation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | BAM: {input.shifted_bam} | Output: {output.frip}"

@@ -1,7 +1,0 @@
-name: preseq_env 
-channels: 
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies: 
-  - preseq = 3.2.0

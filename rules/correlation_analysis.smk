@@ -33,7 +33,7 @@ rule correlation_analysis:
         config['correlation_analysis']['threads']
        
     conda:
-        "envs/deepTools.yaml"
+        "envs/06_visualization/deeptools.yaml"
          
     message:
         "[multiBigwigSummary +  plotCorrelation] | BigWigs: {input.bigwig} | Outputs: {output.npz}, {output.tab}, {output.heatmap} | Binsize: {params.bin_size} ..."

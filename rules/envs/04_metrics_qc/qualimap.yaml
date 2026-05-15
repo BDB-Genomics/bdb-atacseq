@@ -1,7 +1,6 @@
-name: bowtie2
+name: qualimap
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - bowtie2=2.5.4
-  - samtools=1.22
+  - qualimap=2.3

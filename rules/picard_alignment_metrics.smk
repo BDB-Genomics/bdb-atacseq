@@ -20,7 +20,7 @@ rule picard_CollectAlignmentSummaryMetrics:
         "logs/picard/CollectAlignmentSummaryMetrics/{sample}.err"
         
     conda:
-        "envs/02_alignment/post_alignment/picard/picard_metrics.yaml"
+        "envs/04_metrics_qc/picard.yaml"
         
     threads:
         config['picard']['alignment_metrics']['threads']

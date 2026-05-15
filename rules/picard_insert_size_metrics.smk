@@ -21,7 +21,7 @@ rule picard_CollectInsertSizeMetrics:
         "logs/picard/CollectInsertSizeMetrics/{sample}.err"
         
     conda:
-        "envs/02_alignment/post_alignment/picard/picard_metrics.yaml"
+        "envs/04_metrics_qc/picard.yaml"
 
     threads:
         config['picard']['insert_metrics']['threads']

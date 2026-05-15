@@ -1,9 +1,0 @@
-#/home/himanshu/ATACseq_Pipeline/envs/03_quality_control
-name: qualimap_env
-channels: 
-  - bioconda 
-  - conda-forge
-  - defaults
-dependencies:
-  - qualimap = 2.3
-  

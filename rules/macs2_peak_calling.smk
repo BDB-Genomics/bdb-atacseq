@@ -23,7 +23,7 @@ rule macs2_peak_calling:
         "logs/macs2/{sample}.err"
         
     conda:
-        "envs/04_peak_calling/macs2.yaml"
+        "envs/05_peak_calling/macs2.yaml"
 
     threads:
         config['macs2']['threads']

@@ -25,7 +25,7 @@ rule peak_annotation:
         "logs/peak_annotation/{sample}.err"
         
     conda:
-        "envs/05_analysis/chipseeker.yaml"
+        "envs/05_peak_calling/chipseeker.yaml"
         
     message:
         "[Peak annotation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.annotation}"

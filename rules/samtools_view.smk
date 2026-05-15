@@ -19,7 +19,7 @@ rule samtools_view:
         "logs/samtools_view/{sample}.out"
              
     conda:
-        "envs/02_alignment/post_alignment/samtools/samtools.yaml"
+        "envs/03_post_alignment/samtools.yaml"
         
     threads:
         config['samtools_view']['threads']

@@ -19,7 +19,7 @@ rule calculate_mito_reads:
         "logs/mitoATAC_calculate/{sample}.err"
         
     conda:
-        "envs/02_alignment/post_alignment/samtools/samtools.yaml"
+        "envs/03_post_alignment/samtools.yaml"
 
     threads:
         config['mitoATAC_calculate']['threads']

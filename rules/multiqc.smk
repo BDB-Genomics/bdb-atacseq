@@ -21,7 +21,7 @@ rule multiqc:
         "logs/multiqc/multiqc.err"
         
     conda:
-        "envs/multiqc.yaml"
+        "envs/01_preprocessing/multiqc.yaml"
         
     threads:
         config['multiqc']['threads']

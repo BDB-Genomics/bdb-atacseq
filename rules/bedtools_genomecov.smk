@@ -19,7 +19,7 @@ rule bedtools_genomecov:
         "logs/bedtools_genomecov/{sample}.err"
 
     conda:
-        "envs/02_alignment/post_alignment/bedtools.yaml"
+        "envs/03_post_alignment/bedtools.yaml"
 
     threads:
         config['bedtools_genomecov']['threads']

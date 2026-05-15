@@ -1,6 +1,0 @@
-name: qualimap_bamqc.yaml
-channel: 
-  - bioconda
-  - conda-forge
-dependencies: 
-  - qualimap=2.3

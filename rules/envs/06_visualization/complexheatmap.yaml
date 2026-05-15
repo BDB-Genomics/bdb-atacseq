@@ -1,8 +1,0 @@
-#/home/himanshu/ATACseq_Pipeline/envs/06_visualization
-name: complexheatmap_env 
-channels: 
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies: 
-  - bioconductor-complexheatmap = 2.22.0

@@ -5,7 +5,7 @@ rule qc_gate:
         stats=f"{config['qc_gate']['input']['stats']}/{{sample}}_postFiltering.stats.txt"
         
     output:
-        pass_file=f"{config['qc_gate']['output']['dir']}/{{sample}}_qc_pass.txt"
+        pass_file=f"{config['qc_gate']['output']}/{{sample}}_qc_pass.txt"
         
     params:
         min_frip=config['qc_gate']['params']['min_frip'],

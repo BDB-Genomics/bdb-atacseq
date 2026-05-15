@@ -1,9 +1,0 @@
-#/home/himanshu/ATACseq_Pipeline/envs/06_visualization
-name: igvtools_env 
-channels: 
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies: 
-  - igvtools = 2.17.3
-  

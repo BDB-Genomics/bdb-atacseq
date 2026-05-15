@@ -1,8 +1,0 @@
-name: diffbind_env 
-channels: 
-  - bioconda
-  - conda-forge 
-  - defaults
-dependencies: 
-  - bioconductor-diffbind = 3.16.0 
-  

@@ -18,7 +18,7 @@ rule blacklist_region_filter:
         "logs/blacklist_region_filter/{sample}.err"
             
     conda:  
-        "envs/02_alignment/post_alignment/bedtools.yaml"
+        "envs/03_post_alignment/bedtools.yaml"
 
     threads: 
         config['blacklist_filter']['threads']

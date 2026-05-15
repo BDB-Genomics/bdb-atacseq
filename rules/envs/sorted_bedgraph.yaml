@@ -1,9 +1,0 @@
-# envs/sorted_bedgraph.yaml
-name: sorted_bedgraph
-channels:
-  - conda-forge
-  - bioconda
-  - defaults
-dependencies:
-  - coreutils=9.5     
-

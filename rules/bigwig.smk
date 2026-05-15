@@ -19,7 +19,7 @@ rule bigwig_conversion:
         "logs/bigwig/{sample}.err"
          
     conda:
-        "envs/02_alignment/post_alignment/bedGraph_to_bigwig.yaml"
+        "envs/06_visualization/bedGraph_to_bigwig.yaml"
         
     threads:
         config['bigwig']['threads']

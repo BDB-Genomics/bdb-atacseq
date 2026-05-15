@@ -1,9 +1,0 @@
-#/home/himanshu/ATACseq_Pipeline/envs/05_analysis/clusterprofiler
-name: clusterprofiler_env
-channels:
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies:
-  - bioconductor-clusterprofiler = 4.14.0
-  

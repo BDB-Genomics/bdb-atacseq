@@ -1,8 +1,0 @@
-name: bedtools_env 
-channels: 
-  - biconda
-  - conda-forge'
-  - defaults
-dependencies:
-  - bedtools 2.31.1
-  

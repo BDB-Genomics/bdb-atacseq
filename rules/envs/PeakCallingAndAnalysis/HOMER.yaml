@@ -1,7 +1,0 @@
-name: HOMER_env 
-channels: 
-  - bioconda 
-  - conda-forge 
-  - defaults
-dependencies:
-  - homer = 5.1

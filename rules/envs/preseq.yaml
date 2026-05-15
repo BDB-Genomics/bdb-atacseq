@@ -1,6 +1,0 @@
-name: preseq_env
-channels: 
-  - bioconda 
-  - conda-forge
-dependencies: 
-  - picard=3.2.0

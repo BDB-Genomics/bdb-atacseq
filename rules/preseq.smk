@@ -20,7 +20,7 @@ rule preseq:
         "logs/preseq/{sample}.err"
   
     conda:
-        "envs/03_quality_control/preseq.yaml"
+        "envs/04_metrics_qc/preseq.yaml"
 
     message:
         "[Preseq Sample: {wildcards.sample} | Markedup Bam Index: {input.markdup_bam_index} , Markedup Bam: {input.markdup_bam} | Complexity: {output.complexity} | Extra: {params.extra} ]"

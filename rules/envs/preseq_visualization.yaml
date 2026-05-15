@@ -1,7 +1,0 @@
-name: preseq_visualization_env
-
-
-#sys module is used because input is passed via command line.
-#It's for "system level" stuff .It's used for reading conmmand line arguments, existing programs, IO redirection.
-#os module can be use when we want to manipulate the filesystem.
-#For paths, env variables, making folders , deleting files. 

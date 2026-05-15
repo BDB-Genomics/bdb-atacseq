@@ -1,7 +1,0 @@
-name: fastqc_env 
-channels: 
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies: 
-  - samtools = 1.22

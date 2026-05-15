@@ -1,9 +1,0 @@
-#/home/himanshu/ATACseq_Pipeline/envs/02_alignment/post_alignment
-name: bedtools_env 
-channels: 
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies:
-  - bedtools 2.31.1
-  

@@ -23,7 +23,7 @@ rule tss_enrichment:
         "logs/tss_enrichment/{sample}.err"
         
     conda: 
-        "envs/03_quality_control/tss_enrichment.yaml"
+        "envs/04_metrics_qc/tss_enrichment.yaml"
         
     threads:
         config['tss_enrichment']['threads']

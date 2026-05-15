@@ -1,9 +1,0 @@
-#/home/himanshu/ATACseq_Pipeline/envs/04_peak_calling
-name: genrich_env 
-channels:
-  - bioconda 
-  - conda-froge
-  - defaults
-dependencies: 
-  - genrich = 0.6.1
-  

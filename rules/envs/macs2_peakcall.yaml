@@ -1,6 +1,0 @@
-name: macs2_peak_call_env
-channels: 
-  - bioconda
-  - conda-forge
-dependencies: 
-  - macs2=2.2.9.1

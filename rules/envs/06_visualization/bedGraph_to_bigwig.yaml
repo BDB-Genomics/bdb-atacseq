@@ -1,0 +1,6 @@
+name: bedgraph_to_bigwig
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - ucsc-bedgraphtobigwig=445

@@ -1,6 +1,0 @@
-name: Picard_CollectAlignmentSummaryMetrcis_env
-channels: 
-  - bioconda
-  - conda-forge
-dependencies: 
-  - picard=3.4.0

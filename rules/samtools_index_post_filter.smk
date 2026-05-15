@@ -16,7 +16,7 @@ rule samtools_index_post_filter:
         "logs/samtools_index_post_filter/{sample}.out"
              
     conda:
-        "envs/02_alignment/post_alignment/samtools/samtools.yaml"
+        "envs/03_post_alignment/samtools.yaml"
         
     threads:
         config['samtools_index_post_filter']['threads']

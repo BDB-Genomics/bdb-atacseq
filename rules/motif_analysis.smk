@@ -14,7 +14,7 @@ rule motif_analysis:
         time=config['motif_analysis']['resources']['time']
             
     conda:
-        "envs/05_analysis/homer/homer.yaml"
+        "envs/05_peak_calling/homer.yaml"
     
     benchmark:
         "benchmarks/motif_analysis/motif_analysis.txt"

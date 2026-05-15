@@ -19,7 +19,7 @@ rule normalize_coverage:
         "logs/normalized_coverage/{sample}.err"
        
     conda:
-       "envs/deepTools.yaml"
+       "envs/06_visualization/deeptools.yaml"
        
     threads:
         config['normalized_coverage']['threads']

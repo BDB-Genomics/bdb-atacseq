@@ -24,7 +24,7 @@ rule fragment_size_analysis:
         "logs/fragment_size_analysis/{sample}.err"
         
     conda:
-        "envs/02_alignment/post_alignment/samtools/samtools.yaml"
+        "envs/03_post_alignment/samtools.yaml"
         
     threads:
         config['fragment_size_analysis']['threads']
