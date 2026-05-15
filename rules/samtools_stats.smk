@@ -9,15 +9,12 @@ rule samtools_stats:
         mem_mb=config['samtools_stats']['resources']['mem_mb'], 
         time=config['samtools_stats']['resources']['time']
                     
-
     log: "logs/samtools_stats/{sample}.err"
+    benchmark: "benchmarks/samtools_stats/{sample}.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
     container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
     threads: config['samtools_stats']['threads']
     message: "[SAMTOOLS STATISTICS] SAMPLE: {wildcards.sample}| INPUT: {input.filtered_bam}| OUTPUT: {output.stats}"
-
-    benchmark:
-        "benchmarks/samtools_stats/{sample}.txt"
         
     shell:
         """

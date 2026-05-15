@@ -10,14 +10,11 @@ rule samtools_fixmate:
         time = config["samtools_fixmate"]['resources']['time']
 
     log: "logs/samtools_fixmate/{sample}_noMT.sorted.fixmate.bam.log"
+    benchmark: "benchmarks/samtools_fixmate/{sample}_noMT.sorted.fixmate.bam.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
     container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
     threads: config["samtools_fixmate"]["threads"]
     message: "[SAMTOOLS FIXMATE] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT}| OUTPUT: {output.sorted_bam_noMT_fixmate}"
-
-    benchmark:
-        "benchmarks/samtools_fixmate/{sample}_noMT.sorted.fixmate.bam.txt"
-
  
     shell:
         """

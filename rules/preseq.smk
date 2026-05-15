@@ -13,17 +13,12 @@ rule preseq:
         mem_mb=config['preseq']['resources']['mem_mb'], 
         time=config['preseq']['resources']['time']
         
-
     log: "logs/preseq/{sample}.err"
+    benchmark: "benchmarks/preseq/{sample}.txt"
     conda: "envs/04_metrics_qc/preseq.yaml"
     container: "https://depot.galaxyproject.org/singularity/preseq:3.1.2--h4455471_2"
     message: "[Preseq Sample: {wildcards.sample} | Markedup Bam Index: {input.markdup_bam_index} , Markedup Bam: {input.markdup_bam} | Complexity: {output.complexity} | Extra: {params.extra} ]"
-
-    benchmark:
-        "benchmarks/preseq/{sample}.txt"
     
-  
-
     shell:
         """
         preseq {params.extra} \

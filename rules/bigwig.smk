@@ -4,24 +4,20 @@ rule bigwig_conversion:
         
     output:
         bigwig=f"{config['bigwig']['output']['bigwig']}/{{sample}}.bw"
-
+    
+    params:
+        genome=config['bigwig']['params']['genome']
+        
     resources:
         mem_mb=config['bigwig']['resources']['mem_mb'], 
         time=config['bigwig']['resources']['time']
             
-
     log: "logs/bigwig/{sample}.err"
+    benchmark: "benchmarks/bigwig/{sample}.txt"
     conda: "envs/06_visualization/bedGraph_to_bigwig.yaml"
     container: "https://depot.galaxyproject.org/singularity/ucsc-bedgraphtobigwig:377--h4463345_0"
-    threads: config['bigwig']['threads']
-
-    params:
-        genome=config['bigwig']['params']['genome']
-        
-    benchmark:
-        "benchmarks/bigwig/{sample}.txt"
-        
-       "[bedGraphToBigWig] Sample: {wildcards.sample} | Sorted BedGraph: {input.sorted_bedgraph} | BigWig: {output.bigwig} | Genome: {params.genome}... "
+    threads: config['bigwig']['threads']   
+    message: "[bedGraphToBigWig] Sample: {wildcards.sample} | Sorted BedGraph: {input.sorted_bedgraph} | BigWig: {output.bigwig} | Genome: {params.genome}... "
        
     shell:
         """

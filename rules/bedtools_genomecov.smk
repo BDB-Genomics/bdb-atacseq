@@ -13,13 +13,12 @@ rule bedtools_genomecov:
         time=config['bedtools_genomecov']['resources']['time']
 
     log: "logs/bedtools_genomecov/{sample}.err"
+    benchmark: "benchmarks/bedtools_genomecov/{sample}.txt"
     conda: "envs/03_post_alignment/bedtools.yaml"
     container: "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h468198e_3"
     threads: config['bedtools_genomecov']['threads']
     message: "[bedtools genomecov] sample: {wildcards.sample} | BAM : {input.shifted_bam}| Output: {output.bedgraph}..."
 
-    benchmark:
-        "benchmarks/bedtools_genomecov/{sample}.txt"
 
     shell:
         """

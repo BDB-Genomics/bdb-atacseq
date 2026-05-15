@@ -9,17 +9,13 @@ rule sorted_bedgraph:
         mem_mb=config['sorted_bedgraph']['resources']['mem_mb'],
         time=config['sorted_bedgraph']['resources']['time']
     
-
     log: "logs/sorted_bedgraph/{sample}.err"
+    benchmark: "benchmarks/sorted_bedgraph/{sample}.txt"
     conda: "envs/06_visualization/sorted_bedgraph.yaml"
     container: "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h468198e_3"
     threads: config['sorted_bedgraph']['threads']
     message: "[sort]  Sample:  {wildcards.sample} | BedGraph: {input.bedgraph} | Sorted BedGraph: {output.sorted_bedgraph} | Resources: {resources.mem_mb}...  "
-
-    benchmark:
-        "benchmarks/sorted_bedgraph/{sample}.txt"
             
-
     shell:
         """
         sort \

@@ -8,15 +8,13 @@ rule picard_CollectAlignmentSummaryMetrics:
     params:
         reference_genome=ancient(config['picard']['alignment_metrics']['params']['reference_genome']), 
         validation_stringency=config['picard']['alignment_metrics']['params']['validation_stringency']
-        
-    benchmark:
-        "benchmarks/picard/CollectAlignmentSummaryMetrics/{sample}.txt"
-        
+                
     resources:
         mem_mb=config['picard']['alignment_metrics']['resources']['mem_mb'], 
         time=config['picard']['alignment_metrics']['resources']['time']
 
     log: "logs/picard/CollectAlignmentSummaryMetrics/{sample}.err"
+    benchmark: "benchmarks/picard/CollectAlignmentSummaryMetrics/{sample}.txt"
     conda: "envs/04_metrics_qc/picard.yaml"
     container: "https://depot.galaxyproject.org/singularity/picard:3.0.0--hdfd78af_1"
     threads: config['picard']['alignment_metrics']['threads']

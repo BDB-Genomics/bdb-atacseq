@@ -14,15 +14,12 @@ rule calculate_mito_reads:
             
 
     log: "logs/mitoATAC_calculate/{sample}.err"
+    benchmark: "benchmarks/mitoATAC_calculate/{sample}.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
     container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
     threads: config['mitoATAC_calculate']['threads']
     message: "[MITOCHONDRIAL READS] SAMPLES: {wildcards.sample}|INPUT: {input.sorted_bam}|OUTPUT: {output.mito_stats}|PATTERN: {params.mito_chr}"
-
-    benchmark:
-        "benchmarks/mitoATAC_calculate/{sample}.txt"
         
-
     shell:
         """
         #Index BAM if not already indexed

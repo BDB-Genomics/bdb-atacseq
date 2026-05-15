@@ -18,19 +18,12 @@ rule fastp_trim :
         mem_mb=config['fastp']['resources']['mem_mb'], 
         time=config['fastp']['resources']['time']
           
-
+    benchmark: "benchmarks/fastp/{sample}.txt"
+    log: "logs/fastp/{sample}.err"
+    conda:  "envs/01_preprocessing/fastp.yaml"
     container: "https://depot.galaxyproject.org/singularity/fastp:0.24.0--heae3180_1"
-
-    benchmark:
-      "benchmarks/fastp/{sample}.txt"
-   
-      "logs/fastp/{sample}.err"
-     
-      "envs/01_preprocessing/fastp.yaml"
-    
-      config["fastp"]["threads"]
-    
-      "[FASTP] SAMPLES: {input.R1} {input.R2}|OUTPUT: {output.R1_trimmed} {output.R2_trimmed} {output.html} {output.json}| TRIMFRONT1: {params.trim_front1}| TRIMFRONT2: {params.trim_front2}|LENGTH REQUIRED: {params.length_required}"
+    threads:config["fastp"]["threads"]
+    message:"[FASTP] SAMPLES: {input.R1} {input.R2}|OUTPUT: {output.R1_trimmed} {output.R2_trimmed} {output.html} {output.json}| TRIMFRONT1: {params.trim_front1}| TRIMFRONT2: {params.trim_front2}|LENGTH REQUIRED: {params.length_required}"
     
     shell:
       """

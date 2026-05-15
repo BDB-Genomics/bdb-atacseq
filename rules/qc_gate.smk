@@ -17,16 +17,12 @@ rule qc_gate:
         mem_mb=config['qc_gate']['resources']['mem_mb'],
         time=config['qc_gate']['resources']['time']
         
-    
-    
-
-    log: f"logs/qc_gate/{{sample}}.log"
+    log: "logs/qc_gate/{sample}.log"
+    benchmark: "benchmarks/qc_gate/{sample}.txt"
+    conda: "envs/04_metrics_qc/qc_gate.yaml"
     container: "https://depot.galaxyproject.org/singularity/python:3.10.4"
     threads: config['qc_gate']['threads']
     message: "[QC GATE] Checking ATAC-seq metrics for Sample: {wildcards.sample}"
-
-    benchmark: f"benchmarks/qc_gate/{{sample}}.txt"
-    
     
     shell:
         """
