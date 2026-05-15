@@ -22,6 +22,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install "snakemake" "pulp<2.8.0" "pyyaml"
         
-    - name: Lint Workflow
+    - name: Validate Workflow (Dry-run)
       run: |
-        snakemake --lint
+        snakemake -n
