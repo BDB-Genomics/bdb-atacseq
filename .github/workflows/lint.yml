@@ -24,4 +24,5 @@ jobs:
         
     - name: Validate Workflow (Dry-run)
       run: |
-        snakemake -n
+                  touch ci_r1.fq.gz ci_r2.fq.gz
+                  snakemake -n
