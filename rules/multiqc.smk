@@ -23,10 +23,13 @@ rule multiqc:
     threads: config['multiqc']['threads']
     message: "Running MultiQC to aggregate all QC reports| INPUT: {input}"
         
+    params:
+        config=config['multiqc']['params']['config']
+        
     shell:
         """
         multiqc {input} -o {output.report_dir} \
-            -c assets/multiqc_config.yaml \
+            -c {params.config} \
             --title "ATAC-seq Pipeline QC Report" \
             --comment "Comprehensive quality control metrics for ATAC-seq analysis" \
             2> {log}
