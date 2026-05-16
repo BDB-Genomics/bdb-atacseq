@@ -10,7 +10,7 @@ rule fastqc:
         R2_zip = f"{config['fastqc']['output']}/{{sample}}_R2_trimmed_fastqc.zip"
     
     params:
-        out_dir=directory(config['fastqc']['output'])
+        out_dir=lambda wildcards: config['fastqc']['output']
         
     resources:
         mem_mb=config['fastqc']['resources']['mem_mb'], 
