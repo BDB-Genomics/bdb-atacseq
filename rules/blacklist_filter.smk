@@ -4,12 +4,12 @@ rule blacklist_region_filter:
 
     output:
         filtered_peaks=f"{config['blacklist_filter']['output']['filtered_peaks']}/{{sample}}_filtered_peaks.bed"
-        
+
     params:
         blacklist=config['blacklist_filter']['params']['blacklist']
-        
+
     resources:
-        mem_mb=config['blacklist_filter']['resources']['mem_mb'], 
+        mem_mb=config['blacklist_filter']['resources']['mem_mb'],
         time=config['blacklist_filter']['resources']['time']
 
     log: "logs/blacklist_region_filter/{sample}.err"
@@ -21,13 +21,9 @@ rule blacklist_region_filter:
 
     shell:
         """
-        # Safely convert peak chromosomes to UCSC "chr" naming format
-        awk 'BEGIN {{OFS="\\t"}} {{ if ($1 !~ /^chr/ && ($1 ~ /^[0-9XYM]+$/ || $1 ~ /^MT$/)) $1="chr"$1; print }}' {input.peaks} > {output.filtered_peaks}.tmp 2> {log}
-        
         bedtools intersect -v \
-            -a {output.filtered_peaks}.tmp \
+            -a {input.peaks} \
             -b {params.blacklist} \
-            > {output.filtered_peaks} 2>> {log}
-         
-        rm -f {output.filtered_peaks}.tmp
+        > {output.filtered_peaks} \
+        2> {log}
         """

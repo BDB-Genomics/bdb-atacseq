@@ -4,3 +4,4 @@ channels:
   - bioconda
 dependencies:
   - samtools=1.22
+  - bc=1.07.1

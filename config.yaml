@@ -410,10 +410,11 @@ peak_annotation:
 
 motif_analysis:
   input:
-    genome: *GENOME_FA
+    filtered_peaks: "results/peak_calling/filtered_peaks"
   output: "results/peak_calling/motif_analysis"
   params:
     motif_db: *MOTIF_DB
+    genome_assembly: "hg38"
   threads: 8
   resources:
     mem_mb: 16000

@@ -23,7 +23,7 @@ rule samtools_sort:
         -O BAM \
         -o {output.bam_sorted} \
         {input.unsorted_bam} \
-        2> {log} 
+        2> {log}
         """
         
         

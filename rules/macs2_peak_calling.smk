@@ -1,19 +1,20 @@
 rule macs2_peak_calling:
     input:
-        shifted_bam=lambda wildcards: f"{config['macs2']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam"
-        
+        shifted_bam=lambda wildcards: f"{config['macs2']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam",
+        qc_pass=lambda wildcards: f"{config['qc_gate']['output']}/{wildcards.sample}_qc_pass.txt"
+
     output:
         peaks=f"{config['macs2']['output']['peaks']}/{{sample}}_peaks.narrowPeak"
-          
+
     params:
         gsize=config['macs2']['params']['genome_size'],
         qval=config['macs2']['params']['qvalue'],
-        nomodel=config['macs2']['params']['nomodel'], 
-        format=config['macs2']['params']['format'], 
+        nomodel=config['macs2']['params']['nomodel'],
+        format=config['macs2']['params']['format'],
         dir=config['macs2']['output']['peaks']
 
     resources:
-        mem_mb=config['macs2']['resources']['mem_mb'], 
+        mem_mb=config['macs2']['resources']['mem_mb'],
         time=config['macs2']['resources']['time']
 
     log: "logs/macs2/{sample}.err"
@@ -21,9 +22,9 @@ rule macs2_peak_calling:
     conda: "envs/05_peak_calling/macs2.yaml"
     container: "https://depot.galaxyproject.org/singularity/macs2:2.2.7.1--py38h4a9c2d4_3"
     threads: config['macs2']['threads']
-    message: "[MACS2 PEAKCALLING] SAMPLE:  {wildcards.sample} | Markdup_Bam: {input.shifted_bam} | Peaks: {output.peaks} | Genome Size: {params.gsize} | QVal: {params.qval} | Nomodel: {params.nomodel} | Model: {params.format}]"
-        
-    shell: 
+    message: "[MACS2 PEAKCALLING] SAMPLE:  {wildcards.sample} | Shifted_Bam: {input.shifted_bam} | Peaks: {output.peaks} | Genome Size: {params.gsize} | QVal: {params.qval} | Nomodel: {params.nomodel} | Model: {params.format}]"
+
+    shell:
         """
         macs2 callpeak \
             -t {input.shifted_bam} \
@@ -34,7 +35,5 @@ rule macs2_peak_calling:
             {params.nomodel} \
             -q {params.qval} \
             2> {log}
-                
-         """
-         
 
+         """

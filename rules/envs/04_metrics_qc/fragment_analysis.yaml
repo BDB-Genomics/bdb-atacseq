@@ -1,0 +1,7 @@
+name: fragment_analysis
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.3
+  - picard=3.3.0

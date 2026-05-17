@@ -126,7 +126,7 @@ PEAK_TARGETS = [
     expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES),
     expand("{path}/{sample}_frip.txt", path=config['frip_calculation']['output'], sample=SAMPLES),
     expand("{path}/{sample}_peak_annotation.txt", path=config['peak_annotation']['output'], sample=SAMPLES),
-    expand("{path}/{sample}_motifs", path=config['motif_analysis']['output'], sample=SAMPLES)
+    expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES)
 ]
 
 # [TEMPLATE] Define the expected final output files of your new tool here.

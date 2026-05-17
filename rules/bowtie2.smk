@@ -9,7 +9,7 @@ rule bowtie2_align:
         
     params:
         index = config['bowtie2']['params']['index'],
-        sensitive = config['bowtie2']['params']['sensitive']
+        sensitive = config['bowtie2']['params']['sensitive'],
             
     resources:
         mem_mb=config['bowtie2']['resources']['mem_mb'], 

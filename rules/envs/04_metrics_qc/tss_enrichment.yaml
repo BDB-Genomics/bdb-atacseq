@@ -5,8 +5,9 @@ channels:
 dependencies:
   - r-base=4.3
   - bioconductor-atacseqqc=1.16
-  - bioconductor-genomicalignments=1.28
-  - bioconductor-rsamtools=2.22
+  - bioconductor-genomicalignments=1.40
+  - bioconductor-rsamtools=2.20
+  - bioconductor-genomicfeatures=1.54
+  - bioconductor-chipseeker=1.40
   - bioconductor-chipeakanno=3.40
-  - bioconductor-chipseeker=1.42.0
-  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene=3.20.0
+  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene=3.20

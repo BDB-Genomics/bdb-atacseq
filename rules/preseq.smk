@@ -23,6 +23,6 @@ rule preseq:
         preseq {params.extra} \
             -B {input.markdup_bam} \
             -o {output.complexity} \
-            2> {log} || (echo "Preseq failed on {wildcards.sample}." >> {log}; true)
+            2> {log}
         """
 

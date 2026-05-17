@@ -1,7 +1,7 @@
-name: bedtools
+name: motif_analysis
 channels:
   - conda-forge
   - bioconda
 dependencies:
+  - homer=4.11
   - bedtools=2.31.1
-  - bc=1.07.1

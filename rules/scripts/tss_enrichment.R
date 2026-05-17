@@ -207,7 +207,7 @@ tryCatch({
     }
     
     if (Sys.getenv("SNAKEMAKE_DEBUG") == "TRUE") {
-        cat("DEBUG: Starting featureAlignedSignal with", length(tss_sample), "TSS regions and", length(reads), "reads\n")
+        cat("  Computing TSS enrichment profile with", length(tss_sample), "TSS regions\n")
     }
     
     # Upgraded tile resolution to 200 bins for sharper enrichment visual profiles

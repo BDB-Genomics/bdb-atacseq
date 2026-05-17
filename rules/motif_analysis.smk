@@ -1,34 +1,30 @@
 rule motif_analysis:
     input:
-        filtered_peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed",
-        genome=config['motif_analysis']['input']['genome'],
-        qc_pass=f"{config['qc_gate']['output']}/{{sample}}_qc_pass.txt"
+        filtered_peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed"
 
     output:
-        html=directory(f"{config['motif_analysis']['output']}/{{sample}}_motifs")
+        html=directory(config['motif_analysis']['output'] + "/{sample}")
 
     params:
-        motif_db=config['motif_analysis']['params']['motif_db']
-    
+        motif_db=config['motif_analysis']['params']['motif_db'],
+        genome_assembly=config['motif_analysis']['params']['genome_assembly']
+
     resources:
         mem_mb=config['motif_analysis']['resources']['mem_mb'],
         time=config['motif_analysis']['resources']['time']
-            
-    log: "logs/motif_analysis/{sample}.err"
-    benchmark: "benchmarks/motif_analysis/{sample}.txt" 
-    conda: "envs/05_peak_calling/homer.yaml"
+
+    log: "logs/motif_analysis/{sample}.log"
+    benchmark: "benchmarks/motif_analysis/{sample}.txt"
+    conda: "envs/05_peak_calling/motif_analysis.yaml"
     container: "https://depot.galaxyproject.org/singularity/homer:4.11--pl526hc9558a2_3"
     threads: config['motif_analysis']['threads']
     message: "[Motif analysis] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.html}"
-    
+
     shell:
         """
-        # Ensure containing output directory exists
-        mkdir -p "$(dirname "{output.html}")"
-
-        # HOMER requires write permissions to create a 'preparsed' directory in the genome folder.
-        # If write permissions are unavailable, HOMER automatically falls back to parsing on-the-fly.
-        findMotifsGenome.pl {input.filtered_peaks} {input.genome} {output.html} \
+        findMotifsGenome.pl {input.filtered_peaks} {params.genome_assembly} {output.html} \
             -p {threads} \
-            2> {log}
+            -len 8,10,12 \
+            -size 200 \
+        2> {log}
         """
