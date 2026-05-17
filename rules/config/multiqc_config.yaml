@@ -33,4 +33,6 @@ custom_plot_order:
   - cross_correlation
   - qc_gate_summary
   - idr
+  - footprinting
+  - chromvar
   - differential_accessibility
