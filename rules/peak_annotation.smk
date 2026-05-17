@@ -1,6 +1,7 @@
 rule peak_annotation:
     input:
-        filtered_peaks=lambda wildcards: f"{config['peak_annotation']['input']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed"
+        filtered_peaks=lambda wildcards: f"{config['peak_annotation']['input']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed",
+        qc_pass=f"{config['qc_gate']['output']}/{{sample}}_qc_pass.txt"
    
     output:
         annotation=f"{config['peak_annotation']['output']}/{{sample}}_peak_annotation.txt",

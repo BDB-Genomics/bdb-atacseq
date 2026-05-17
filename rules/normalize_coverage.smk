@@ -1,6 +1,7 @@
 rule normalize_coverage:
     input:
-        shifted_bam=lambda wildcards: f"{config['normalized_coverage']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam"
+        shifted_bam=lambda wildcards: f"{config['normalized_coverage']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam",
+        qc_pass=f"{config['qc_gate']['output']}/{{sample}}_qc_pass.txt"
         
     output:
         normalized_coverage=f"{config['normalized_coverage']['output']['normalized_coverage']}/{{sample}}_{config['normalized_coverage']['params']['method']}.bw"
@@ -28,4 +29,3 @@ rule normalize_coverage:
              --numberOfProcessors {threads} \
              2> {log}
          """
-

@@ -1,7 +1,8 @@
 rule motif_analysis:
     input:
         filtered_peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed",
-        genome=config['motif_analysis']['input']['genome']
+        genome=config['motif_analysis']['input']['genome'],
+        qc_pass=f"{config['qc_gate']['output']}/{{sample}}_qc_pass.txt"
 
     output:
         html=directory(f"{config['motif_analysis']['output']}/{{sample}}_motifs")

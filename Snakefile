@@ -144,7 +144,7 @@ rule all:
         QC_GATE_TARGETS,
         VISUALIZATION_TARGETS,
         PEAK_TARGETS,
-        config['multiqc']['output'],
+        directory(config['multiqc']['output']),
         # [TEMPLATE] Add your target list here so the pipeline explicitly demands those files.
         #TEMPLATE_TARGETS
 
