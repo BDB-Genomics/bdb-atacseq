@@ -4,9 +4,9 @@ channels:
   - bioconda
 dependencies:
   - r-base=4.3
-  - bioconductor-chromvar=1.28
-  - bioconductor-tfbstools=1.40
-  - bioconductor-jaspar2024=1.10
-  - bioconductor-bsgenome.hsapiens.ucsc.hg38=1.4.5
+  - bioconductor-chromvar>=1.24.0
+  - bioconductor-tfbstools>=1.40.0
+  - bioconductor-jaspar2024
+  - bioconductor-bsgenome.hsapiens.ucsc.hg38
   - r-ggplot2=3.5
   - r-pheatmap=1.0.12
