@@ -58,7 +58,8 @@ zcat ENCFF356LFX.bed.gz | grep -E "^(chr19|chrM)[[:space:]]" > "${REF_DIR}/ENCOD
 echo -e "chr19\t58617616\nchrM\t16569" > "${REF_DIR}/genome.chrom.sizes"
 
 echo "=== Building Bowtie2 Index ==="
-/home/himanshu/miniconda3/envs/guava/bin/bowtie2-build "${REF_DIR}/genome.fa" "${INDEX_DIR}/genome"
+BOWTIE2_BUILD=$(which bowtie2-build 2>/dev/null || find /home/himanshu/miniconda3 -name "bowtie2-build" -print -quit 2>/dev/null || find /home/mangala/miniconda3 -name "bowtie2-build" -print -quit 2>/dev/null || echo "bowtie2-build")
+"${BOWTIE2_BUILD}" "${REF_DIR}/genome.fa" "${INDEX_DIR}/genome"
 
 echo "=== Cleaning Up Temporary Files ==="
 rm -rf "${TMP_DIR}"
