@@ -76,6 +76,12 @@ include: "rules/motif_analysis.smk"
 include: "rules/preseq.smk"
 include: "rules/qualimap_bamqc.smk"
 include: "rules/qc_gate.smk"
+include: "rules/idr.smk"
+include: "rules/cross_correlation.smk"
+include: "rules/consensus_peaks.smk"
+include: "rules/count_peaks.smk"
+include: "rules/differential_accessibility.smk"
+include: "rules/benchmark_summary.smk"
 include: "rules/multiqc.smk"
 # [TEMPLATE] Include your new rule file here so Snakemake can read it.
 #include: "rules/template_tool.smk"
@@ -111,7 +117,8 @@ QC_METRICS_TARGETS = [
     expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
     expand("{path}/{sample}_tss_enrichment.txt", path=config['tss_enrichment']['output'], sample=SAMPLES),
     expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES),
-    expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES)
+    expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES),
+    expand("{path}/{sample}_crosscorr.txt", path=config['cross_correlation']['output'], sample=SAMPLES)
 ]
 
 VISUALIZATION_TARGETS = [
@@ -126,7 +133,14 @@ PEAK_TARGETS = [
     expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES),
     expand("{path}/{sample}_frip.txt", path=config['frip_calculation']['output'], sample=SAMPLES),
     expand("{path}/{sample}_peak_annotation.txt", path=config['peak_annotation']['output'], sample=SAMPLES),
-    expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES)
+    expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
+    config['consensus_peaks']['output']['consensus'] + "/consensus_peaks.bed",
+    config['consensus_peaks']['output']['counts'] + "/peak_sample_counts.txt",
+    config['differential_accessibility']['output']['results'] + "/diff_accessibility_results.tsv",
+    config['differential_accessibility']['output']['plots'] + "/volcano_plot.pdf",
+    config['differential_accessibility']['output']['plots'] + "/ma_plot.pdf",
+    config['differential_accessibility']['output']['plots'] + "/pca_plot.pdf",
+    config['benchmark_summary']['output']
 ]
 
 # [TEMPLATE] Define the expected final output files of your new tool here.

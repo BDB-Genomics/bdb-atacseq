@@ -1,4 +1,4 @@
-name: Snakemake Linting
+name: Snakemake Pipeline Test
 
 on:
   push:
@@ -27,11 +27,52 @@ jobs:
         with:
           micromamba-version: 'latest'
 
+      - name: Generate Test Data
+        run: |
+          python3 rules/scripts/generate_test_data.py
+
       - name: Validate Workflow (Dry-run)
         run: |
-          mkdir -p data/reference data/motifs data/reference/index
-          touch ci_r1.fq.gz ci_r2.fq.gz
-          touch data/reference/genome.fa data/reference/genome.chrom.sizes data/reference/ENCODE_blacklist.bed data/reference/annotation.gtf
-          touch data/motifs/jaspar_vertebrates.meme
-          touch data/reference/index/genome.1.bt2 data/reference/index/genome.2.bt2 data/reference/index/genome.3.bt2 data/reference/index/genome.4.bt2 data/reference/index/genome.rev.1.bt2 data/reference/index/genome.rev.2.bt2
-          snakemake -n --use-conda --conda-frontend mamba
+          snakemake -n --use-conda --conda-frontend mamba --profile profile/test
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Snakemake
+        run: |
+          python -m pip install --upgrade pip
+          pip install "snakemake>=8.0,<9.0" "pyyaml" "pulp>=2.0,<2.8"
+
+      - name: Install Micromamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          micromamba-version: 'latest'
+
+      - name: Generate Test Data
+        run: |
+          python3 rules/scripts/generate_test_data.py
+
+      - name: Run Pipeline (Test Mode)
+        run: |
+          snakemake --use-conda --conda-frontend mamba --profile profile/test \
+            --cores 4 \
+            --latency-wait 60
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            results/
+            logs/
+          retention-days: 7

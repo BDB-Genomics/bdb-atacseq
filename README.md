@@ -1,56 +1,100 @@
-# BDB-Genomics ATAC-seq Pipeline (V1.1.0)
+# BDB-Genomics ATAC-seq Pipeline (V2.0.0)
 
-A standardized, modular Snakemake framework for the comprehensive analysis of paired-end ATAC-seq data. This pipeline is engineered for high reproducibility, scalability, and rigorous quality control, adhering to modern bioinformatics best practices.
+A production-grade, modular Snakemake framework for end-to-end ATAC-seq analysis — from raw reads to differential accessibility. Engineered for reproducibility, scalability, and ENCODE-compliant quality control.
 
 ## Architectural Principles
-- **Dynamic Reactivity**: The workflow utilizes a configuration-driven DAG (Directed Acyclic Graph) architecture. All I/O paths and computational targets are resolved at runtime via `config.yaml`, ensuring portability across diverse high-performance computing (HPC) environments.
-- **Reproducibility**: Global integration with **Biocontainers** (Singularity/Docker) and hierarchical Conda environment definitions ensures consistent tool versioning and execution environments.
-- **Fail-Fast Validation**: A proactive pre-flight validation system (`validate_config.py`) audits the configuration schema and sample metadata before execution, preventing runtime failures due to missing dependencies or malformed inputs.
+- **Dynamic Reactivity**: Configuration-driven DAG architecture. All I/O paths and computational targets resolved at runtime via `config.yaml`.
+- **Reproducibility**: Biocontainers (Singularity/Docker) + hierarchical Conda environments for consistent tool versioning.
+- **Fail-Fast Validation**: Pre-flight validation (`validate_config.py`) audits config schema and sample metadata before DAG construction.
+- **QC Gating**: Biological checkpoint system blocks downstream execution for failing samples.
 
 ## Pipeline Components
-1. **Preprocessing**: Raw read quality assessment (FastQC) and adapter trimming (fastp).
-2. **Alignment**: Genomic mapping utilizing Bowtie2, followed by Samtools-based sorting and deduplication.
-3. **Post-Alignment Processing**: Mitochondrial read removal, Tn5 shift correction, and coordinate-sorted indexing.
-4. **Quality Metrics**: Assessment of fragment size distribution, TSS enrichment profiles (custom R implementation), and library complexity (Preseq).
-5. **Peak Analysis**: Enrichment calling (MACS2), blacklist filtering (ENCODE), and genomic annotation (ChIPseeker).
-6. **Visualization & Reporting**: Generation of normalized BigWig tracks, heatmaps, and comprehensive MultiQC aggregation.
 
-## Biological Quality Control (QC) Gate
-The framework implements an automated gating system to ensure data integrity. Samples must meet user-defined thresholds for:
-- **TSS Enrichment Score**: Signal-to-noise ratio at transcription start sites.
-- **Fraction of Reads in Peaks (FRiP)**: Quantification of biological enrichment.
-- **Library Metrics**: Assessment of mapping rates and duplication levels.
+| Stage | Tools | Output |
+|---|---|---|
+| **Preprocessing** | fastp, FastQC | Trimmed FASTQ, QC reports |
+| **Alignment** | Bowtie2, Samtools | Sorted BAM, mapping stats |
+| **Post-Alignment** | Samtools (fixmate, markdup, view), deepTools (ATACshift) | Deduplicated, Tn5-shifted BAM |
+| **QC Metrics** | Picard, Preseq, Qualimap, TSS enrichment (R), NSC/RSC cross-correlation | Fragment stats, library complexity, TSS score, NSC/RSC |
+| **QC Gate** | Custom Python parser | Pass/fail per sample (FRiP, TSS, mapping, dup rate) |
+| **Peak Calling** | MACS2, IDR, ENCODE blacklist | Per-sample peaks, IDR-filtered peaks, consensus peaks |
+| **Differential Accessibility** | DESeq2 | Volcano plots, MA plots, PCA, heatmap, results table |
+| **Visualization** | bedtools, deepTools, UCSC tools | BigWig tracks, heatmaps, correlation matrices |
+| **Reporting** | MultiQC, benchmark aggregation | Unified HTML report, performance summary |
 
-Failures in these metrics trigger an automated termination of the specific sample's workflow to preserve computational resources and prevent invalid downstream analysis.
+## ENCODE-Compliant QC Metrics
+
+The pipeline implements all ENCODE ATAC-seq quality standards:
+
+| Metric | Threshold | Tool |
+|---|---|---|
+| TSS Enrichment | ≥ 7.0 (human), ≥ 4.0 (mouse) | Custom R (ATACseqQC) |
+| FRiP Score | ≥ 0.2 | bedtools |
+| NSC (Normalized Strand Cross-Corr) | ≥ 1.15 | phantompeakqualtools |
+| RSC (Relative Strand Cross-Corr) | ≥ 0.8 | phantompeakqualtools |
+| Mapping Rate | ≥ 80% | samtools stats |
+| Duplicate Rate | ≤ 20% | samtools markdup |
+| Library Complexity | Preseq extrapolation | preseq |
+| IDR Replicate Concordance | IDR ≤ 0.05 | IDR |
 
 ## Usage
 
 ### Prerequisites
-- Snakemake ≥ 7.0
-- Conda or Singularity/Apptainer
+- Snakemake ≥ 8.0
+- Conda or Mamba (recommended)
+- Singularity/Apptainer (optional, for containerized execution)
 
-### Execution
-1. Configure the workflow by modifying `config.yaml` and populating the sample sheet at `data/fastp/samples.tsv`.
-2. Perform a dry-run to verify the DAG and configuration:
-   ```bash
-   snakemake --dry-run
-   ```
-3. Execute the workflow:
-   ```bash
-   snakemake --use-conda --use-singularity --cores <n_threads>
-   ```
+### Quick Start
+```bash
+# 1. Configure
+# Edit config.yaml and data/fastp/samples.tsv
+
+# 2. Dry-run
+snakemake -n --use-conda
+
+# 3. Execute
+snakemake --use-conda --cores 32
+
+# 4. HPC (SLURM)
+snakemake --profile profile/slurm
+```
+
+### Test Mode
+```bash
+# Run with built-in test data (CI validation)
+snakemake --profile profile/test --cores 4
+```
 
 ## Repository Structure
-- `Snakefile`: Main entry point and lifecycle management.
-- `config.yaml`: Central configuration for tools and paths.
-- `rules/`: Modular Snakemake rule definitions.
-- `rules/envs/`: Hierarchical environment configurations.
-- `rules/scripts/`: Custom analytical and validation scripts.
+```
+├── Snakefile              # Main entry point, lifecycle hooks
+├── config.yaml            # Single source of truth for all parameters
+├── profile/               # Execution profiles (local, slurm, test)
+├── rules/                 # 40+ modular rule definitions
+│   ├── envs/              # Hierarchical conda environments
+│   ├── scripts/           # Custom R/Python analysis scripts
+│   └── config/            # MultiQC configuration
+├── data/                  # Reference data and sample sheets
+└── .github/workflows/     # CI/CD pipeline
+```
+
+## Comparison with Established Pipelines
+
+| Feature | BDB-Genomics | nf-core/atacseq | ENCODE |
+|---|---|---|---|
+| IDR replicate concordance | ✅ | ✅ | ✅ Required |
+| NSC/RSC cross-correlation | ✅ | ✅ | ✅ Required |
+| Consensus peak calling | ✅ | ✅ | ✅ |
+| Differential accessibility | ✅ | ✅ (DESeq2) | ✅ |
+| QC execution gating | ✅ Blocks downstream | ⚠️ Warns only | ⚠️ Manual |
+| Pre-flight validation | ✅ | ❌ | ❌ |
+| Config-driven architecture | ✅ Fully dynamic | Partially | ❌ Hardcoded |
+| Footprinting | ❌ | ✅ (HINT-ATAC) | ✅ |
 
 ## Citation
-If you utilize this framework in your research, please cite the repository as follows:
+If you utilize this framework in your research, please cite:
 
-Bhandary, H. (2026). *BDB-Genomics ATAC-seq Framework (Version 1.1.0)*. BDB-Genomics GitHub Repository. https://github.com/BDB-Genomics/atacseq-pipeline
+Bhandary, H. (2026). *BDB-Genomics ATAC-seq Framework (Version 2.0.0)*. BDB-Genomics GitHub Repository. https://github.com/BDB-Genomics/atacseq-pipeline
 
 ## License
-This project is licensed under the MIT License - see the `LICENSE` file for details.
+MIT License — see `LICENSE` file for details.

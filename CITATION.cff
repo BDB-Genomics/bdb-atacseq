@@ -6,9 +6,9 @@ authors:
     email: "2032ushimanshu@gmail.com"
     affiliation: "BDB-Genomics"
 title: "BDB-Genomics ATAC-seq Framework"
-version: 1.1.0
+version: 2.0.0
 # doi: 10.5281/zenodo.placeholder # [TODO] Replace with actual DOI after Zenodo deposition
-date-released: 2026-05-15
+date-released: 2026-05-17
 url: "https://github.com/BDB-Genomics/atacseq-pipeline"
 repository-code: "https://github.com/BDB-Genomics/atacseq-pipeline"
 license: MIT
@@ -18,4 +18,4 @@ keywords:
   - "Snakemake"
   - "Genomics"
   - "Reproducibility"
-abstract: "A production-grade, modular, and containerized Snakemake framework for end-to-end ATAC-seq data analysis, from raw reads to peak calling and motif analysis."
+abstract: "A production-grade, modular, and containerized Snakemake framework for end-to-end ATAC-seq data analysis, from raw reads to peak calling, IDR replicate concordance, differential accessibility, and ENCODE-compliant QC."

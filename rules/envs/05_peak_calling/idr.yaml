@@ -1,0 +1,6 @@
+name: idr
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - idr=2.0.4.3

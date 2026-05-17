@@ -1,0 +1,8 @@
+name: cross_correlation
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.3
+  - bioconductor-spp=1.36
+  - samtools=1.22

@@ -1,0 +1,10 @@
+name: diff_accessibility
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.3
+  - bioconductor-deseq2=1.44
+  - r-pheatmap=1.0.12
+  - r-ggplot2=3.5
+  - r-rcolorbrewer=1.1.3

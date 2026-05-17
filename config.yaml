@@ -420,6 +420,21 @@ motif_analysis:
     mem_mb: 16000
     time: "04:00:00"
 
+# ==============================================================================
+# Cross-Correlation (NSC/RSC)
+# ==============================================================================
+cross_correlation:
+  input:
+    shifted_bam: "results/post_alignment/tn5_shift"
+  output: "results/metrics_qc/cross_correlation"
+  params:
+    num_threads: 4
+    max_range: 150
+  threads: 4
+  resources:
+    mem_mb: 8000
+    time: "02:00:00"
+
 # ------------------------------------------------------------------------------
 # Reporting & QC Metrics
 # ------------------------------------------------------------------------------
@@ -462,6 +477,70 @@ qc_gate:
   resources:
     mem_mb: 1000
     time: "00:10:00"
+
+# ==============================================================================
+# IDR (Irreproducible Discovery Rate)
+# ==============================================================================
+idr:
+  output:
+    idr_peaks: "results/peak_calling/idr/idr_peaks"
+    optimal_peaks: "results/peak_calling/idr/optimal_peaks"
+    plots: "results/peak_calling/idr/plots"
+  params:
+    idr_threshold: 0.05
+    rank_column: "score"
+  threads: 4
+  resources:
+    mem_mb: 4000
+    time: "01:00:00"
+
+# ==============================================================================
+# Consensus Peak Calling
+# ==============================================================================
+consensus_peaks:
+  output:
+    consensus: "results/peak_calling/consensus_peaks"
+    counts: "results/peak_calling/consensus_peaks"
+  params:
+    min_samples: 2
+    merge_distance: 100
+  threads: 4
+  resources:
+    mem_mb: 8000
+    time: "02:00:00"
+
+# ==============================================================================
+# Peak Count Matrix (for DESeq2)
+# ==============================================================================
+count_peaks:
+  input:
+    shifted_bam: "results/post_alignment/tn5_shift"
+  output: "results/peak_calling/count_peaks"
+  threads: 2
+  resources:
+    mem_mb: 2000
+    time: "00:30:00"
+
+# ==============================================================================
+# Differential Accessibility
+# ==============================================================================
+differential_accessibility:
+  output:
+    results: "results/peak_calling/differential_accessibility"
+    plots: "results/peak_calling/differential_accessibility/plots"
+  params:
+    fdr_threshold: 0.05
+    log2fc_threshold: 1.0
+  threads: 8
+  resources:
+    mem_mb: 16000
+    time: "04:00:00"
+
+# ==============================================================================
+# Benchmark Summary
+# ==============================================================================
+benchmark_summary:
+  output: "results/reporting/benchmark_summary.tsv"
 
 # ==============================================================================
 # Reporting

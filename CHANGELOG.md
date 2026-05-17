@@ -2,9 +2,46 @@
 #Notable changes made to the pipeline will be recorded in this file 
 
 ## [Unreleased]
-- Placeholder for  upcoming features, bug fixes or improvement. 
+- Placeholder for  upcoming features, bug fixes or improvement.
 
-## [V1.0.0] - 2025-07-29
+## [V2.0.0] - 2026-05-17
+### Added
+- **IDR Replicate Concordance**: Irreproducible Discovery Rate analysis for biological replicate peak validation
+- **NSC/RSC Cross-Correlation**: ENCODE-compliant strand cross-correlation metrics via phantompeakqualtools
+- **Consensus Peak Calling**: Multi-sample peak merging with configurable minimum sample threshold
+- **Differential Accessibility**: DESeq2-based analysis with volcano plots, MA plots, PCA, and heatmaps
+- **Peak Count Matrix**: bedtools-based read counting in consensus peaks for all samples
+- **Benchmark Aggregation**: Multi-rule performance summary across all pipeline stages
+- **Test Profile**: `profile/test/` for CI validation with auto-generated test data
+- **Test Data Generator**: `generate_test_data.py` creates minimal FASTQ, genome, and annotation files
+- **CI/CD Pipeline**: Two-stage workflow (lint + test) with micromamba and artifact upload
+
+### Changed
+- **QC Gate Enforcement**: Downstream rules (macs2, bedtools, heatmap, peak_annotation, normalize_coverage) now require `_qc_pass.txt` input
+- **motif_analysis**: Per-sample execution with HOMER assembly name instead of FASTA path
+- **cross_correlation**: Added as ENCODE-compliant QC metric
+- **README**: Complete rewrite with feature comparison table
+- **Version**: Bumped to V2.0.0 for production-grade feature set
+
+### Fixed
+- `fastp.yaml`: Invalid version `1.3.3` → `0.24.0`
+- `tss_enrichment.yaml`: Added 7 missing Bioconductor packages
+- `fragment_size_analysis.smk`: Wrong conda env (samtools → fragment_analysis with R)
+- `frip_calculation.smk`: Chromosome naming mismatch (removed `sed 's/^chr//g'`)
+- `preseq.smk`: Removed `|| true` failure silencing
+- `samtools_sort.smk`: Log redirection on separate line
+- `samtools_fixmate.smk`: Added `set -o pipefail`
+- `bowtie2.smk`: Hardcoded `--very-sensitive` → config parameter
+- `blacklist_filter.smk`: Removed fragile awk chr-prefix logic
+- `remove_mito_reads.smk`: Regex match → exact chromosome match
+- `tss_enrichment.R`: Removed DEBUG print statement
+- `validate_config.py`: "ChIP-seq" → "ATAC-seq" docstring
+- `.gitignore`: Removed invalid `.../` syntax
+- `bedtools.yaml`/`samtools.yaml`: Added `bc` dependency
+- `profile/slurm/config.yaml`: Replaced placeholder account, added `latency-wait`
+- `.github/workflows/lint.yml`: Fixed YAML indentation, added micromamba, pinned pulp version
+
+## [V1.1.0] - 2026-05-15
 - First release of the modular ATAC-seq Pipeline
 - Core Processes:
   - Preprocessing: fastp, FastQC

@@ -22,3 +22,15 @@ table_columns_visible:
     mapping: True
     duplicates: True
     status: True
+
+custom_plot_order:
+  - fastqc
+  - fastp
+  - samtools
+  - picard
+  - preseq
+  - qualimap
+  - cross_correlation
+  - qc_gate_summary
+  - idr
+  - differential_accessibility
