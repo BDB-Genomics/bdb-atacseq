@@ -81,6 +81,8 @@ include: "rules/cross_correlation.smk"
 include: "rules/consensus_peaks.smk"
 include: "rules/count_peaks.smk"
 include: "rules/differential_accessibility.smk"
+include: "rules/footprinting.smk"
+include: "rules/chromvar_analysis.smk"
 include: "rules/benchmark_summary.smk"
 include: "rules/multiqc.smk"
 # [TEMPLATE] Include your new rule file here so Snakemake can read it.
@@ -140,6 +142,8 @@ PEAK_TARGETS = [
     config['differential_accessibility']['output']['plots'] + "/volcano_plot.pdf",
     config['differential_accessibility']['output']['plots'] + "/ma_plot.pdf",
     config['differential_accessibility']['output']['plots'] + "/pca_plot.pdf",
+    expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES),
+    expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
     config['benchmark_summary']['output']
 ]
 

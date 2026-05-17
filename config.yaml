@@ -537,6 +537,43 @@ differential_accessibility:
     time: "04:00:00"
 
 # ==============================================================================
+# Footprinting (HINT-ATAC)
+# ==============================================================================
+footprinting:
+  input:
+    shifted_bam: "results/post_alignment/tn5_shift"
+  output:
+    footprints: "results/peak_calling/footprinting/footprints"
+    regions: "results/peak_calling/footprinting/regions"
+    plots: "results/peak_calling/footprinting/plots"
+  params:
+    genome_fa: *GENOME_FA
+    method: "HINT-ATAC"
+  threads: 8
+  resources:
+    mem_mb: 16000
+    time: "04:00:00"
+
+# ==============================================================================
+# chromVAR Motif Accessibility
+# ==============================================================================
+chromvar_analysis:
+  input:
+    shifted_bam: "results/post_alignment/tn5_shift"
+  output:
+    deviations: "results/peak_calling/chromvar/deviations"
+    bias_corrected: "results/peak_calling/chromvar/bias_corrected"
+    plots: "results/peak_calling/chromvar/plots"
+  params:
+    motif_db: *MOTIF_DB
+    genome_fa: *GENOME_FA
+    genome_sizes: *GENOME_SIZES
+  threads: 8
+  resources:
+    mem_mb: 16000
+    time: "04:00:00"
+
+# ==============================================================================
 # Benchmark Summary
 # ==============================================================================
 benchmark_summary:
