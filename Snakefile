@@ -104,7 +104,6 @@ elif MODE == "scatac":
     include: "rules/motif_analysis.smk"
     include: "rules/chromvar_analysis.smk"
     include: "rules/qc_gate.smk"
-    include: "rules/chromatin_velocity.smk"
 
 include: "rules/benchmark_summary.smk"
 include: "rules/multiqc.smk"
@@ -202,11 +201,6 @@ elif MODE == "scatac":
         f"{config['cicero']['output']['plots']}/coaccessibility_plot.png",
         expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
         expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
-        f"{config['chromatin_velocity']['output']['nfr_ratios']}/nfr_ratios_per_cell.csv",
-        f"{config['chromatin_velocity']['output']['velocity']}/velocity_vectors.npy",
-        f"{config['chromatin_velocity']['output']['plots']}/velocity_streamplot.png",
-        f"{config['chromatin_velocity']['output']['plots']}/nfr_ratio_violin.png",
-        config['chromatin_velocity']['output']['summary'],
         config['benchmark_summary']['output']
     ]
 

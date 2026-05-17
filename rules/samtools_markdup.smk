@@ -6,7 +6,7 @@ rule samtools_markdup:
         deduplicated_bam=f"{config['samtools_markdup']['output']['markdup_bam']}/{{sample}}_noMT.sorted.dedup.bam"
     
     params:
-        dup_flag=config['samtools_markdup']['params']['remove_duplicates']    
+        dup_flag=lambda wildcards: config['samtools_markdup']['params']['remove_duplicates']    
     
     resources:
         mem_mb=config['samtools_markdup']['resources']['mem_mb'], 

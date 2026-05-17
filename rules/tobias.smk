@@ -1,3 +1,5 @@
+import os
+
 rule tobias_atacorrect:
     input:
         bam=lambda wildcards: f"{config['tobias']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam",
@@ -11,8 +13,7 @@ rule tobias_atacorrect:
 
     params:
         genome_sizes=config['tobias']['params']['genome_sizes'],
-        blacklist=config['tobias']['params']['blacklist'],
-        out_dir=config['tobias']['output']['corrected_bam']
+        out_dir=lambda wildcards, output: os.path.dirname(output.corrected_bam)
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -30,7 +31,7 @@ rule tobias_atacorrect:
         TOBIAS ATACorrect \
             --bam {input.bam} \
             --genome {input.genome} \
-            --blacklist {params.blacklist} \
+            --blacklist {input.blacklist} \
             --outdir {params.out_dir} \
             --prefix {wildcards.sample} \
             --cores {threads} \
@@ -53,7 +54,7 @@ rule tobias_score_bigwig:
         regions=f"{config['tobias']['output']['regions']}/{{sample}}_scored_regions.bed"
 
     params:
-        out_dir=config['tobias']['output']['footprint_bw']
+        out_dir=lambda wildcards, output: os.path.dirname(output.footprint_bw)
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -96,7 +97,7 @@ rule tobias_bindetect:
     params:
         conditions=config['tobias']['params']['conditions'],
         genome_sizes=config['tobias']['params']['genome_sizes'],
-        corrected_bam_dir=config['tobias']['output']['corrected_bam']
+        corrected_bam_dir=lambda wildcards, input: os.path.dirname(input.bam[0])
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],

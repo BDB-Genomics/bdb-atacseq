@@ -37,7 +37,7 @@ rule calculate_mito_reads:
         [ "${{total}}" -ne 0 ] && mito=$(samtools view -c {input.sorted_bam} "$mito_chr" 2>> {log})
         
         # Calculate fraction
-        fraction=$(awk -v m="$mito" -v t="$total" 'BEGIN {if (t > 0) printf "%.6f", m/t; else print "0.000000"}')
+        fraction=$(awk -v m="$mito" -v t="$total" 'BEGIN {{if (t > 0) printf "%.6f", m/t; else print "0.000000"}}')
         
         echo "Total Reads: ${{total}}" > {output.mito_stats}
         echo "Mito Reads: ${{mito}}" >> {output.mito_stats}
