@@ -12,7 +12,8 @@ rule differential_accessibility:
 
     params:
         fdr_threshold=config['differential_accessibility']['params']['fdr_threshold'],
-        log2fc_threshold=config['differential_accessibility']['params']['log2fc_threshold']
+        log2fc_threshold=config['differential_accessibility']['params']['log2fc_threshold'],
+        n_counts=lambda wildcards, input: len(input.counts)
 
     resources:
         mem_mb=config['differential_accessibility']['resources']['mem_mb'],
@@ -23,7 +24,7 @@ rule differential_accessibility:
     conda: "envs/05_peak_calling/diff_accessibility.yaml"
     container: "https://depot.galaxyproject.org/singularity/bioconductor-deseq2:1.40.2--r42hdfd78af_0"
     threads: config['differential_accessibility']['threads']
-    message: "[Differential Accessibility] Running DESeq2 on {len(input.counts)} samples"
+    message: "[Differential Accessibility] Running DESeq2 on {params.n_counts} samples"
 
     script:
         "rules/scripts/diff_accessibility.R"

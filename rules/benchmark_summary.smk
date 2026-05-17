@@ -13,13 +13,16 @@ rule benchmark_summary:
     output:
         summary="results/reporting/benchmark_summary.tsv"
 
+    params:
+        n_benchmarks=lambda wildcards, input: len(input.benchmarks)
+
     resources:
         mem_mb=1000,
         time="00:10:00"
 
     log: "logs/reporting/benchmark_summary.log"
     conda: "envs/misc/template_tool.yaml"
-    message: "[Benchmark Summary] Aggregating {len(input.benchmarks)} benchmark files"
+    message: "[Benchmark Summary] Aggregating {params.n_benchmarks} benchmark files"
 
     shell:
         """
@@ -28,11 +31,11 @@ rule benchmark_summary:
         for f in {input.benchmarks}; do
             rule=$(echo "$f" | sed 's|benchmarks/||' | cut -d'/' -f1)
             sample=$(echo "$f" | sed 's|.txt||' | rev | cut -d'/' -f1 | rev)
-            [ -f "$f" ] && {
+            [ -f "$f" ] && {{
                 runtime=$(head -n 2 "$f" | tail -n 1 | cut -f1)
                 mem=$(head -n 2 "$f" | tail -n 1 | cut -f2)
                 cpu=$(head -n 2 "$f" | tail -n 1 | cut -f3)
                 echo -e "${{rule}}\\t${{sample}}\\t${{runtime}}\\t${{mem}}\\t${{cpu}}" >> {output.summary}
-            }
+            }}
         done 2> {log}
         """

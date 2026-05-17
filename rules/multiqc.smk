@@ -12,7 +12,7 @@ rule multiqc:
         expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES)
         
     output:
-        report_dir=directory(config['multiqc']['output'])
+        report_html=f"{config['multiqc']['output']}/multiqc_report.html"
         
     resources:
         mem_mb=config['multiqc']['resources']['mem_mb'], 
@@ -24,11 +24,12 @@ rule multiqc:
     message: "Running MultiQC to aggregate all QC reports| INPUT: {input}"
         
     params:
-        config=config['multiqc']['params']['config']
+        config=config['multiqc']['params']['config'],
+        out_dir=lambda wildcards, output: os.path.dirname(output.report_html)
         
     shell:
         """
-        multiqc {input} -o {output.report_dir} \
+        multiqc {input} -o {params.out_dir} \
             -c {params.config} \
             --title "ATAC-seq Pipeline QC Report" \
             --comment "Comprehensive quality control metrics for ATAC-seq analysis" \

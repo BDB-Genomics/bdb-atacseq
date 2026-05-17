@@ -31,14 +31,14 @@ rule fragment_size_analysis:
         metrics_file <- "{input.metrics}"
         all_lines <- readLines(metrics_file)
         skip_lines <- grep("^insert_size", all_lines)
-        if (length(skip_lines) == 0) {
+        if (length(skip_lines) == 0) {{
             skip_lines <- grep("## HISTOGRAM", all_lines)
-        }
-        if (length(skip_lines) == 0) {
+        }}
+        if (length(skip_lines) == 0) {{
             skip_lines <- 10  # Fallback
-        } else {
+        }} else {{
             skip_lines <- skip_lines[1] - 1
-        }
+        }}
 
         data <- read.table(metrics_file, header=TRUE, skip=skip_lines)
         fragments <- data$insert_size
@@ -47,13 +47,13 @@ rule fragment_size_analysis:
         write.table(fragments, "{output.fragment_sizes}", row.names=FALSE, col.names=FALSE, quote=FALSE)
      
         # Generate histogram
-        tryCatch({
+        tryCatch({{
             png("{output.histogram}")
             hist(fragments, main="Fragment Size Distribution", xlab="Fragment Size (bp)", col="skyblue", breaks=50)
             dev.off()
-        }, error = function(e) {
+        }}, error = function(e) {{
             cat("Plot generation failed:", conditionMessage(e), "\n")
-        })
+        }})
      
         # Generate statistics
         stats_summary <- c(

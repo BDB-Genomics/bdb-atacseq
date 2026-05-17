@@ -8,7 +8,8 @@ rule consensus_peaks:
 
     params:
         min_samples=config['consensus_peaks']['params']['min_samples'],
-        merge_distance=config['consensus_peaks']['params']['merge_distance']
+        merge_distance=config['consensus_peaks']['params']['merge_distance'],
+        n_peaks=lambda wildcards, input: len(input.peaks)
 
     resources:
         mem_mb=config['consensus_peaks']['resources']['mem_mb'],
@@ -19,7 +20,7 @@ rule consensus_peaks:
     conda: "envs/05_peak_calling/consensus.yaml"
     container: "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h468198e_3"
     threads: config['consensus_peaks']['threads']
-    message: "[Consensus Peaks] Merging {len(input.peaks)} peak sets | Min samples: {params.min_samples}"
+    message: "[Consensus Peaks] Merging {params.n_peaks} peak sets | Min samples: {params.min_samples}"
 
     shell:
         """

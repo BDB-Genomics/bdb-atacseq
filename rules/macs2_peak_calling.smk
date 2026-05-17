@@ -1,7 +1,6 @@
 rule macs2_peak_calling:
     input:
-        shifted_bam=lambda wildcards: f"{config['macs2']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam",
-        qc_pass=lambda wildcards: f"{config['qc_gate']['output']}/{wildcards.sample}_qc_pass.txt"
+        shifted_bam=lambda wildcards: f"{config['macs2']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam"
 
     output:
         peaks=f"{config['macs2']['output']['peaks']}/{{sample}}_peaks.narrowPeak"

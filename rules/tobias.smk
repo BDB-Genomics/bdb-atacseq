@@ -97,7 +97,8 @@ rule tobias_bindetect:
     params:
         conditions=config['tobias']['params']['conditions'],
         genome_sizes=config['tobias']['params']['genome_sizes'],
-        corrected_bam_dir=lambda wildcards, input: os.path.dirname(input.bam[0])
+        corrected_bam_dir=lambda wildcards, input: os.path.dirname(input.bam[0]),
+        n_bams=lambda wildcards, input: len(input.bam)
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -108,7 +109,7 @@ rule tobias_bindetect:
     conda: "envs/05_peak_calling/tobias.yaml"
     container: "https://depot.galaxyproject.org/singularity/tobias:0.14.2--pyhdfd78af_0"
     threads: config['tobias']['threads']
-    message: "[TOBIAS BINDetect] Running differential TF binding analysis on {len(input.bam)} samples"
+    message: "[TOBIAS BINDetect] Running differential TF binding analysis on {params.n_bams} samples"
 
     shell:
         """
