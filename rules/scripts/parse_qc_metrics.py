@@ -2,9 +2,11 @@
 import sys
 import argparse
 import json
+import re
 from pathlib import Path
 
-# ANSI Color codes for prettier logging
+# Note: Colors class is duplicated from validate_config.py for script portability 
+# to run in self-contained workflow environments without virtual environment path pollution.
 class Colors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -14,53 +16,97 @@ class Colors:
     ENDC = '\033[0m'
     BOLD = '\033[1m'
 
+
 def parse_frip(frip_path):
-    """Parses FRiP value from file (assumes key\tvalue or tab-separated headered)."""
+    """Parses FRiP value from file (handles headers, single columns, or TSVs)."""
     try:
         with open(frip_path, 'r') as f:
             lines = [l.strip() for l in f if l.strip()]
-            if not lines: return None
-            # Check if it has a header 'sample\tfrip'
-            if "sample" in lines[0].lower():
-                parts = lines[1].split('\t')
-                return float(parts[1])
+            if not lines:
+                return None
+            
+            # Use second line if first has headers, otherwise first line
+            target_line = lines[1] if len(lines) > 1 and "sample" in lines[0].lower() else lines[0]
+            parts = target_line.split('\t')
+            
+            if len(parts) == 1:
+                return float(parts[0])
             else:
-                parts = lines[0].split('\t')
                 return float(parts[1])
+    except FileNotFoundError:
+        print(f"{Colors.FAIL}FRiP file not found: {frip_path}{Colors.ENDC}", file=sys.stderr)
+    except (ValueError, IndexError) as e:
+        print(f"{Colors.FAIL}Error parsing FRiP format in {frip_path}: {e}{Colors.ENDC}", file=sys.stderr)
     except Exception as e:
-        print(f"{Colors.FAIL}Error parsing FRiP: {e}{Colors.ENDC}", file=sys.stderr)
+        print(f"{Colors.FAIL}Unexpected error parsing FRiP: {e}{Colors.ENDC}", file=sys.stderr)
     return None
 
+
 def parse_tss(tss_path):
-    """Parses TSS Enrichment value from the R script output (headered TSV)."""
+    """Parses TSS Enrichment value from the R script output (headered or single-line TSV)."""
     try:
         with open(tss_path, 'r') as f:
             lines = [l.strip() for l in f if l.strip()]
-            if len(lines) < 2: return None
-            parts = lines[1].split('\t')
-            if len(parts) >= 2:
+            if not lines:
+                return None
+            
+            if len(lines) >= 2 and any(h in lines[0].lower() for h in ("sample", "tss")):
+                parts = lines[1].split('\t')
+            else:
+                parts = lines[0].split('\t')
+                
+            if len(parts) == 1:
+                return float(parts[0])
+            elif len(parts) >= 2:
                 return float(parts[1])
+    except FileNotFoundError:
+        print(f"{Colors.FAIL}TSS Enrichment file not found: {tss_path}{Colors.ENDC}", file=sys.stderr)
+    except (ValueError, IndexError) as e:
+        print(f"{Colors.FAIL}Error parsing TSS Enrichment format in {tss_path}: {e}{Colors.ENDC}", file=sys.stderr)
     except Exception as e:
-        print(f"{Colors.FAIL}Error parsing TSS Enrichment: {e}{Colors.ENDC}", file=sys.stderr)
+        print(f"{Colors.FAIL}Unexpected error parsing TSS Enrichment: {e}{Colors.ENDC}", file=sys.stderr)
     return None
 
+
+def parse_number(val: str):
+    """Parses value from scientific notation or standard formatting robustly."""
+    val = val.strip().replace('%', '')
+    try:
+        return int(val)
+    except ValueError:
+        try:
+            return float(val)
+        except ValueError:
+            return None
+
+
 def parse_samtools_stats(stats_path):
-    """Parses samtools stats using a robust mapping approach."""
-    metrics = {"total_reads": None, "mapped_properly": None, "duplicates": None}
+    """Parses samtools stats using a robust, colon-agnostic mapping approach."""
+    metrics = {
+        "total_reads": None, 
+        "mapped_properly": None, 
+        "mapped_properly_count": None, 
+        "duplicates": None
+    }
+    # Keys do not have trailing colons to be fully robust to all samtools versions
     mapping = {
-        "sequences:": "total_reads",
-        "properly paired:": "mapped_properly_count",
-        "percentage of properly paired reads:": "mapped_properly",
-        "reads duplicated:": "duplicates"
+        "sequences": "total_reads",
+        "properly paired": "mapped_properly_count",
+        "percentage of properly paired reads": "mapped_properly",
+        "reads duplicated": "duplicates"
     }
     try:
         with open(stats_path, 'r') as f:
             for line in f:
-                if not line.startswith("SN\t"): continue
+                if not line.startswith("SN"): 
+                    continue
                 for key, target in mapping.items():
                     if key in line:
-                        val = line.split('\t')[2].replace('%', '').strip()
-                        metrics[target] = float(val) if '.' in val else int(val)
+                        parts = line.split('\t')
+                        if len(parts) >= 3:
+                            metrics[target] = parse_number(parts[2])
+    except FileNotFoundError:
+        print(f"{Colors.FAIL}Samtools stats file not found: {stats_path}{Colors.ENDC}", file=sys.stderr)
     except Exception as e:
         print(f"{Colors.FAIL}Error parsing samtools stats: {e}{Colors.ENDC}", file=sys.stderr)
     return metrics
@@ -87,18 +133,25 @@ def main():
     
     # Check for parsing failures
     parse_errors = []
-    if frip is None: parse_errors.append("FRiP")
-    if tss is None: parse_errors.append("TSS Enrichment")
-    if any(v is None for k, v in stats.items() if k != "mapped_properly_count"): 
+    if frip is None: 
+        parse_errors.append("FRiP")
+    if tss is None: 
+        parse_errors.append("TSS Enrichment")
+    if any(stats.get(k) is None for k in ("total_reads", "mapped_properly", "duplicates")):
         parse_errors.append("Samtools Stats")
     
     if parse_errors:
         print(f"{Colors.FAIL}[CRITICAL] Failed to parse: {', '.join(parse_errors)}{Colors.ENDC}", file=sys.stderr)
         sys.exit(1)
         
-    # 2. Calculate Derived Metrics
-    dup_rate = (stats["duplicates"] * 100.0 / stats["total_reads"]) if stats["total_reads"] > 0 else 100.0
-    mapping_rate = stats["mapped_properly"]
+    # 2. Calculate Derived Metrics safely, checking for None values and avoiding Division-by-Zero
+    if stats["total_reads"] is not None and stats["duplicates"] is not None and stats["total_reads"] > 0:
+        dup_rate = (stats["duplicates"] * 100.0) / stats["total_reads"]
+    else:
+        dup_rate = 0.0
+        
+    # mapping_rate is the percentage of properly paired reads (value from samtools stats matches the config's min_mapping_rate % units)
+    mapping_rate = stats["mapped_properly"] if stats["mapped_properly"] is not None else 0.0
 
     # 3. Validation and Tiering
     qc_data = {
@@ -113,6 +166,7 @@ def main():
     }
 
     def check(metric, val, target, operator='>='):
+        # 10% warning buffer is an advisory threshold that flags samples nearing failure
         warn_threshold = target * 1.1 if operator == '<=' else target * 0.9
         if (operator == '>=' and val < target) or (operator == '<=' and val > target):
             qc_data["metrics"][metric]["status"] = "FAIL"
@@ -134,11 +188,16 @@ def main():
     result_color = Colors.OKGREEN if qc_data["overall"] == "PASSED" else Colors.FAIL
     report.append(f"OVERALL RESULT: {result_color}{qc_data['overall']}{Colors.ENDC}")
 
+    # Ensure target output and log directories exist
+    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.log).parent.mkdir(parents=True, exist_ok=True)
+
     # 4. Output Files
     # Text Log
     with open(args.log, 'w') as f:
-        # Strip ANSI codes for file output
-        clean_report = [line.replace('\033[95m','').replace('\033[94m','').replace('\033[92m','').replace('\033[93m','').replace('\033[91m','').replace('\033[0m','').replace('\033[1m','') for line in report]
+        # Strip ANSI codes for file output robustly using regex
+        ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
+        clean_report = [ansi_escape.sub('', line) for line in report]
         f.write("\n".join(clean_report) + "\n")
 
     # JSON Data for MultiQC/Dashboard
@@ -153,7 +212,7 @@ def main():
     print("\n".join(report))
     
     if qc_data["overall"] == "FAILED":
-        sys.exit(2)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
