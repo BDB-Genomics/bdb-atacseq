@@ -44,8 +44,6 @@
 # ==============================================================================
 global:
   samples: "data/fastp/samples.tsv"
-  envs:
-    main: "envs/main.yaml"
   references:
     genome_fa: &GENOME_FA "data/reference/genome.fa"
     genome_sizes: &GENOME_SIZES "data/reference/genome.chrom.sizes"
@@ -301,8 +299,6 @@ sorted_bedgraph:
     bedgraph: "results/visualization/bedtools_genomecov"
   output:
     sorted_bedgraph: "results/visualization/sorted_bedgraph_file"
-  params:
-    mem_mb: 2000 # Internal memory buffer for the 'sort' command (-S flag)
   threads: 4
   resources:
     mem_mb: 4000 # Total memory allocation for the job scheduler (e.g., SLURM)
@@ -407,7 +403,6 @@ peak_annotation:
   params:
     gff: *ANNOTATION_GTF
     genome: *GENOME_FA
-    feature_types: "gene, exon, CDS"
   threads: 8
   resources:
     mem_mb: 16000
@@ -415,7 +410,6 @@ peak_annotation:
 
 motif_analysis:
   input:
-    filtered_peaks: "results/peak_calling/filtered_peaks"
     genome: *GENOME_FA
   output: "results/peak_calling/motif_analysis"
   params:
@@ -472,8 +466,6 @@ qc_gate:
 # Reporting
 # ==============================================================================
 multiqc:
-  input:
-    reports_dir: "results/"
   output: "results/reporting/multiqc"
   threads: 2
   resources:

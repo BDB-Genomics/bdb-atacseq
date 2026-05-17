@@ -17,10 +17,15 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Snakemake & YAML
+      - name: Install Snakemake
         run: |
           python -m pip install --upgrade pip
-          pip install "snakemake" "pulp<2.8.0" "pyyaml"
+          pip install "snakemake" "pyyaml"
+
+      - name: Install Micromamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          micromamba-version: 'latest'
 
       - name: Validate Workflow (Dry-run)
         run: |
@@ -29,4 +34,4 @@ jobs:
           touch data/reference/genome.fa data/reference/genome.chrom.sizes data/reference/ENCODE_blacklist.bed data/reference/annotation.gtf
           touch data/motifs/jaspar_vertebrates.meme
           touch data/reference/index/genome.1.bt2 data/reference/index/genome.2.bt2 data/reference/index/genome.3.bt2 data/reference/index/genome.4.bt2 data/reference/index/genome.rev.1.bt2 data/reference/index/genome.rev.2.bt2
-          snakemake -n --use-conda
+          snakemake -n --use-conda --conda-frontend mamba

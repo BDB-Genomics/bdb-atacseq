@@ -24,7 +24,6 @@ PATH_CHECKS = (
     (("global", "references", "blacklist"), "file"),
     (("global", "references", "annotation_gtf"), "file"),
     (("global", "references", "motif_db"), "file"),
-    (("global", "envs", "main"), "file"),
     (("motif_analysis", "input", "genome"), "file"),
     (("multiqc", "params", "config"), "file"),
     (("tss_enrichment", "script"), "file"),
