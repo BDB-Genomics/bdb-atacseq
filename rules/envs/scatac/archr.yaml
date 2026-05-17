@@ -1,0 +1,10 @@
+name: archr
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.3
+  - bioconductor-archr=1.0.1
+  - bioconductor-bsgenome.hsapiens.ucsc.hg38=1.4.5
+  - r-ggplot2=3.5
+  - r-data.table=1.15

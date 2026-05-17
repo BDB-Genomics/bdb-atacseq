@@ -43,6 +43,7 @@
 # Project Metadata
 # ==============================================================================
 global:
+  mode: "bulk"
   samples: "data/fastp/samples.tsv"
   references:
     genome_fa: &GENOME_FA "data/reference/genome.fa"
@@ -537,6 +538,30 @@ differential_accessibility:
     time: "04:00:00"
 
 # ==============================================================================
+# TOBIAS (Transcription factor Occupancy prediction By combining Information from ATAC-seq and DNA Sequencing)
+# ==============================================================================
+tobias:
+  input:
+    shifted_bam: "results/post_alignment/tn5_shift"
+  output:
+    corrected_bam: "results/peak_calling/tobias/corrected_bam"
+    bias_track: "results/peak_calling/tobias/bias_track"
+    footprint_bw: "results/peak_calling/tobias/footprint_bw"
+    regions: "results/peak_calling/tobias/regions"
+    bindetect: "results/peak_calling/tobias/bindetect"
+    logs: "results/peak_calling/tobias/logs"
+  params:
+    genome_fa: *GENOME_FA
+    genome_sizes: *GENOME_SIZES
+    blacklist: *BLACKLIST
+    motif_db: *MOTIF_DB
+    conditions: "condition"
+  threads: 8
+  resources:
+    mem_mb: 16000
+    time: "04:00:00"
+
+# ==============================================================================
 # Footprinting (HINT-ATAC)
 # ==============================================================================
 footprinting:
@@ -591,6 +616,92 @@ multiqc:
   params:
     config: "rules/config/multiqc_config.yaml"
 
+
+# ==============================================================================
+# scATAC-seq: Chromap Alignment
+# ==============================================================================
+chromap:
+  input: "results/preprocessing/fastp"
+  output: "results/alignment/chromap"
+  params:
+    index: *BOWTIE2_INDEX
+    preset: "atac"
+  threads: 16
+  resources:
+    mem_mb: 32000
+    time: "02:00:00"
+
+# ==============================================================================
+# scATAC-seq: ArchR (Pseudo-bulk, Doublet Detection, Clustering)
+# ==============================================================================
+archr:
+  input:
+    bam: "results/alignment/chromap"
+  output:
+    arrow: "results/scatac/archr/arrow"
+    filtered_arrow: "results/scatac/archr/filtered_arrow"
+    fragments: "results/scatac/archr/fragments"
+    clusters: "results/scatac/archr/clusters"
+    markers: "results/scatac/archr/markers"
+    doublets: "results/scatac/archr/doublets"
+    plots: "results/scatac/archr/plots"
+    qc_report: "results/scatac/archr/qc_report"
+  params:
+    min_tss: 4.0
+    min_frags: 1000
+    max_frags: 100000
+    tsse_method: "ArchR"
+    doublet_threshold: 0.2
+    clustering_resolution: 0.8
+    dims_to_use: 1:30
+    force_dim_reduction: true
+  threads: 16
+  resources:
+    mem_mb: 64000
+    time: "04:00:00"
+
+# ==============================================================================
+# scATAC-seq: Cicero (Co-accessibility)
+# ==============================================================================
+cicero:
+  input:
+    arrow: "results/scatac/archr/filtered_arrow"
+    clusters: "results/scatac/archr/clusters"
+  output:
+    connections: "results/scatac/cicero/connections"
+    ccans: "results/scatac/cicero/ccans"
+    plots: "results/scatac/cicero/plots"
+  params:
+    window_size: 500
+    distance_cutoff: 250000
+  threads: 8
+  resources:
+    mem_mb: 32000
+    time: "04:00:00"
+
+# ==============================================================================
+# scATAC-seq: Chromatin Velocity (Nucleosome dynamics-based trajectory inference)
+# ==============================================================================
+chromatin_velocity:
+  input:
+    fragments: "results/scatac/archr/fragments/fragments.tsv.gz"
+    embedding: "results/scatac/archr/plots/umap_coordinates.csv"
+    cell_barcodes: "results/scatac/archr/clusters/cell_barcodes.txt"
+    peaks: "results/peak_calling/filtered_peaks/filtered_peaks.bed"
+    cell_annotations: "results/scatac/archr/clusters/cell_clusters.tsv"
+  output:
+    nfr_ratios: "results/scatac/chromatin_velocity/nfr_ratios"
+    velocity: "results/scatac/chromatin_velocity/velocity"
+    plots: "results/scatac/chromatin_velocity/plots"
+    summary: "results/scatac/chromatin_velocity/chromatin_velocity_summary.tsv"
+  params:
+    n_neighbors: 30
+    min_fragments: 100
+    smoothing_steps: 3
+  threads: 8
+  resources:
+    mem_mb: 16000
+    time: "02:00:00"
 
 # ==============================================================================
 # Boilerplate / Template Configuration

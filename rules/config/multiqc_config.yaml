@@ -34,5 +34,6 @@ custom_plot_order:
   - qc_gate_summary
   - idr
   - footprinting
+  - tobias
   - chromvar
   - differential_accessibility

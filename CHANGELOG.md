@@ -4,6 +4,27 @@
 ## [Unreleased]
 - Placeholder for  upcoming features, bug fixes or improvement.
 
+## [V3.0.0] - 2026-05-17
+### Added
+- **CLI Mode Switching**: `ATAC_MODE=bulk` or `ATAC_MODE=scatac` environment variable switches entire pipeline between bulk and single-cell modes — no manual file editing required
+- **Chromap Alignment**: Fast single-cell ATAC-seq aligner with `--preset atac`
+- **ArchR Pipeline**: Arrow file creation, doublet detection/filtering, iterative LSI, UMAP clustering, marker gene identification
+- **Cicero Co-accessibility**: Chromatin co-accessibility networks, CCAN identification, connection scoring
+- **scATAC-seq Conda Environments**: chromap, archr, cicero environments with all dependencies
+- **scATAC-seq Config Blocks**: chromap, archr, cicero configuration sections in config.yaml
+- **global.mode**: New config key (`bulk` or `scatac`) for declarative mode selection
+
+### Changed
+- **Snakefile**: Conditional includes based on `MODE` variable — bulk and scATAC-seq rules are mutually exclusive
+- **README**: Complete rewrite of scATAC-seq section — now a one-command switch instead of manual edits
+- **Comparison Table**: Added scATAC-seq, Cicero, and mode switching rows
+
+## [V2.1.0] - 2026-05-17
+### Added
+- **TOBIAS Footprinting Suite**: Full TOBIAS pipeline (ATACorrect, ScoreBigwig, BINDetect) for bias-corrected TF footprinting and differential TF binding analysis
+- **Low-Resource Profile**: `profile/low_resource/` for machines with ≤8GB RAM, ≤4 cores
+- **Sequential Sample Batching**: `run_batched.py` script for ultra-low-resource machines (≤4GB RAM)
+
 ## [V2.0.0] - 2026-05-17
 ### Added
 - **IDR Replicate Concordance**: Irreproducible Discovery Rate analysis for biological replicate peak validation

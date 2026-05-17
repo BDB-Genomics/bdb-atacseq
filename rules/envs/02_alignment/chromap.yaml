@@ -1,0 +1,7 @@
+name: chromap
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - chromap=0.2.6
+  - samtools=1.22

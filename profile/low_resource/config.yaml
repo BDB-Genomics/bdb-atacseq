@@ -1,0 +1,67 @@
+# Snakemake Low-Resource Profile
+# For workstations with ≤8GB RAM, ≤4 cores
+# Usage: snakemake --profile profile/low_resource
+
+use-conda: true
+conda-frontend: mamba
+jobs: 2
+printshellcmds: true
+reason: true
+show-failed-logs: true
+keep-going: true
+rerun-incomplete: true
+restart-times: 0
+latency-wait: 30
+
+# Global resource caps — Snakemake will never exceed these totals
+set-resources:
+  bowtie2_align: mem_mb=4000,threads=2
+  samtools_sort: mem_mb=3000,threads=2
+  samtools_markdup: mem_mb=4000,threads=2
+  tn5_shift: mem_mb=3000,threads=2
+  macs2_peak_calling: mem_mb=4000,threads=2
+  tss_enrichment: mem_mb=4000,threads=2
+  picard_CollectAlignmentSummaryMetrics: mem_mb=3000,threads=2
+  picard_CollectInsertSizeMetrics: mem_mb=3000,threads=2
+  heatmap: mem_mb=4000,threads=2
+  peak_annotation: mem_mb=4000,threads=2
+  motif_analysis: mem_mb=4000,threads=2
+  differential_accessibility: mem_mb=4000,threads=2
+  chromvar_analysis: mem_mb=4000,threads=2
+  footprinting: mem_mb=4000,threads=2
+  tobias_atacorrect: mem_mb=4000,threads=2
+  tobias_score_bigwig: mem_mb=4000,threads=2
+  tobias_bindetect: mem_mb=4000,threads=2
+  preseq: mem_mb=2000,threads=1
+  qualimap_bamqc: mem_mb=3000,threads=2
+  correlation_analysis: mem_mb=3000,threads=2
+  normalized_coverage: mem_mb=3000,threads=2
+  bedtools_genomecov: mem_mb=3000,threads=2
+  bigwig_conversion: mem_mb=2000,threads=1
+  sorted_bedgraph: mem_mb=2000,threads=2
+  frip_calculation: mem_mb=2000,threads=1
+  blacklist_region_filter: mem_mb=2000,threads=1
+  idr_analysis: mem_mb=2000,threads=1
+  cross_correlation: mem_mb=4000,threads=2
+  consensus_peaks: mem_mb=3000,threads=2
+  count_peaks: mem_mb=2000,threads=1
+  fastp_trim: mem_mb=3000,threads=2
+  fastqc: mem_mb=2000,threads=2
+  samtools_stats: mem_mb=2000,threads=1
+  fragment_size_analysis: mem_mb=2000,threads=1
+  samtools_fixmate: mem_mb=2000,threads=1
+  samtools_index: mem_mb=1000,threads=1
+  samtools_index_post_filter: mem_mb=1000,threads=1
+  samtools_index_postmarkdup: mem_mb=1000,threads=1
+  samtools_view: mem_mb=2000,threads=1
+  calculate_mito_reads: mem_mb=1000,threads=1
+  remove_mito_reads: mem_mb=2000,threads=1
+  qc_gate: mem_mb=1000,threads=1
+  multiqc: mem_mb=2000,threads=1
+  benchmark_summary: mem_mb=1000,threads=1
+
+# Fallback for any rule not listed above
+default-resources:
+  mem_mb: 2000
+  time: "02:00:00"
+  threads: 1

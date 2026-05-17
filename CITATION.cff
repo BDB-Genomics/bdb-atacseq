@@ -6,7 +6,7 @@ authors:
     email: "2032ushimanshu@gmail.com"
     affiliation: "BDB-Genomics"
 title: "BDB-Genomics ATAC-seq Framework"
-version: 2.0.0
+version: 3.0.0
 # doi: 10.5281/zenodo.placeholder # [TODO] Replace with actual DOI after Zenodo deposition
 date-released: 2026-05-17
 url: "https://github.com/BDB-Genomics/atacseq-pipeline"

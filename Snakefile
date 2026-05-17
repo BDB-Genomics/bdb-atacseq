@@ -13,6 +13,11 @@ from pathlib import Path
 
 configfile: "config.yaml"
 
+# CLI Mode Switching: bulk (default) or scatac
+MODE = os.getenv("ATAC_MODE", config.get("global", {}).get("mode", "bulk"))
+if MODE not in ("bulk", "scatac"):
+    raise ValueError(f"Invalid mode '{MODE}'. Use 'bulk' or 'scatac'. Set via ATAC_MODE env var or config.yaml global.mode")
+
 # CI Bypass: Skip validation and provide dummy metadata in GitHub Actions
 IS_CI = os.getenv("GITHUB_ACTIONS") == "true"
 
@@ -46,106 +51,164 @@ if not SAMPLES:
 # --- Includes ------------------------------------------------------------------
 include: "rules/fastp.smk"
 include: "rules/fastqc.smk"
-include: "rules/bowtie2.smk"
-include: "rules/samtools_sort.smk"
-include: "rules/calculate_mito_reads.smk"
-include: "rules/remove_mito_reads.smk"
-include: "rules/samtools_index.smk"
-include: "rules/samtools_fixmate.smk"
-include: "rules/samtools_markdup.smk"
-include: "rules/samtools_view.smk"
-include: "rules/samtools_index_post_filter.smk"
-include: "rules/samtools_index_after_markdup.smk"
-include: "rules/tn5_shift.smk"
-include: "rules/samtools_stats.smk"
-include: "rules/fragment_size_analysis.smk"
-include: "rules/picard_alignment_metrics.smk"
-include: "rules/picard_insert_size_metrics.smk"
-include: "rules/tss_enrichment.smk"
-include: "rules/bedtools_genomecov.smk"
-include: "rules/sorted_bedgraph.smk"
-include: "rules/bigwig.smk"
-include: "rules/correlation_analysis.smk"
-include: "rules/normalize_coverage.smk"
-include: "rules/macs2_peak_calling.smk"
-include: "rules/blacklist_filter.smk"
-include: "rules/heatmap.smk"
-include: "rules/frip_calculation.smk"
-include: "rules/peak_annotation.smk"
-include: "rules/motif_analysis.smk"
-include: "rules/preseq.smk"
-include: "rules/qualimap_bamqc.smk"
-include: "rules/qc_gate.smk"
-include: "rules/idr.smk"
-include: "rules/cross_correlation.smk"
-include: "rules/consensus_peaks.smk"
-include: "rules/count_peaks.smk"
-include: "rules/differential_accessibility.smk"
-include: "rules/footprinting.smk"
-include: "rules/chromvar_analysis.smk"
+
+if MODE == "bulk":
+    include: "rules/bowtie2.smk"
+    include: "rules/samtools_sort.smk"
+    include: "rules/calculate_mito_reads.smk"
+    include: "rules/remove_mito_reads.smk"
+    include: "rules/samtools_index.smk"
+    include: "rules/samtools_fixmate.smk"
+    include: "rules/samtools_markdup.smk"
+    include: "rules/samtools_view.smk"
+    include: "rules/samtools_index_post_filter.smk"
+    include: "rules/samtools_index_after_markdup.smk"
+    include: "rules/tn5_shift.smk"
+    include: "rules/samtools_stats.smk"
+    include: "rules/fragment_size_analysis.smk"
+    include: "rules/picard_alignment_metrics.smk"
+    include: "rules/picard_insert_size_metrics.smk"
+    include: "rules/tss_enrichment.smk"
+    include: "rules/bedtools_genomecov.smk"
+    include: "rules/sorted_bedgraph.smk"
+    include: "rules/bigwig.smk"
+    include: "rules/correlation_analysis.smk"
+    include: "rules/normalize_coverage.smk"
+    include: "rules/macs2_peak_calling.smk"
+    include: "rules/blacklist_filter.smk"
+    include: "rules/heatmap.smk"
+    include: "rules/frip_calculation.smk"
+    include: "rules/peak_annotation.smk"
+    include: "rules/motif_analysis.smk"
+    include: "rules/preseq.smk"
+    include: "rules/qualimap_bamqc.smk"
+    include: "rules/qc_gate.smk"
+    include: "rules/idr.smk"
+    include: "rules/cross_correlation.smk"
+    include: "rules/consensus_peaks.smk"
+    include: "rules/count_peaks.smk"
+    include: "rules/differential_accessibility.smk"
+    include: "rules/footprinting.smk"
+    include: "rules/tobias.smk"
+    include: "rules/chromvar_analysis.smk"
+elif MODE == "scatac":
+    include: "rules/chromap.smk"
+    include: "rules/archr.smk"
+    include: "rules/cicero.smk"
+    include: "rules/tn5_shift.smk"
+    include: "rules/bedtools_genomecov.smk"
+    include: "rules/sorted_bedgraph.smk"
+    include: "rules/bigwig.smk"
+    include: "rules/correlation_analysis.smk"
+    include: "rules/normalize_coverage.smk"
+    include: "rules/motif_analysis.smk"
+    include: "rules/chromvar_analysis.smk"
+    include: "rules/qc_gate.smk"
+    include: "rules/chromatin_velocity.smk"
+
 include: "rules/benchmark_summary.smk"
 include: "rules/multiqc.smk"
 # [TEMPLATE] Include your new rule file here so Snakemake can read it.
 #include: "rules/template_tool.smk"
 
 # --- Targets -------------------------------------------------------------------
-QC_GATE_TARGETS = [
-    expand("{path}/{sample}_qc_pass.txt", path=config['qc_gate']['output'], sample=SAMPLES)
- ]
-PREPROCESSING_TARGETS = [
-    expand("{path}/{sample}_R1_trimmed.fastq.gz", path=config['fastp']['output'], sample=SAMPLES),
-    expand("{path}/{sample}_R1_trimmed_fastqc.html", path=config['fastqc']['output'], sample=SAMPLES)
-]
-
-ALIGNMENT_TARGETS = [
-    expand("{path}/{sample}.bam", path=config['bowtie2']['output'], sample=SAMPLES),
-    expand("{path}/{sample}.sorted.bam", path=config['samtools_sort']['output']['sorted_bam'], sample=SAMPLES)
-]
-
-POST_FILTERING_TARGETS = [
-    expand("{path}/{sample}_mito_stats.txt", path=config['mitoATAC_calculate']['output']['mito_stats'], sample=SAMPLES),
-    expand("{path}/{sample}_noMT.sorted.bam", path=config['remove_mito_reads']['output']['noMT_sorted_bam'], sample=SAMPLES),
-    expand("{path}/{sample}_noMT.sorted.bam.bai", path=config['samtools_index']['output']['index'], sample=SAMPLES),
-    expand("{path}/{sample}_noMT.sorted.dedup.bam", path=config['samtools_markdup']['output']['markdup_bam'], sample=SAMPLES),
-    expand("{path}/{sample}_noMT.sorted.dedup.bam.bai", path=config['samtools_index_post_markdup']['output']['index'], sample=SAMPLES),
-    expand("{path}/{sample}.filtered.bam", path=config['samtools_view']['output']['filtered_bam'], sample=SAMPLES),
-    expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=SAMPLES)
-]
-
-QC_METRICS_TARGETS = [
-    expand("{path}/{sample}_postFiltering.stats.txt", path=config['samtools_stats']['output']['stats'], sample=SAMPLES),
-    expand("{path}/{sample}_fragment_stats.txt", path=config['fragment_size_analysis']['output'], sample=SAMPLES),
-    expand("{path}/{sample}.alignment_metrics.txt", path=config['picard']['alignment_metrics']['output']['alignment_metrics'], sample=SAMPLES),
-    expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
-    expand("{path}/{sample}_tss_enrichment.txt", path=config['tss_enrichment']['output'], sample=SAMPLES),
-    expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES),
-    expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES),
-    expand("{path}/{sample}_crosscorr.txt", path=config['cross_correlation']['output'], sample=SAMPLES)
-]
-
-VISUALIZATION_TARGETS = [
-    expand("{path}/{sample}.bw", path=config['bigwig']['output']['bigwig'], sample=SAMPLES),
-    expand("{path}/{sample}_{method}.bw", path=config['normalized_coverage']['output']['normalized_coverage'], method=config['normalized_coverage']['params']['method'], sample=SAMPLES),
-    f"{config['correlation_analysis']['output']}/correlation_heatmap.png",
-    expand("{path}/{sample}_tss_heatmap.pdf", path=config['heatmap']['output']['plot'], sample=SAMPLES)
-]
-
-PEAK_TARGETS = [
-    expand("{path}/{sample}_peaks.narrowPeak", path=config['macs2']['output']['peaks'], sample=SAMPLES),
-    expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES),
-    expand("{path}/{sample}_frip.txt", path=config['frip_calculation']['output'], sample=SAMPLES),
-    expand("{path}/{sample}_peak_annotation.txt", path=config['peak_annotation']['output'], sample=SAMPLES),
-    expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
-    config['consensus_peaks']['output']['consensus'] + "/consensus_peaks.bed",
-    config['consensus_peaks']['output']['counts'] + "/peak_sample_counts.txt",
-    config['differential_accessibility']['output']['results'] + "/diff_accessibility_results.tsv",
-    config['differential_accessibility']['output']['plots'] + "/volcano_plot.pdf",
-    config['differential_accessibility']['output']['plots'] + "/ma_plot.pdf",
-    config['differential_accessibility']['output']['plots'] + "/pca_plot.pdf",
-    expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES),
-    expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
-    config['benchmark_summary']['output']
-]
+if MODE == "bulk":
+    QC_GATE_TARGETS = [
+        expand("{path}/{sample}_qc_pass.txt", path=config['qc_gate']['output'], sample=SAMPLES)
+    ]
+    PREPROCESSING_TARGETS = [
+        expand("{path}/{sample}_R1_trimmed.fastq.gz", path=config['fastp']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_R1_trimmed_fastqc.html", path=config['fastqc']['output'], sample=SAMPLES)
+    ]
+    ALIGNMENT_TARGETS = [
+        expand("{path}/{sample}.bam", path=config['bowtie2']['output'], sample=SAMPLES),
+        expand("{path}/{sample}.sorted.bam", path=config['samtools_sort']['output']['sorted_bam'], sample=SAMPLES)
+    ]
+    POST_FILTERING_TARGETS = [
+        expand("{path}/{sample}_mito_stats.txt", path=config['mitoATAC_calculate']['output']['mito_stats'], sample=SAMPLES),
+        expand("{path}/{sample}_noMT.sorted.bam", path=config['remove_mito_reads']['output']['noMT_sorted_bam'], sample=SAMPLES),
+        expand("{path}/{sample}_noMT.sorted.bam.bai", path=config['samtools_index']['output']['index'], sample=SAMPLES),
+        expand("{path}/{sample}_noMT.sorted.dedup.bam", path=config['samtools_markdup']['output']['markdup_bam'], sample=SAMPLES),
+        expand("{path}/{sample}_noMT.sorted.dedup.bam.bai", path=config['samtools_index_post_markdup']['output']['index'], sample=SAMPLES),
+        expand("{path}/{sample}.filtered.bam", path=config['samtools_view']['output']['filtered_bam'], sample=SAMPLES),
+        expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=SAMPLES)
+    ]
+    QC_METRICS_TARGETS = [
+        expand("{path}/{sample}_postFiltering.stats.txt", path=config['samtools_stats']['output']['stats'], sample=SAMPLES),
+        expand("{path}/{sample}_fragment_stats.txt", path=config['fragment_size_analysis']['output'], sample=SAMPLES),
+        expand("{path}/{sample}.alignment_metrics.txt", path=config['picard']['alignment_metrics']['output']['alignment_metrics'], sample=SAMPLES),
+        expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
+        expand("{path}/{sample}_tss_enrichment.txt", path=config['tss_enrichment']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES),
+        expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES),
+        expand("{path}/{sample}_crosscorr.txt", path=config['cross_correlation']['output'], sample=SAMPLES)
+    ]
+    VISUALIZATION_TARGETS = [
+        expand("{path}/{sample}.bw", path=config['bigwig']['output']['bigwig'], sample=SAMPLES),
+        expand("{path}/{sample}_{method}.bw", path=config['normalized_coverage']['output']['normalized_coverage'], method=config['normalized_coverage']['params']['method'], sample=SAMPLES),
+        f"{config['correlation_analysis']['output']}/correlation_heatmap.png",
+        expand("{path}/{sample}_tss_heatmap.pdf", path=config['heatmap']['output']['plot'], sample=SAMPLES)
+    ]
+    PEAK_TARGETS = [
+        expand("{path}/{sample}_peaks.narrowPeak", path=config['macs2']['output']['peaks'], sample=SAMPLES),
+        expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES),
+        expand("{path}/{sample}_frip.txt", path=config['frip_calculation']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_peak_annotation.txt", path=config['peak_annotation']['output'], sample=SAMPLES),
+        expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
+        config['consensus_peaks']['output']['consensus'] + "/consensus_peaks.bed",
+        config['consensus_peaks']['output']['counts'] + "/peak_sample_counts.txt",
+        config['differential_accessibility']['output']['results'] + "/diff_accessibility_results.tsv",
+        config['differential_accessibility']['output']['plots'] + "/volcano_plot.pdf",
+        config['differential_accessibility']['output']['plots'] + "/ma_plot.pdf",
+        config['differential_accessibility']['output']['plots'] + "/pca_plot.pdf",
+        expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES),
+        expand("{path}/{sample}_corrected.bam", path=config['tobias']['output']['corrected_bam'], sample=SAMPLES),
+        expand("{path}/{sample}_footprints.bw", path=config['tobias']['output']['footprint_bw'], sample=SAMPLES),
+        config['tobias']['output']['bindetect'],
+        expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
+        config['benchmark_summary']['output']
+    ]
+elif MODE == "scatac":
+    QC_GATE_TARGETS = [
+        expand("{path}/{sample}_qc_pass.txt", path=config['qc_gate']['output'], sample=SAMPLES)
+    ]
+    PREPROCESSING_TARGETS = [
+        expand("{path}/{sample}_R1_trimmed.fastq.gz", path=config['fastp']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_R1_trimmed_fastqc.html", path=config['fastqc']['output'], sample=SAMPLES)
+    ]
+    ALIGNMENT_TARGETS = [
+        expand("{path}/{sample}.bam", path=config['chromap']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_tag.bam", path=config['chromap']['output'], sample=SAMPLES)
+    ]
+    POST_FILTERING_TARGETS = [
+        expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=SAMPLES)
+    ]
+    QC_METRICS_TARGETS = [
+        config['archr']['output']['qc_report'] + "/ArchR_full_report.pdf"
+    ]
+    VISUALIZATION_TARGETS = [
+        expand("{path}/{sample}.bw", path=config['bigwig']['output']['bigwig'], sample=SAMPLES),
+        expand("{path}/{sample}_{method}.bw", path=config['normalized_coverage']['output']['normalized_coverage'], method=config['normalized_coverage']['params']['method'], sample=SAMPLES),
+        f"{config['correlation_analysis']['output']}/correlation_heatmap.png"
+    ]
+    PEAK_TARGETS = [
+        config['archr']['output']['clusters'] + "/cell_clusters.tsv",
+        config['archr']['output']['plots'] + "/umap_clusters.pdf",
+        config['archr']['output']['markers'] + "/marker_genes.tsv",
+        config['archr']['output']['doublets'] + "/doublet_enrichment.pdf",
+        config['cicero']['output']['connections'] + "/coaccessibility_connections.rds",
+        config['cicero']['output']['connections'] + "/coaccessibility_table.tsv",
+        config['cicero']['output']['ccans'] + "/ccans.bed",
+        config['cicero']['output']['plots'] + "/coaccessibility_plot.png",
+        expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
+        config['chromatin_velocity']['output']['nfr_ratios'] + "/nfr_ratios_per_cell.csv",
+        config['chromatin_velocity']['output']['velocity'] + "/velocity_vectors.npy",
+        config['chromatin_velocity']['output']['plots'] + "/velocity_streamplot.png",
+        config['chromatin_velocity']['output']['plots'] + "/nfr_ratio_violin.png",
+        config['chromatin_velocity']['output']['summary'],
+        config['benchmark_summary']['output']
+    ]
 
 # [TEMPLATE] Define the expected final output files of your new tool here.
 # Snakemake needs to know what files to create to trigger the rule.
@@ -171,6 +234,7 @@ rule all:
 
 onstart:
     print(f"\n[START] BDB-Genomics ATAC-seq Framework")
+    print(f"Mode: {MODE.upper()}")
     print(f"Samples: {len(SAMPLES)} samples detected\n")
 
 onsuccess:
