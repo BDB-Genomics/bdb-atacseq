@@ -18,4 +18,4 @@ keywords:
   - "Snakemake"
   - "Genomics"
   - "Reproducibility"
-abstract: "A production-grade, modular, and containerized Snakemake framework for end-to-end ATAC-seq data analysis, from raw reads to peak calling, IDR replicate concordance, differential accessibility, and ENCODE-compliant QC."
+abstract: "A production-grade, modular, and containerized Snakemake framework for end-to-end ATAC-seq data analysis, from raw reads to peak calling, IDR replicate concordance, footprinting, chromVAR motif analysis, differential accessibility, and ENCODE-compliant QC."
