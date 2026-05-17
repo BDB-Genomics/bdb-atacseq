@@ -7,7 +7,7 @@ authors:
     affiliation: "BDB-Genomics"
 title: "BDB-Genomics ATAC-seq Framework"
 version: 1.1.0
-doi: 10.5281/zenodo.placeholder # Replace with actual DOI after Zenodo deposition
+# doi: 10.5281/zenodo.placeholder # [TODO] Replace with actual DOI after Zenodo deposition
 date-released: 2026-05-15
 url: "https://github.com/BDB-Genomics/atacseq-pipeline"
 repository-code: "https://github.com/BDB-Genomics/atacseq-pipeline"

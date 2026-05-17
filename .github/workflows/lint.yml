@@ -22,11 +22,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install "snakemake" "pyyaml"
 
-      - name: Install Micromamba
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          micromamba-version: 'latest'
-
       - name: Validate Workflow (Dry-run)
         run: |
           mkdir -p data/reference data/motifs data/reference/index
@@ -34,4 +29,4 @@ jobs:
           touch data/reference/genome.fa data/reference/genome.chrom.sizes data/reference/ENCODE_blacklist.bed data/reference/annotation.gtf
           touch data/motifs/jaspar_vertebrates.meme
           touch data/reference/index/genome.1.bt2 data/reference/index/genome.2.bt2 data/reference/index/genome.3.bt2 data/reference/index/genome.4.bt2 data/reference/index/genome.rev.1.bt2 data/reference/index/genome.rev.2.bt2
-          snakemake -n --use-conda --conda-frontend mamba
+          snakemake -n
