@@ -21,13 +21,13 @@ rule blacklist_region_filter:
 
     shell:
         """
-        awk 'BEGIN {{OFS="\\t"}} {{if ($1 ~ /^[0-9]+$/ || $1 == "X" || $1 == "Y" || $1 == "MT") $1="chr"$1; print}}' {input.peaks} > {input.peaks}.tmp && \
+        # Safely convert peak chromosomes to UCSC "chr" naming format
+        awk 'BEGIN {{OFS="\\t"}} {{ if ($1 !~ /^chr/ && ($1 ~ /^[0-9XYM]+$/ || $1 ~ /^MT$/)) $1="chr"$1; print }}' {input.peaks} > {output.filtered_peaks}.tmp 2> {log}
+        
         bedtools intersect -v \
-            -a {input.peaks}.tmp  \
+            -a {output.filtered_peaks}.tmp \
             -b {params.blacklist} \
-        > {output.filtered_peaks} 
-        2> {log} 
+            > {output.filtered_peaks} 2>> {log}
          
-        rm -rf {input.peaks}.tmp
+        rm -f {output.filtered_peaks}.tmp
         """
-

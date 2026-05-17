@@ -3,7 +3,7 @@ rule normalize_coverage:
         shifted_bam=lambda wildcards: f"{config['normalized_coverage']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam"
         
     output:
-        normalized_coverage=f"{config['normalized_coverage']['output']['normalized_coverage']}/{{sample}}_CPM.bw"
+        normalized_coverage=f"{config['normalized_coverage']['output']['normalized_coverage']}/{{sample}}_{config['normalized_coverage']['params']['method']}.bw"
         
     params:
         method=config['normalized_coverage']['params']['method']

@@ -25,5 +25,7 @@ rule tn5_shift:
            -o {output.shifted_filtered_bam}.unsorted \
            -p {threads} \
            2> {log}  && \
-        samtools sort -o {output.shifted_filtered_bam} {output.shifted_filtered_bam}.unsorted && rm -rf {output.shifted_filtered_bam}.unsorted && samtools index {output.shifted_filtered_bam} 
+        samtools sort -@ {threads} -o {output.shifted_filtered_bam} {output.shifted_filtered_bam}.unsorted 2>> {log} && \
+        rm -f {output.shifted_filtered_bam}.unsorted && \
+        samtools index {output.shifted_filtered_bam} 2>> {log}
         """

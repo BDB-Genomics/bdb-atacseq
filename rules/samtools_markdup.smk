@@ -23,6 +23,7 @@ rule samtools_markdup:
         """
         samtools markdup \
         -{params.remove_duplicates} \
+        -d 2500 \
         -@ {threads} \
         {input.sorted_bam_noMT_fixmate} \
         {output.deduplicated_bam} \

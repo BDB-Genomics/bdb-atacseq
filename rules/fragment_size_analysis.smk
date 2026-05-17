@@ -19,7 +19,7 @@ rule fragment_size_analysis:
 
     log: "logs/fragment_size_analysis/{sample}.err"
     benchmark: "benchmarks/fragment_size_analysis/{sample}.txt"
-    conda: "envs/03_post_alignment/samtools.yaml"
+    conda: "envs/04_metrics_qc/fragment_size_analysis.yaml"
     container: "https://depot.galaxyproject.org/singularity/picard:3.0.0--hdfd78af_1"
     threads: config['fragment_size_analysis']['threads']
     message: "[FRAGMENT SIZE ANALYSIS] SAMPLES: {wildcards.sample}| INPUT: {input.metrics}| OUTPUT: {output.fragment_sizes} {output.histogram} {output.stats}|MIN LENGTH: {params.min_length}| MAX LENGTH: {params.max_length}| MAX FRAGMENT: {params.max_fragment} "
@@ -27,18 +27,34 @@ rule fragment_size_analysis:
     shell:
         """
         echo '
-        # Read Picard insert size metrics
-        data <- read.table("{input.metrics}", header=TRUE, skip=10)
+        # Read Picard insert size metrics dynamically by searching for the data table start
+        metrics_file <- "{input.metrics}"
+        all_lines <- readLines(metrics_file)
+        skip_lines <- grep("^insert_size", all_lines)
+        if (length(skip_lines) == 0) {
+            skip_lines <- grep("## HISTOGRAM", all_lines)
+        }
+        if (length(skip_lines) == 0) {
+            skip_lines <- 10  # Fallback
+        } else {
+            skip_lines <- skip_lines[1] - 1
+        }
+
+        data <- read.table(metrics_file, header=TRUE, skip=skip_lines)
         fragments <- data$insert_size
-    
+     
         # Write fragment sizes
         write.table(fragments, "{output.fragment_sizes}", row.names=FALSE, col.names=FALSE, quote=FALSE)
-    
+     
         # Generate histogram
-        png("{output.histogram}")
-        hist(fragments, main="Fragment Size Distribution", xlab="Fragment Size (bp)", col="skyblue", breaks=50)
-        dev.off()
-    
+        tryCatch({
+            png("{output.histogram}")
+            hist(fragments, main="Fragment Size Distribution", xlab="Fragment Size (bp)", col="skyblue", breaks=50)
+            dev.off()
+        }, error = function(e) {
+            cat("Plot generation failed:", conditionMessage(e), "\n")
+        })
+     
         # Generate statistics
         stats_summary <- c(
               paste("Total_fragments:", length(fragments)),

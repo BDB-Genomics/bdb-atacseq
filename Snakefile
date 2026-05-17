@@ -97,7 +97,9 @@ ALIGNMENT_TARGETS = [
 POST_FILTERING_TARGETS = [
     expand("{path}/{sample}_mito_stats.txt", path=config['mitoATAC_calculate']['output']['mito_stats'], sample=SAMPLES),
     expand("{path}/{sample}_noMT.sorted.bam", path=config['remove_mito_reads']['output']['noMT_sorted_bam'], sample=SAMPLES),
+    expand("{path}/{sample}_noMT.sorted.bam.bai", path=config['samtools_index']['output']['index'], sample=SAMPLES),
     expand("{path}/{sample}_noMT.sorted.dedup.bam", path=config['samtools_markdup']['output']['markdup_bam'], sample=SAMPLES),
+    expand("{path}/{sample}_noMT.sorted.dedup.bam.bai", path=config['samtools_index_post_markdup']['output']['index'], sample=SAMPLES),
     expand("{path}/{sample}.filtered.bam", path=config['samtools_view']['output']['filtered_bam'], sample=SAMPLES),
     expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=SAMPLES)
 ]
@@ -124,7 +126,7 @@ PEAK_TARGETS = [
     expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES),
     expand("{path}/{sample}_frip.txt", path=config['frip_calculation']['output'], sample=SAMPLES),
     expand("{path}/{sample}_peak_annotation.txt", path=config['peak_annotation']['output'], sample=SAMPLES),
-    config['motif_analysis']['output']
+    expand("{path}/{sample}_motifs", path=config['motif_analysis']['output'], sample=SAMPLES)
 ]
 
 # [TEMPLATE] Define the expected final output files of your new tool here.

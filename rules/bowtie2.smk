@@ -8,7 +8,8 @@ rule bowtie2_align:
         BAM=f"{config[ 'bowtie2']['output']}/{{sample}}.bam"
         
     params:
-        index = config['bowtie2']['params']['index'],         
+        index = config['bowtie2']['params']['index'],
+        sensitive = config['bowtie2']['params']['sensitive']
             
     resources:
         mem_mb=config['bowtie2']['resources']['mem_mb'], 
@@ -28,10 +29,10 @@ rule bowtie2_align:
         bowtie2 -x {params.index} \
                 -1 {input.R1_fastp} \
                 -2 {input.R2_fastp} \
-                --very-sensitive \
+                {params.sensitive} \
                 -p {threads} \
                 2> {log} | \
-        samtools view -@ {threads} -Sb -F 4 -f 2 - > {output.BAM} 2>> {log}
+        samtools view -@ {threads} -Sb - > {output.BAM} 2>> {log}
         """
          
          

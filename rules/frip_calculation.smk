@@ -5,7 +5,6 @@ rule frip_calculation:
 
     output:
         frip=f"{config['frip_calculation']['output']}/{{sample}}_frip.txt"
-        
 
     resources:
         mem_mb=config['frip_calculation']['resources']['mem_mb'], 
@@ -20,15 +19,13 @@ rule frip_calculation:
         
     shell:
         """
-        (
-        sed 's/^chr//g' {input.filtered_peaks} > {input.filtered_peaks}.nochr
-        total_fragments=$(samtools view -c -f 64 {input.shifted_bam})
-        fragments_in_peaks=$(bedtools coverage -a {input.filtered_peaks}.nochr -b {input.shifted_bam} | awk '{{sum += $11}} END {{print sum+0}}')
-        frip=$(echo "scale=6; ${{fragments_in_peaks}} / ${{total_fragments}}" | bc)
-        echo -e "FRiP\t$frip"  > {output.frip}
+        total_reads=$(samtools view -c -F 260 {input.shifted_bam} 2> {log})
+        reads_in_peaks=$(bedtools coverage -a {input.filtered_peaks} -b {input.shifted_bam} 2>> {log} | awk '{{sum += $11}} END {{print sum+0}}')
+        
+        frip=$(awk -v rip="$reads_in_peaks" -v tr="$total_reads" 'BEGIN {{if (tr > 0) printf "%.6f", rip/tr; else print "0.000000"}}')
+        
+        echo -e "FRiP\\t$frip"  > {output.frip}
         echo -e "..................................................................." >> {output.frip}
         echo -e "Sample\\tTotal_Reads\\tReads_in_Peaks\\tFRiP_Score" >> {output.frip}
-        echo -e "{wildcards.sample}\\t$total_fragments\\t$fragments_in_peaks\\t$frip" >> {output.frip}
-        ) 2> {log}        
+        echo -e "{wildcards.sample}\\t$total_reads\\t$reads_in_peaks\\t$frip" >> {output.frip}
         """
-

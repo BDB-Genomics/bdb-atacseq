@@ -18,6 +18,9 @@ rule samtools_fixmate:
  
     shell:
         """
-        samtools sort -n -@ {threads} {input.sorted_bam_noMT} |  samtools fixmate -m -@ {threads} - - | samtools sort -@ {threads} -o {output.sorted_bam_noMT_fixmate} - 2> {log}
-       """ 
+        set -o pipefail
+        samtools sort -n -@ {threads} {input.sorted_bam_noMT} 2> {log} | \
+        samtools fixmate -m -@ {threads} - - 2>> {log} | \
+        samtools sort -@ {threads} -o {output.sorted_bam_noMT_fixmate} - 2>> {log}
+        """ 
        

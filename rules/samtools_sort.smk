@@ -22,7 +22,7 @@ rule samtools_sort:
         -@ {threads} \
         -O BAM \
         -o {output.bam_sorted} \
-        {input.unsorted_bam}
+        {input.unsorted_bam} \
         2> {log} 
         """
         

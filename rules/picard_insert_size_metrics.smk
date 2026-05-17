@@ -26,21 +26,21 @@ rule picard_CollectInsertSizeMetrics:
         VERSION=$(picard --help  2>&1 | head -n 1 || echo "Picard Version Unknown")
         echo "PICARD VERSION: ${{VERSION}}" >> {log}
         
-        set -e
-        
+        set +e
         picard CollectInsertSizeMetrics \
-        --INPUT {input.markdup_bam} \
-        --OUTPUT {output.insert_metrics} \
-        --Histogram_FILE {output.insert_histogram} \
-        --M {params.m} \
-        --VALIDATION_STRINGENCY {params.validation_stringency} \
-        2>> {log}
-
+            --INPUT {input.markdup_bam} \
+            --OUTPUT {output.insert_metrics} \
+            --Histogram_FILE {output.insert_histogram} \
+            --M {params.m} \
+            --VALIDATION_STRINGENCY {params.validation_stringency} \
+            2>> {log}
         EXIT_STATUS=$?
-        if [ ${{EXIT_STATUS}} -eq 0 ]; then
-           echo "SUCCESSFUL; EXIST STATUS: ${{EXIT_STATUS}}"
-        else 
-           echo "UNSUCCESSFUL; EXIT_STATUS: ${{EXIT_STATUS}}"
-        fi  
+        set -e
 
+        if [ ${{EXIT_STATUS}} -eq 0 ]; then
+           echo "SUCCESSFUL; EXIT STATUS: ${{EXIT_STATUS}}" >> {log}
+        else 
+           echo "UNSUCCESSFUL; EXIT STATUS: ${{EXIT_STATUS}}" >> {log}
+           exit ${{EXIT_STATUS}}
+        fi  
         """

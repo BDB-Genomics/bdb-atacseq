@@ -25,19 +25,20 @@ rule picard_CollectAlignmentSummaryMetrics:
         PICARD_VERSION=$(picard --help 2>&1 | head -n 1 || echo "Picard Version Unknown" )
         echo "PICARD VERSION: ${{PICARD_VERSION}}" >> {log}
         
-        set -e 
-        
+        set +e
         picard CollectAlignmentSummaryMetrics \
-        --INPUT {input.markdup_bam} \
-        --OUTPUT {output.alignment_metrics} \
-        --REFERENCE_SEQUENCE {params.reference_genome} \
-        --VALIDATION_STRINGENCY {params.validation_stringency} \
-        2>> {log} 
-
+            --INPUT {input.markdup_bam} \
+            --OUTPUT {output.alignment_metrics} \
+            --REFERENCE_SEQUENCE {params.reference_genome} \
+            --VALIDATION_STRINGENCY {params.validation_stringency} \
+            2>> {log} 
         EXIT_STATUS=$?
+        set -e
+
         if [ "${{EXIT_STATUS}}" -eq 0 ]; then 
-           echo "SUCCESSFULL; EXIT STATUS: ${{EXIT_STATUS}}" >> {log}
+           echo "SUCCESSFUL; EXIT STATUS: ${{EXIT_STATUS}}" >> {log}
         else 
-           echo "UNSUCCESSFULL; EXIT STATUS:  ${{EXIT_STATUS}}" >> {log}
+           echo "UNSUCCESSFUL; EXIT STATUS: ${{EXIT_STATUS}}" >> {log}
+           exit ${{EXIT_STATUS}}
         fi  
         """   
