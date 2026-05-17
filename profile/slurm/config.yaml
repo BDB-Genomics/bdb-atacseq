@@ -1,0 +1,29 @@
+# Snakemake Slurm Profile
+# Usage: snakemake --profile profile/slurm
+
+executor: slurm
+use-conda: true
+conda-frontend: mamba
+jobs: 100
+printshellcmds: true
+reason: true
+show-failed-logs: true
+keep-going: true
+rerun-incomplete: true
+restart-times: 1
+
+# HPC Shared Filesystem latency safeguard (wait up to 60 seconds for output files)
+latency-wait: 60
+
+# Unified Conda prefix location to prevent user conflicts on shared HPC filesystems
+conda-prefix: ".conda_envs"
+
+# Slurm-specific default resources configuration
+default-resources:
+  mem_mb: 4000
+  time: "01:00:00"
+  threads: 1
+  slurm_partition: "standard"
+  # Set slurm_account dynamically. Leave empty to fall back automatically to the user's
+  # default active Slurm association, preventing invalid account billing failures.
+  slurm_account: ""
