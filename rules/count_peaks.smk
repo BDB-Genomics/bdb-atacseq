@@ -1,6 +1,6 @@
 rule count_peaks:
     input:
-        consensus=config['consensus_peaks']['output']['consensus'] + "/consensus_peaks.bed",
+        consensus=f"{config['consensus_peaks']['output']['consensus']}/consensus_peaks.bed",
         shifted_bam=lambda wildcards: f"{config['count_peaks']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam"
 
     output:

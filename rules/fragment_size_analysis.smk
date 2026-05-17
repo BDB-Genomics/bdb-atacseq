@@ -3,9 +3,9 @@ rule fragment_size_analysis:
         metrics=lambda wildcards: f"{config['fragment_size_analysis']['input']['metrics']}/{wildcards.sample}.insert_metrics.txt"
         
     output:
-        fragment_sizes=config['fragment_size_analysis']['output'] + "/{sample}_fragment_sizes.txt", 
-        histogram=config['fragment_size_analysis']['output'] + "/{sample}_fragment.png", 
-        stats=config['fragment_size_analysis']['output'] + "/{sample}_fragment_stats.txt"
+        fragment_sizes=f"{config['fragment_size_analysis']['output']}/{{sample}}_fragment_sizes.txt", 
+        histogram=f"{config['fragment_size_analysis']['output']}/{{sample}}_fragment.png", 
+        stats=f"{config['fragment_size_analysis']['output']}/{{sample}}_fragment_stats.txt"
     
     params:
         min_length=config['fragment_size_analysis']['params']['min_length'], 

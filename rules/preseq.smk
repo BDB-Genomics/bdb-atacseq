@@ -15,6 +15,8 @@ rule preseq:
         
     log: "logs/preseq/{sample}.err"
     benchmark: "benchmarks/preseq/{sample}.txt"
+    conda: "envs/04_metrics_qc/preseq.yaml"
+    container: "https://depot.galaxyproject.org/singularity/preseq:3.2.0--h0f4d3ed_3"
     threads: config['preseq'].get('threads', 1)
     message: "[Preseq Sample: {wildcards.sample} | Markedup Bam Index: {input.markdup_bam_index} , Markedup Bam: {input.markdup_bam} | Complexity: {output.complexity} | Extra: {params.extra} ]"
     

@@ -1,14 +1,7 @@
 
-def get_bigwig_files(wildcards):
-   """Generate  bigwig input files"""
-   return expand("{path}/{sample}.bw",
-                 path = config['correlation_analysis']['input']['bigwig'],
-                 sample = SAMPLES)
-                       
-
 rule correlation_analysis: 
     input: 
-        bigwig=get_bigwig_files
+        bigwig=lambda wildcards: expand("{path}/{sample}.bw", path=config['correlation_analysis']['input']['bigwig'], sample=SAMPLES)
         
     output: 
          npz=f"{config['correlation_analysis']['output']}/matrix.npz", 

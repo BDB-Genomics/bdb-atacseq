@@ -11,7 +11,7 @@ rule macs2_peak_calling:
         qval=config['macs2']['params']['qvalue'],
         nomodel=config['macs2']['params']['nomodel'],
         format=config['macs2']['params']['format'],
-        dir=config['macs2']['output']['peaks']
+        dir=lambda wildcards, output: os.path.dirname(output.peaks)
 
     resources:
         mem_mb=config['macs2']['resources']['mem_mb'],

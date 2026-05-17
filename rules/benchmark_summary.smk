@@ -17,6 +17,7 @@ rule benchmark_summary:
         mem_mb=1000,
         time="00:10:00"
 
+    log: "logs/reporting/benchmark_summary.log"
     conda: "envs/misc/template_tool.yaml"
     message: "[Benchmark Summary] Aggregating {len(input.benchmarks)} benchmark files"
 
@@ -27,11 +28,11 @@ rule benchmark_summary:
         for f in {input.benchmarks}; do
             rule=$(echo "$f" | sed 's|benchmarks/||' | cut -d'/' -f1)
             sample=$(echo "$f" | sed 's|.txt||' | rev | cut -d'/' -f1 | rev)
-            if [ -f "$f" ]; then
-                runtime=$(head -1 "$f" | cut -f1)
-                mem=$(head -1 "$f" | cut -f2)
-                cpu=$(head -1 "$f" | cut -f3)
+            [ -f "$f" ] && {
+                runtime=$(head -n 2 "$f" | tail -n 1 | cut -f1)
+                mem=$(head -n 2 "$f" | tail -n 1 | cut -f2)
+                cpu=$(head -n 2 "$f" | tail -n 1 | cut -f3)
                 echo -e "${{rule}}\\t${{sample}}\\t${{runtime}}\\t${{mem}}\\t${{cpu}}" >> {output.summary}
-            fi
-        done
+            }
+        done 2> {log}
         """

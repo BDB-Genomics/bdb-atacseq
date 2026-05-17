@@ -11,7 +11,8 @@ rule tobias_atacorrect:
 
     params:
         genome_sizes=config['tobias']['params']['genome_sizes'],
-        blacklist=config['tobias']['params']['blacklist']
+        blacklist=config['tobias']['params']['blacklist'],
+        out_dir=config['tobias']['output']['corrected_bam']
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -30,14 +31,14 @@ rule tobias_atacorrect:
             --bam {input.bam} \
             --genome {input.genome} \
             --blacklist {params.blacklist} \
-            --outdir {config['tobias']['output']['corrected_bam']} \
+            --outdir {params.out_dir} \
             --prefix {wildcards.sample} \
             --cores {threads} \
             2> {log}
 
-        mv {config['tobias']['output']['corrected_bam']}/{wildcards.sample}_corrected.bam {output.corrected_bam}
-        mv {config['tobias']['output']['corrected_bam']}/{wildcards.sample}_bias.bw {output.bias_track}
-        mv {config['tobias']['output']['corrected_bam']}/{wildcards.sample}_atacorrect.log {output.log_file}
+        mv {params.out_dir}/{wildcards.sample}_corrected.bam {output.corrected_bam}
+        mv {params.out_dir}/{wildcards.sample}_bias.bw {output.bias_track}
+        mv {params.out_dir}/{wildcards.sample}_atacorrect.log {output.log_file}
         """
 
 rule tobias_score_bigwig:
@@ -50,6 +51,9 @@ rule tobias_score_bigwig:
     output:
         footprint_bw=f"{config['tobias']['output']['footprint_bw']}/{{sample}}_footprints.bw",
         regions=f"{config['tobias']['output']['regions']}/{{sample}}_scored_regions.bed"
+
+    params:
+        out_dir=config['tobias']['output']['footprint_bw']
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -69,19 +73,19 @@ rule tobias_score_bigwig:
             --peaks {input.peaks} \
             --genome {input.genome} \
             --motifs {input.motif_db} \
-            --outdir {config['tobias']['output']['footprint_bw']} \
+            --outdir {params.out_dir} \
             --prefix {wildcards.sample} \
             --cores {threads} \
             2> {log}
 
-        mv {config['tobias']['output']['footprint_bw']}/{wildcards.sample}_footprints.bw {output.footprint_bw}
-        mv {config['tobias']['output']['footprint_bw']}/{wildcards.sample}_regions.bed {output.regions}
+        mv {params.out_dir}/{wildcards.sample}_footprints.bw {output.footprint_bw}
+        mv {params.out_dir}/{wildcards.sample}_regions.bed {output.regions}
         """
 
 rule tobias_bindetect:
     input:
         bam=expand("{path}/{sample}_corrected.bam", path=config['tobias']['output']['corrected_bam'], sample=SAMPLES),
-        peaks=config['consensus_peaks']['output']['consensus'] + "/consensus_peaks.bed",
+        peaks=f"{config['consensus_peaks']['output']['consensus']}/consensus_peaks.bed",
         genome=config['tobias']['params']['genome_fa'],
         motif_db=config['tobias']['params']['motif_db'],
         sample_sheet=config['global']['samples']
@@ -91,7 +95,8 @@ rule tobias_bindetect:
 
     params:
         conditions=config['tobias']['params']['conditions'],
-        genome_sizes=config['tobias']['params']['genome_sizes']
+        genome_sizes=config['tobias']['params']['genome_sizes'],
+        corrected_bam_dir=config['tobias']['output']['corrected_bam']
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -110,7 +115,7 @@ rule tobias_bindetect:
         SAMPLES_FLAG=""
         while IFS=$'\\t' read -r sample fastq_r1 fastq_r2 replicate condition; do
             if [ "$sample" != "sample" ]; then
-                SAMPLES_FLAG="$SAMPLES_FLAG --bam {config['tobias']['output']['corrected_bam']}/${{sample}}_corrected.bam"
+                SAMPLES_FLAG="$SAMPLES_FLAG --bam {params.corrected_bam_dir}/${{sample}}_corrected.bam"
             fi
         done < {input.sample_sheet}
 

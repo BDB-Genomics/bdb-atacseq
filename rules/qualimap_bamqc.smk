@@ -7,7 +7,8 @@ rule qualimap_bamqc:
         qc_dir=directory(f"{config['qualimap_bamqc']['output']['qc_dir']}/{{sample}}_qualimap_report")
         
     params:
-        extra="bamqc"
+        extra="bamqc",
+        mem_gb=lambda wildcards, resources: f"{max(4, int(resources.mem_mb / 1024))}G"
 
     resources:
         mem_mb=config['qualimap_bamqc']['resources']['mem_mb'], 
@@ -22,17 +23,11 @@ rule qualimap_bamqc:
 
     shell:
         """
-        # Qualimap memory allocation (dynamic from Snakemake resources)
-        mem_gb=$(awk -v m="{resources.mem_mb}" 'BEGIN {printf "%dG", m/1024}')
-        if [ "$mem_gb" = "0G" ]; then
-            mem_gb="4G"
-        fi
-
         qualimap {params.extra} \
             -bam {input.markdup_bam} \
             -outdir {output.qc_dir} \
             -gff {input.gtf} \
-            --java-mem-size=${{mem_gb}} \
+            --java-mem-size={params.mem_gb} \
             -nt {threads} \
             2> {log}
         """

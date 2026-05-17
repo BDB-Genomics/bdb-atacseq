@@ -9,7 +9,8 @@ rule footprinting:
 
     params:
         genome=config['footprinting']['params']['genome_fa'],
-        method=config['footprinting']['params']['method']
+        method=config['footprinting']['params']['method'],
+        tmp_dir=lambda wildcards, output: f"{os.path.dirname(output.footprints)}/tmp_{wildcards.sample}"
 
     resources:
         mem_mb=config['footprinting']['resources']['mem_mb'],
@@ -29,13 +30,13 @@ rule footprinting:
                 --bamfile {input.shifted_bam} \
                 --bedfile {input.peaks} \
                 --reference {params.genome} \
-                --outdir {config['footprinting']['output']['footprints']}/tmp_{wildcards.sample} \
+                --outdir {params.tmp_dir} \
                 --ncpus {threads} \
                 2> {log}
 
-            cp {config['footprinting']['output']['footprints']}/tmp_{wildcards.sample}/footprints.bed {output.footprints}
-            cp {config['footprinting']['output']['footprints']}/tmp_{wildcards.sample}/regions.bed {output.regions}
-            rm -rf {config['footprinting']['output']['footprints']}/tmp_{wildcards.sample}
+            cp {params.tmp_dir}/footprints.bed {output.footprints}
+            cp {params.tmp_dir}/regions.bed {output.regions}
+            rm -rf {params.tmp_dir}
         fi
 
         echo "Footprinting complete for {wildcards.sample}" >> {log}

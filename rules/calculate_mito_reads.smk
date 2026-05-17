@@ -24,23 +24,17 @@ rule calculate_mito_reads:
         """
         # Get BAM header chromosome names to dynamically locate MT/M/chrM/chrMT
         mito_chr=$(samtools view -H {input.sorted_bam} | grep -o -E "SN:(chr)?(M|MT)" | cut -d':' -f2 | head -n1)
-        if [ -z "$mito_chr" ]; then
-            mito_chr="{params.mito_chr}"
-        fi
+        [ -z "$mito_chr" ] && mito_chr="{params.mito_chr}"
 
         # Index BAM if not already indexed
-        if [ ! -f {input.sorted_bam}.bai ]; then
-            samtools index {input.sorted_bam} 2> {log}
-        fi
+        [ -f {input.sorted_bam}.bai ] || samtools index {input.sorted_bam} 2> {log}
         
         # Total mapped reads (excluding unmapped)
         total=$(samtools view -c -F 4 {input.sorted_bam} 2>> {log})
         
         # Mitochondrial reads
         mito=0
-        if [ "${{total}}" -ne 0 ]; then
-            mito=$(samtools view -c {input.sorted_bam} "$mito_chr" 2>> {log})
-        fi
+        [ "${{total}}" -ne 0 ] && mito=$(samtools view -c {input.sorted_bam} "$mito_chr" 2>> {log})
         
         # Calculate fraction
         fraction=$(awk -v m="$mito" -v t="$total" 'BEGIN {if (t > 0) printf "%.6f", m/t; else print "0.000000"}')
@@ -48,5 +42,4 @@ rule calculate_mito_reads:
         echo "Total Reads: ${{total}}" > {output.mito_stats}
         echo "Mito Reads: ${{mito}}" >> {output.mito_stats}
         echo "Mito Fraction: ${{fraction}}" >> {output.mito_stats}
-
-          """
+        """

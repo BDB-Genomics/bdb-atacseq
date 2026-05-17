@@ -155,12 +155,12 @@ if MODE == "bulk":
         expand("{path}/{sample}_frip.txt", path=config['frip_calculation']['output'], sample=SAMPLES),
         expand("{path}/{sample}_peak_annotation.txt", path=config['peak_annotation']['output'], sample=SAMPLES),
         expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
-        config['consensus_peaks']['output']['consensus'] + "/consensus_peaks.bed",
-        config['consensus_peaks']['output']['counts'] + "/peak_sample_counts.txt",
-        config['differential_accessibility']['output']['results'] + "/diff_accessibility_results.tsv",
-        config['differential_accessibility']['output']['plots'] + "/volcano_plot.pdf",
-        config['differential_accessibility']['output']['plots'] + "/ma_plot.pdf",
-        config['differential_accessibility']['output']['plots'] + "/pca_plot.pdf",
+        f"{config['consensus_peaks']['output']['consensus']}/consensus_peaks.bed",
+        f"{config['consensus_peaks']['output']['counts']}/peak_sample_counts.txt",
+        f"{config['differential_accessibility']['output']['results']}/diff_accessibility_results.tsv",
+        f"{config['differential_accessibility']['output']['plots']}/volcano_plot.pdf",
+        f"{config['differential_accessibility']['output']['plots']}/ma_plot.pdf",
+        f"{config['differential_accessibility']['output']['plots']}/pca_plot.pdf",
         expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES),
         expand("{path}/{sample}_corrected.bam", path=config['tobias']['output']['corrected_bam'], sample=SAMPLES),
         expand("{path}/{sample}_footprints.bw", path=config['tobias']['output']['footprint_bw'], sample=SAMPLES),
@@ -184,7 +184,7 @@ elif MODE == "scatac":
         expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=SAMPLES)
     ]
     QC_METRICS_TARGETS = [
-        config['archr']['output']['qc_report'] + "/ArchR_full_report.pdf"
+        f"{config['archr']['output']['qc_report']}/ArchR_full_report.pdf"
     ]
     VISUALIZATION_TARGETS = [
         expand("{path}/{sample}.bw", path=config['bigwig']['output']['bigwig'], sample=SAMPLES),
@@ -192,20 +192,20 @@ elif MODE == "scatac":
         f"{config['correlation_analysis']['output']}/correlation_heatmap.png"
     ]
     PEAK_TARGETS = [
-        config['archr']['output']['clusters'] + "/cell_clusters.tsv",
-        config['archr']['output']['plots'] + "/umap_clusters.pdf",
-        config['archr']['output']['markers'] + "/marker_genes.tsv",
-        config['archr']['output']['doublets'] + "/doublet_enrichment.pdf",
-        config['cicero']['output']['connections'] + "/coaccessibility_connections.rds",
-        config['cicero']['output']['connections'] + "/coaccessibility_table.tsv",
-        config['cicero']['output']['ccans'] + "/ccans.bed",
-        config['cicero']['output']['plots'] + "/coaccessibility_plot.png",
+        f"{config['archr']['output']['clusters']}/cell_clusters.tsv",
+        f"{config['archr']['output']['plots']}/umap_clusters.pdf",
+        f"{config['archr']['output']['markers']}/marker_genes.tsv",
+        f"{config['archr']['output']['doublets']}/doublet_enrichment.pdf",
+        f"{config['cicero']['output']['connections']}/coaccessibility_connections.rds",
+        f"{config['cicero']['output']['connections']}/coaccessibility_table.tsv",
+        f"{config['cicero']['output']['ccans']}/ccans.bed",
+        f"{config['cicero']['output']['plots']}/coaccessibility_plot.png",
         expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
         expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
-        config['chromatin_velocity']['output']['nfr_ratios'] + "/nfr_ratios_per_cell.csv",
-        config['chromatin_velocity']['output']['velocity'] + "/velocity_vectors.npy",
-        config['chromatin_velocity']['output']['plots'] + "/velocity_streamplot.png",
-        config['chromatin_velocity']['output']['plots'] + "/nfr_ratio_violin.png",
+        f"{config['chromatin_velocity']['output']['nfr_ratios']}/nfr_ratios_per_cell.csv",
+        f"{config['chromatin_velocity']['output']['velocity']}/velocity_vectors.npy",
+        f"{config['chromatin_velocity']['output']['plots']}/velocity_streamplot.png",
+        f"{config['chromatin_velocity']['output']['plots']}/nfr_ratio_violin.png",
         config['chromatin_velocity']['output']['summary'],
         config['benchmark_summary']['output']
     ]
@@ -225,7 +225,7 @@ rule all:
         QC_GATE_TARGETS,
         VISUALIZATION_TARGETS,
         PEAK_TARGETS,
-        directory(config['multiqc']['output']),
+        f"{config['multiqc']['output']}/multiqc_report.html",
         # [TEMPLATE] Add your target list here so the pipeline explicitly demands those files.
         #TEMPLATE_TARGETS
 

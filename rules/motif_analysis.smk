@@ -3,7 +3,7 @@ rule motif_analysis:
         filtered_peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed"
 
     output:
-        html=directory(config['motif_analysis']['output'] + "/{sample}")
+        html=directory(f"{config['motif_analysis']['output']}/{{sample}}")
 
     params:
         motif_db=config['motif_analysis']['params']['motif_db'],
