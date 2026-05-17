@@ -680,30 +680,6 @@ cicero:
     time: "04:00:00"
 
 # ==============================================================================
-# scATAC-seq: Chromatin Velocity (Nucleosome dynamics-based trajectory inference)
-# ==============================================================================
-chromatin_velocity:
-  input:
-    fragments: "results/scatac/archr/fragments/fragments.tsv.gz"
-    embedding: "results/scatac/archr/plots/umap_coordinates.csv"
-    cell_barcodes: "results/scatac/archr/clusters/cell_barcodes.txt"
-    peaks: "results/peak_calling/filtered_peaks/filtered_peaks.bed"
-    cell_annotations: "results/scatac/archr/clusters/cell_clusters.tsv"
-  output:
-    nfr_ratios: "results/scatac/chromatin_velocity/nfr_ratios"
-    velocity: "results/scatac/chromatin_velocity/velocity"
-    plots: "results/scatac/chromatin_velocity/plots"
-    summary: "results/scatac/chromatin_velocity/chromatin_velocity_summary.tsv"
-  params:
-    n_neighbors: 30
-    min_fragments: 100
-    smoothing_steps: 3
-  threads: 8
-  resources:
-    mem_mb: 16000
-    time: "02:00:00"
-
-# ==============================================================================
 # Boilerplate / Template Configuration
 # Use this block as a guide when adding new tools to the pipeline.
 # ==============================================================================
