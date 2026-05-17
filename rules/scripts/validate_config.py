@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the ChIP-seq config and sample sheet before Snakemake builds the DAG."""
+"""Validate the ATAC-seq config and sample sheet before Snakemake builds the DAG."""
 
 from __future__ import annotations
 
@@ -26,6 +26,8 @@ PATH_CHECKS = (
     (("global", "references", "motif_db"), "file"),
     (("global", "envs", "main"), "file"),
     (("motif_analysis", "input", "genome"), "file"),
+    (("multiqc", "params", "config"), "file"),
+    (("tss_enrichment", "script"), "file"),
 )
 
 
@@ -180,8 +182,35 @@ def validate_required_config_paths(
 
 
 def validate_scalar_config_values(config: dict[str, Any], errors: list[str]) -> None:
-    positive_int_suffixes = ("threads", "mem_mb", "trim_front1", "trim_front2", "length_required")
-    positive_float_suffixes = ("min_frip", "min_tss_enr", "min_mapping_rate", "max_duplicate_rate")
+    positive_int_suffixes = (
+        "threads",
+        "mem_mb",
+        "trim_front1",
+        "trim_front2",
+        "length_required",
+        "MAPQ",
+        "flags",
+        "min_length",
+        "max_length",
+        "max_fragment",
+        "upstream",
+        "downstream",
+        "bin_size",
+    )
+    positive_float_suffixes = (
+        "min_frip",
+        "min_tss_enr",
+        "min_mapping_rate",
+        "max_duplicate_rate",
+        "qvalue",
+        "M",
+    )
+    non_empty_string_suffixes = (
+        "time",
+        "mito_chr",
+        "genome_size",
+        "feature_types",
+    )
 
     for suffix in positive_int_suffixes:
         for path_keys in iter_matching_paths(config, suffix):
@@ -195,10 +224,11 @@ def validate_scalar_config_values(config: dict[str, Any], errors: list[str]) -> 
             if not isinstance(value, (int, float)) or value < 0:
                 errors.append(f"Config value '{'.'.join(path_keys)}' must be a non-negative number.")
 
-    for path_keys in iter_matching_paths(config, "time"):
-        value = get_config_value(config, path_keys)
-        if not isinstance(value, str) or not value.strip():
-            errors.append(f"Config value '{'.'.join(path_keys)}' must be a non-empty string.")
+    for suffix in non_empty_string_suffixes:
+        for path_keys in iter_matching_paths(config, suffix):
+            value = get_config_value(config, path_keys)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"Config value '{'.'.join(path_keys)}' must be a non-empty string.")
 
 
 def iter_matching_paths(config: dict[str, Any], leaf_key: str) -> list[tuple[str, ...]]:
@@ -466,6 +496,27 @@ def validate_samples_usage(root: Path, config: dict[str, Any], errors: list[str]
         )
 
 
+def validate_conda_environments(root: Path, errors: list[str]) -> None:
+    conda_pattern = re.compile(r"conda:\s*['\"]([^'\"]+)['\"]")
+    workflow_files = sorted((root / "rules").glob("*.smk"))
+
+    for workflow_file in workflow_files:
+        if not workflow_file.exists():
+            continue
+        with workflow_file.open("r", encoding="utf-8") as handle:
+            for line_no, line in enumerate(handle, start=1):
+                match = conda_pattern.search(line)
+                if match:
+                    conda_path_str = match.group(1)
+                    # Resolve relative to the directory containing the smk file
+                    resolved_path = (workflow_file.parent / conda_path_str).resolve()
+                    if not resolved_path.exists():
+                        errors.append(
+                            f"Conda environment file not found: '{conda_path_str}' "
+                            f"(referenced in {workflow_file.relative_to(root)}:{line_no})"
+                        )
+
+
 def main() -> None:
     root = workflow_root()
     config_arg = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("config.yaml")
@@ -482,6 +533,7 @@ def main() -> None:
         validate_fastp_input_mapping(config, sample_records, config_path, root, errors)
         validate_path_checks(config, config_path, root, errors)
         validate_samples_usage(root, config, errors)
+        validate_conda_environments(root, errors)
 
     if errors:
         fail(errors)
