@@ -3,10 +3,8 @@
 # Usage: snakemake --profile profile/low_resource
 
 use-conda: true
-conda-frontend: mamba
 jobs: 2
 printshellcmds: true
-reason: true
 show-failed-logs: true
 keep-going: true
 rerun-incomplete: true
