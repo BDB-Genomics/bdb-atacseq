@@ -506,7 +506,9 @@ def validate_conda_environments(root: Path, errors: list[str]) -> None:
                 match = conda_pattern.search(line)
                 if match:
                     conda_path_str = match.group(1)
-                    # Resolve relative to the directory containing the smk file
+                    # Snakemake resolves conda: paths relative to the .smk file's
+                    # directory, so "envs/foo.yaml" in rules/bar.smk resolves to
+                    # rules/envs/foo.yaml — mirror that behaviour here.
                     resolved_path = (workflow_file.parent / conda_path_str).resolve()
                     if not resolved_path.exists():
                         errors.append(

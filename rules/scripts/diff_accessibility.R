@@ -46,10 +46,12 @@ cat("Count matrix:", nrow(count_matrix), "peaks x", ncol(count_matrix), "samples
 
 cat("Creating sample metadata\n")
 condition_col <- if ("condition" %in% colnames(samples_info)) "condition" else "group"
+coldata <- samples_info[match(colnames(count_matrix), samples_info$sample), ]
+rownames(coldata) <- coldata$sample
 coldata <- data.frame(
-    row.names = colnames(count_matrix),
-    condition = samples_info[[condition_col]],
-    replicate = samples_info$replicate
+    row.names = coldata$sample,
+    condition = coldata[[condition_col]],
+    replicate = coldata$replicate
 )
 
 cat("Conditions:", paste(unique(coldata$condition), collapse=", "), "\n")

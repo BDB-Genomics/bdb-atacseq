@@ -6,7 +6,7 @@ rule samtools_markdup:
         deduplicated_bam=f"{config['samtools_markdup']['output']['markdup_bam']}/{{sample}}_noMT.sorted.dedup.bam"
     
     params:
-        dup_flag=lambda wildcards: config['samtools_markdup']['params']['remove_duplicates']    
+        dup_flag="-r" if config['samtools_markdup']['params']['remove_duplicates'] else ""
     
     resources:
         mem_mb=config['samtools_markdup']['resources']['mem_mb'], 
@@ -22,7 +22,7 @@ rule samtools_markdup:
     shell:
         """
         samtools markdup \
-        -{params.dup_flag} \
+        {params.dup_flag} \
         -d 2500 \
         -@ {threads} \
         {input.sorted_bam_noMT_fixmate} \

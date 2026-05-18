@@ -15,16 +15,33 @@ arrow_dir <- snakemake@output[["arrow_dir"]]
 
 samples_info <- read.delim(sample_sheet, header=TRUE, sep="\t")
 
+# Convert BAMs to fragment files (10x-format .tsv.gz) required by createArrowFiles
+fragment_files <- vapply(seq_along(bam_files), function(i) {
+    bam <- bam_files[[i]]
+    frag <- file.path(arrow_dir, paste0(samples_info$sample[i], "_fragments.tsv.gz"))
+    dir.create(dirname(frag), showWarnings=FALSE, recursive=TRUE)
+    cmd <- paste(
+        "sinto fragments -b", shQuote(bam),
+        "-f", shQuote(frag),
+        "--collapse_within"
+    )
+    ret <- system(cmd)
+    if (ret != 0) stop("sinto fragments failed for: ", bam)
+    # Index the fragment file
+    system(paste("tabix -p bed", shQuote(frag)))
+    frag
+}, character(1))
+
 # Set working directory to arrow_dir so that Arrow files are created inside it
 dir.create(arrow_dir, showWarnings = FALSE, recursive = TRUE)
 setwd(arrow_dir)
 
-cat("Creating Arrow files from BAMs\n")
+cat("Creating Arrow files from fragment files\n")
 ArrowFiles <- createArrowFiles(
-    inputFiles = bam_files,
+    inputFiles = fragment_files,
     sampleNames = samples_info$sample,
     filterTSS = snakemake@params[["min_tss"]],
-    filterFrags = c(snakemake@params[["min_frags"]], snakemake@params[["max_frags"]]),
+    filterFrags = snakemake@params[["min_frags"]],
     addTileMat = TRUE,
     addGeneScoreMat = TRUE
 )

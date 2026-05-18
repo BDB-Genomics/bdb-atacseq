@@ -1,20 +1,25 @@
 rule benchmark_summary:
     input:
-        benchmarks=expand("benchmarks/{rule}/{sample}.txt",
+        benchmarks_per_sample=expand("benchmarks/{rule}/{sample}.txt",
             rule=[
                 "fastp", "fastqc", "bowtie2", "samtools_sort",
                 "samtools_markdup", "samtools_view", "tn5_shift",
                 "macs2", "frip", "tss_enrichment", "cross_correlation",
-                "bedtools_genomecov", "bigwig", "heatmap"
+                "motif_analysis", "bedtools_genomecov", "bigwig",
+                "heatmap", "footprinting"
             ],
             sample=SAMPLES
-        )
+        ),
+        benchmarks_mito=expand("benchmarks/remove_mito_reads/{sample}_noMT_sorted_bam.txt", sample=SAMPLES),
+        benchmarks_blacklist=expand("benchmarks/blacklist_region_filter/{sample}.txt", sample=SAMPLES),
+        benchmark_consensus=["benchmarks/consensus_peaks/consensus.txt"],
+        benchmarks_idr=IDR_BENCHMARKS
 
     output:
         summary="results/reporting/benchmark_summary.tsv"
 
     params:
-        n_benchmarks=lambda wildcards, input: len(input.benchmarks)
+        n_benchmarks=lambda wildcards, input: len(input)
 
     resources:
         mem_mb=1000,
@@ -28,7 +33,7 @@ rule benchmark_summary:
         """
         echo -e "Rule\\tSample\\tRuntime_s\\tMemory_MB\\tCPU_Percent" > {output.summary}
 
-        for f in {input.benchmarks}; do
+        for f in {input.benchmarks_per_sample} {input.benchmarks_mito} {input.benchmarks_blacklist} {input.benchmark_consensus} {input.benchmarks_idr}; do
             rule=$(echo "$f" | sed 's|benchmarks/||' | cut -d'/' -f1)
             sample=$(echo "$f" | sed 's|.txt||' | rev | cut -d'/' -f1 | rev)
             [ -f "$f" ] && {{

@@ -11,7 +11,8 @@ rule chromap_align:
     params:
         preset=config['chromap']['params']['preset'],
         barcode_regex=config['chromap']['params'].get('barcode_regex', None),
-        extra=config['chromap']['params'].get('extra', '')
+        extra=config['chromap']['params'].get('extra', ''),
+        genome_fa=config['global']['references']['genome_fa']
 
     resources:
         mem_mb=config['chromap']['resources']['mem_mb'],
@@ -29,11 +30,10 @@ rule chromap_align:
         chromap \
             --preset {params.preset} \
             -x {input.index} \
-            -r {config['global']['references']['genome_fa']} \
+            -r {params.genome_fa} \
             -1 {input.R1_fastp} \
             -2 {input.R2_fastp} \
             -t {threads} \
-            --drop-seq \
             {params.extra} \
             -o {output.BAM} \
             --SAM \

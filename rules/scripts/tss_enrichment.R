@@ -184,9 +184,8 @@ cat("===========================================\n\n")
 # Create publication-quality multi-panel plot
 cat("Generating comprehensive TSS enrichment plots...\n")
 # Aspect ratio optimized for side-by-side landscape visualization
-pdf(out_pdf, width=15, height=5)
-# Safe device management guarantees dev.off() is called even if fatal plotting errors occur
 on.exit(if (names(dev.cur()) != "null device") dev.off())
+pdf(out_pdf, width=15, height=5)
 
 # Set up layout for multiple plots side-by-side with perfect balanced weight
 layout(matrix(c(1, 2, 3), 1, 3, byrow=TRUE))
@@ -195,27 +194,21 @@ par(mar=c(5, 5, 4, 2))
 # PANEL 1: TSS Enrichment Profile (Main Plot)
 cat("Panel 1: Computing TSS enrichment profile...\n")
 tryCatch({
-    reads <- coverage(gal)
-    
-    # Calculate signal around TSS - sample if too many regions
+    # featureAlignedSignal expects a bamfile path, not a coverage object
     n_sample <- min(length(tss_regions), 10000)
     tss_sample <- tss_regions
-    if(length(tss_regions) > n_sample) {
+    if (length(tss_regions) > n_sample) {
         set.seed(42)
         tss_sample <- tss_regions[sample(length(tss_regions), n_sample)]
         cat("  Sampling", n_sample, "TSS regions for visualization\n")
     }
-    
-    if (Sys.getenv("SNAKEMAKE_DEBUG") == "TRUE") {
-        cat("  Computing TSS enrichment profile with", length(tss_sample), "TSS regions\n")
-    }
-    
-    # Upgraded tile resolution to 200 bins for sharper enrichment visual profiles
-    sigs <- featureAlignedSignal(reads, 
-                                 feature.gr = tss_sample,
-                                 upstream = upstream,
-                                 downstream = downstream,
-                                 n.tile = 200)
+    sigs <- featureAlignedSignal(
+        bamfiles = bamfile,
+        feature.gr = tss_sample,
+        upstream = upstream,
+        downstream = downstream,
+        n.tile = 200
+    )
     
     # Average signal
     avg_signal <- colMeans(sigs, na.rm = TRUE)

@@ -27,3 +27,9 @@ __pycache__/
 *.peak_annotation_summary.txt
 *.fragment_sizes.txt
 PAT
+/data/
+/envs/
+/sshkey
+/sshkey.pub
+/download.log
+

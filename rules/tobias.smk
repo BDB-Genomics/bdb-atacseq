@@ -2,18 +2,18 @@ import os
 
 rule tobias_atacorrect:
     input:
-        bam=lambda wildcards: f"{config['tobias']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam",
+        bam=lambda wildcards: f"{config['tobias']['input']['filtered_bam']}/{wildcards.sample}.filtered.bam",
         genome=config['tobias']['params']['genome_fa'],
         blacklist=config['tobias']['params']['blacklist']
 
     output:
-        corrected_bam=f"{config['tobias']['output']['corrected_bam']}/{{sample}}_corrected.bam",
+        corrected_bw=f"{config['tobias']['output']['corrected_bw']}/{{sample}}_corrected.bw",
         bias_track=f"{config['tobias']['output']['bias_track']}/{{sample}}_bias.bw",
         log_file=f"{config['tobias']['output']['logs']}/{{sample}}_atacorrect.log"
 
     params:
         genome_sizes=config['tobias']['params']['genome_sizes'],
-        out_dir=lambda wildcards, output: os.path.dirname(output.corrected_bam)
+        out_dir=lambda wildcards, output: os.path.dirname(output.corrected_bw)
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -22,7 +22,7 @@ rule tobias_atacorrect:
     log: "logs/tobias/{sample}_atacorrect.err"
     benchmark: "benchmarks/tobias/{sample}_atacorrect.txt"
     conda: "envs/05_peak_calling/tobias.yaml"
-    container: "https://depot.galaxyproject.org/singularity/tobias:0.14.2--pyhdfd78af_0"
+    container: "https://depot.galaxyproject.org/singularity/tobias:0.17.3--pyhdfd78af_0"
     threads: config['tobias']['threads']
     message: "[TOBIAS ATACorrect] Sample: {wildcards.sample} | BAM: {input.bam} | Genome: {input.genome}"
 
@@ -37,21 +37,18 @@ rule tobias_atacorrect:
             --cores {threads} \
             2> {log}
 
-        mv {params.out_dir}/{wildcards.sample}_corrected.bam {output.corrected_bam}
+        mv {params.out_dir}/{wildcards.sample}_corrected.bw {output.corrected_bw}
         mv {params.out_dir}/{wildcards.sample}_bias.bw {output.bias_track}
         mv {params.out_dir}/{wildcards.sample}_atacorrect.log {output.log_file}
         """
 
 rule tobias_score_bigwig:
     input:
-        bam=lambda wildcards: f"{config['tobias']['output']['corrected_bam']}/{wildcards.sample}_corrected.bam",
-        peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed",
-        genome=config['tobias']['params']['genome_fa'],
-        motif_db=config['tobias']['params']['motif_db']
+        corrected_bw=lambda wildcards: f"{config['tobias']['output']['corrected_bw']}/{wildcards.sample}_corrected.bw",
+        peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed"
 
     output:
-        footprint_bw=f"{config['tobias']['output']['footprint_bw']}/{{sample}}_footprints.bw",
-        regions=f"{config['tobias']['output']['regions']}/{{sample}}_scored_regions.bed"
+        footprint_bw=f"{config['tobias']['output']['footprint_bw']}/{{sample}}_footprints.bw"
 
     params:
         out_dir=lambda wildcards, output: os.path.dirname(output.footprint_bw)
@@ -63,29 +60,23 @@ rule tobias_score_bigwig:
     log: "logs/tobias/{sample}_score.err"
     benchmark: "benchmarks/tobias/{sample}_score.txt"
     conda: "envs/05_peak_calling/tobias.yaml"
-    container: "https://depot.galaxyproject.org/singularity/tobias:0.14.2--pyhdfd78af_0"
+    container: "https://depot.galaxyproject.org/singularity/tobias:0.17.3--pyhdfd78af_0"
     threads: config['tobias']['threads']
-    message: "[TOBIAS ScoreBigwig] Sample: {wildcards.sample} | BAM: {input.bam} | Peaks: {input.peaks}"
+    message: "[TOBIAS FootprintScores] Sample: {wildcards.sample} | BigWig: {input.corrected_bw} | Peaks: {input.peaks}"
 
     shell:
         """
-        TOBIAS ScoreBigwig \
-            --bam {input.bam} \
-            --peaks {input.peaks} \
-            --genome {input.genome} \
-            --motifs {input.motif_db} \
-            --outdir {params.out_dir} \
-            --prefix {wildcards.sample} \
+        TOBIAS FootprintScores \
+            --signal {input.corrected_bw} \
+            --regions {input.peaks} \
+            --output {output.footprint_bw} \
             --cores {threads} \
             2> {log}
-
-        mv {params.out_dir}/{wildcards.sample}_footprints.bw {output.footprint_bw}
-        mv {params.out_dir}/{wildcards.sample}_regions.bed {output.regions}
         """
 
 rule tobias_bindetect:
     input:
-        bam=expand("{path}/{sample}_corrected.bam", path=config['tobias']['output']['corrected_bam'], sample=SAMPLES),
+        corrected_bw=expand("{path}/{sample}_corrected.bw", path=config['tobias']['output']['corrected_bw'], sample=SAMPLES),
         peaks=f"{config['consensus_peaks']['output']['consensus']}/consensus_peaks.bed",
         genome=config['tobias']['params']['genome_fa'],
         motif_db=config['tobias']['params']['motif_db'],
@@ -97,8 +88,8 @@ rule tobias_bindetect:
     params:
         conditions=config['tobias']['params']['conditions'],
         genome_sizes=config['tobias']['params']['genome_sizes'],
-        corrected_bam_dir=lambda wildcards, input: os.path.dirname(input.bam[0]),
-        n_bams=lambda wildcards, input: len(input.bam)
+        corrected_bw_dir=lambda wildcards, input: os.path.dirname(input.corrected_bw[0]),
+        n_bams=lambda wildcards, input: len(input.corrected_bw)
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -107,7 +98,7 @@ rule tobias_bindetect:
     log: "logs/tobias/bindetect.err"
     benchmark: "benchmarks/tobias/bindetect.txt"
     conda: "envs/05_peak_calling/tobias.yaml"
-    container: "https://depot.galaxyproject.org/singularity/tobias:0.14.2--pyhdfd78af_0"
+    container: "https://depot.galaxyproject.org/singularity/tobias:0.17.3--pyhdfd78af_0"
     threads: config['tobias']['threads']
     message: "[TOBIAS BINDetect] Running differential TF binding analysis on {params.n_bams} samples"
 
@@ -117,7 +108,7 @@ rule tobias_bindetect:
         SAMPLES_FLAG=""
         while IFS=$'\\t' read -r sample fastq_r1 fastq_r2 replicate condition; do
             if [ "$sample" != "sample" ]; then
-                SAMPLES_FLAG="$SAMPLES_FLAG --bam {params.corrected_bam_dir}/${{sample}}_corrected.bam"
+                SAMPLES_FLAG="$SAMPLES_FLAG --bam {params.corrected_bw_dir}/${{sample}}_corrected.bw"
             fi
         done < {input.sample_sheet}
 

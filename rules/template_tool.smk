@@ -31,6 +31,5 @@ rule template_tool:
     # [TEMPLATE] The actual bash commands to run the tool. Use {input}, {output}, {params}, etc.
     shell:
         """
-        echo "{params.message} Sample: {wildcards.sample}" > {output.dummy_out}
-        2> {log}
+        echo "{params.message} Sample: {wildcards.sample}" > {output.dummy_out} 2> {log}
         """

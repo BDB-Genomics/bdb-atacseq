@@ -1,0 +1,706 @@
+{
+  "timestamp": "2026-05-17T21:27:03.940240+00:00",
+  "commit": "80cfdae3239a112bc064e64a25521f497f1d3f7e",
+  "files": {
+    "sshkey": {
+      "hash": "80d480e106036d47bb713441f15f0ceb6ef15d5dc347290e66b2e65ce2fde176",
+      "size": 399,
+      "mtime": 1779042587.6237178
+    },
+    "README.md": {
+      "hash": "217ea38237cc7af5e436535e5391b8bb4136509b4673f5aae2e5a4ef465c8350",
+      "size": 13655,
+      "mtime": 1779030488.1490898
+    },
+    "CITATION.cff": {
+      "hash": "65a2a47ad5584c5b8c55bf368fdc1c801979edca1c26ee93549b04169c5a0e9e",
+      "size": 895,
+      "mtime": 1779030516.307328
+    },
+    "CHANGELOG.md": {
+      "hash": "d177cc7bc3d9a67a5437c360d434a66d0dadbcc6a29b75a04e35a302e880daf3",
+      "size": 6138,
+      "mtime": 1779030504.1072242
+    },
+    "LICENSE": {
+      "hash": "f001380ff737ffc79c000d3ffb334e7d7cb80a96aa9389afd27e51aee98f48d9",
+      "size": 1069,
+      "mtime": 1779026838.3770137
+    },
+    "sshkey.pub": {
+      "hash": "047d1fcc63b55818d0b149842f77836ce03e8f50453514af5e079b8c89a0f90e",
+      "size": 94,
+      "mtime": 1779042587.6242278
+    },
+    ".gitignore": {
+      "hash": "740a5736930da4741ec964cc563ea1fd9ba5bb825ec7099241bb55dc0a8543dd",
+      "size": 402,
+      "mtime": 1779027381.2289124
+    },
+    "config.yaml": {
+      "hash": "aad1c844f0c1f1bb57be8479fe694b54cc82452e20c3fbe3bec61f98852e2127",
+      "size": 20786,
+      "mtime": 1779045457.653753
+    },
+    "CONTRIBUTING.md": {
+      "hash": "84f743c254bef043b2bc78648ec371f3d5f0a7bd79e5627cf7194cf6e9816c28",
+      "size": 1710,
+      "mtime": 1778792687.0604966
+    },
+    "download.log": {
+      "hash": "a1d1cce1b62965c07cfbe7fdeda9625b4c5b664062b7583522df69bb11a64d5a",
+      "size": 11650,
+      "mtime": 1779037091.334425
+    },
+    "Snakefile": {
+      "hash": "203236b738f3b94b110a57f827572671e34b7e3b4cec397038d352b2f7de9e39",
+      "size": 13185,
+      "mtime": 1779047423.0976162
+    },
+    "rules/samtools_fixmate.smk": {
+      "hash": "220d9c77f5d5cbc6f6dbd61e3c2187e6d6b4d12c81cd657eed71601beb320e88",
+      "size": 1200,
+      "mtime": 1779027186.8820674
+    },
+    "rules/archr.smk": {
+      "hash": "da476f4ead327196e309a02169a1b7a96c349ecf2929946318a1d3d6f56f2a8f",
+      "size": 2861,
+      "mtime": 1779044987.4786832
+    },
+    "rules/normalize_coverage.smk": {
+      "hash": "89c6fec3220877dd0c0a3b9a193921d46c06430dc044cf9b2d708554c6b3f5bc",
+      "size": 1419,
+      "mtime": 1779025931.0812933
+    },
+    "rules/footprinting.smk": {
+      "hash": "7cf6b5f76b7093de5c5456c672fd44433b7b87370946024886209494581c6548",
+      "size": 2082,
+      "mtime": 1779046202.41837
+    },
+    "rules/correlation_analysis.smk": {
+      "hash": "703136192d8b06daac72904f6b3c5be326b33a58d87ae5a58892c34c66e15d84",
+      "size": 1917,
+      "mtime": 1779044715.835513
+    },
+    "rules/cicero.smk": {
+      "hash": "7b2af560ffd87f311965f6ab7de9234a463e4357d0a5497edffdc159a0586a86",
+      "size": 1312,
+      "mtime": 1779030137.477628
+    },
+    "rules/picard_insert_size_metrics.smk": {
+      "hash": "058f49e9bb7987957bfcbdbd7f071ff0516ddba4c430d6b7ddcbf3284fc43b4a",
+      "size": 2143,
+      "mtime": 1779022587.6717014
+    },
+    "rules/template_tool.smk": {
+      "hash": "970dc7af9f824b83352c69145f94daa24d366e7df309db382ff4690f52aad7e8",
+      "size": 1621,
+      "mtime": 1779045176.9545126
+    },
+    "rules/tn5_shift.smk": {
+      "hash": "72bf4220c7e0128c6945d6bb2f0713cf5847d1f395aecd11d20a4dd2fab31283",
+      "size": 1820,
+      "mtime": 1779045093.4961462
+    },
+    "rules/heatmap.smk": {
+      "hash": "c13a06c34c25d7a24be0acd91f086d14b506c4bb9d2bf27f76c1712c674043e3",
+      "size": 2182,
+      "mtime": 1779045084.2281055
+    },
+    "rules/chromap.smk": {
+      "hash": "9b7a4f3544448d93adbd4315eea3d0242b02dbbb6ee02aa78084c6296d4c3c14",
+      "size": 1609,
+      "mtime": 1779045674.326717
+    },
+    "rules/chromvar_analysis.smk": {
+      "hash": "0c05962836e82052b00d6cb090042a3ebc1c739a8b83d24d34a605651ccb2b05",
+      "size": 1475,
+      "mtime": 1779028584.415514
+    },
+    "rules/bedtools_genomecov.smk": {
+      "hash": "21856a3fd44bb5653806568080e20692071be70239220987bc758f2d28cab3fb",
+      "size": 1202,
+      "mtime": 1779027333.6596935
+    },
+    "rules/samtools_markdup.smk": {
+      "hash": "16b3ef2828baa18b4b89386b5737070dc98ce2fd939004cc7458a7aaa6d1e7e5",
+      "size": 1262,
+      "mtime": 1779045171.347488
+    },
+    "rules/calculate_mito_reads.smk": {
+      "hash": "0b96ad7e5174df2b2e76937690f42cdb2ca7a48f62f80eb183896664dd58316e",
+      "size": 2043,
+      "mtime": 1779035566.3196225
+    },
+    "rules/tss_enrichment.smk": {
+      "hash": "f072dd689829fcdb411f3ce27a22c42f9cde40404f5eb0c1415db84ec00f4734",
+      "size": 1474,
+      "mtime": 1779022710.0285835
+    },
+    "rules/benchmark_summary.smk": {
+      "hash": "e05153e26e0af0fcde2a79f89436fba1c1a8b2e3018154ad2c433b66d056ba33",
+      "size": 1976,
+      "mtime": 1779047605.7034209
+    },
+    "rules/consensus_peaks.smk": {
+      "hash": "c479e1ff51c2292cf45a3d9091f0de13126d6732c2c4a6c66679e11b1cd2d100",
+      "size": 1678,
+      "mtime": 1779035998.6510632
+    },
+    "rules/count_peaks.smk": {
+      "hash": "7147ae54e348491d304fae604ce432788226756af5017ee62bfd23117408e6c6",
+      "size": 1096,
+      "mtime": 1779035091.7582283
+    },
+    "rules/samtools_index_post_filter.smk": {
+      "hash": "1a59d6e7fddff175c7bd67d3c7b5a71333942137405a876c80647d162d1f986b",
+      "size": 1148,
+      "mtime": 1778855389.6285677
+    },
+    "rules/samtools_sort.smk": {
+      "hash": "5774a6f1afd8319e0a25e7e8170a36072b08a33fa51bb0562b6423c6f80eab82",
+      "size": 1040,
+      "mtime": 1779027186.8750675
+    },
+    "rules/differential_accessibility.smk": {
+      "hash": "415fd2a763be399bd89880fa745ae1d5c46ae2a227ad08e88a74a83cae28d08e",
+      "size": 1606,
+      "mtime": 1779036062.495289
+    },
+    "rules/fragment_size_analysis.smk": {
+      "hash": "ade3b6e50e7fbfebf28a521d99b5d0cd2739b2bd73f581db58515000725ddb23",
+      "size": 3062,
+      "mtime": 1779045144.6593707
+    },
+    "rules/idr.smk": {
+      "hash": "4d6086da97a43a9df5c94541d156a60a3776b146f2494e53975bb97716e82fbf",
+      "size": 1925,
+      "mtime": 1779046907.135731
+    },
+    "rules/blacklist_filter.smk": {
+      "hash": "de32bacdd17e093b212b82dc56659c163f5a5c2be262cb37ae7c2e320fb6ce10",
+      "size": 1166,
+      "mtime": 1779027260.5703716
+    },
+    "rules/bowtie2.smk": {
+      "hash": "b68652c64e8268b191a150785f4a3ac3333fd0b0a98126dca32b4b7555230c80",
+      "size": 1463,
+      "mtime": 1779045161.4454443
+    },
+    "rules/peak_annotation.smk": {
+      "hash": "bc055b6b904668eb84b2c38e864bb7fce1dbe2c6f6474825fb080a09f9e17cbd",
+      "size": 1900,
+      "mtime": 1779027358.9028087
+    },
+    "rules/remove_mito_reads.smk": {
+      "hash": "01b9e2d1c8ab0bb0cef445334650ca9cc2dbb86d283e1823269ebb31cc451ae0",
+      "size": 1675,
+      "mtime": 1779022505.763264
+    },
+    "rules/sorted_bedgraph.smk": {
+      "hash": "4abd6cf92b3c8b8e9706f92b12bc66ece1f4e712bc21ba7b16c9ccee909f018d",
+      "size": 1132,
+      "mtime": 1778855611.631308
+    },
+    "rules/samtools_index_after_markdup.smk": {
+      "hash": "dcc9bfc0e443af748097718c2aceb384913235fe64bd171ab205cdb379ac49dc",
+      "size": 1170,
+      "mtime": 1778855351.5596383
+    },
+    "rules/tobias.smk": {
+      "hash": "1e0a4aa534a29647adeddee45c12baac75593ce22df96d5885b68a9d5db76ee8",
+      "size": 4961,
+      "mtime": 1779050645.2991595
+    },
+    "rules/multiqc.smk": {
+      "hash": "3f460ef5b2f50d502ceca4fbf570ae0337948a3e71124154131aa8e0447bcea3",
+      "size": 2155,
+      "mtime": 1779045680.7487457
+    },
+    "rules/preseq.smk": {
+      "hash": "7ff0f956bd53d8f113ce61abeae94851a8b219cc1565a408d4f4521dc83de5cf",
+      "size": 1259,
+      "mtime": 1779035147.146297
+    },
+    "rules/fastp.smk": {
+      "hash": "a02278e4cc81303e01974519cde51a3f8844fce2834fa45dcb2d8a10ce1ffca2",
+      "size": 1760,
+      "mtime": 1778880245.9444013
+    },
+    "rules/samtools_stats.smk": {
+      "hash": "323117b1c7917f59707fd8cde29785b0815fde18924589e1f93bfcc4d9520142",
+      "size": 1020,
+      "mtime": 1778855522.098145
+    },
+    "rules/frip_calculation.smk": {
+      "hash": "7d09136bc5eddfcef5a62a95ce4d80e99cefb7897133d5d1b59d38a7387fd371",
+      "size": 1733,
+      "mtime": 1779044725.8255556
+    },
+    "rules/bigwig.smk": {
+      "hash": "216938b42914016a52b0c7888df6cb26b428c7828014f2026b8807d318867c3e",
+      "size": 1096,
+      "mtime": 1778854475.098445
+    },
+    "rules/motif_analysis.smk": {
+      "hash": "d825b2e38e2ce828aa4bc3e268afb256af67c7546acbb0f152e1093a2142b037",
+      "size": 1185,
+      "mtime": 1779035079.4549866
+    },
+    "rules/picard_alignment_metrics.smk": {
+      "hash": "cef107330eedb77c2f5b013325dcdff28969d2137e72f920f8c23ef7400fa078",
+      "size": 2143,
+      "mtime": 1779022579.6036525
+    },
+    "rules/qc_gate.smk": {
+      "hash": "835a6457423e9468ebf352151a2026c7cb2974f1e079a28b813dd928017ae037",
+      "size": 1707,
+      "mtime": 1779025904.7048242
+    },
+    "rules/samtools_view.smk": {
+      "hash": "8df20541ce714d780b2388057547bc982ae27dc3126a49d12e98c06fdbdf73d1",
+      "size": 1334,
+      "mtime": 1778855580.6995165
+    },
+    "rules/qualimap_bamqc.smk": {
+      "hash": "b280f0842ca5eb5746eb04f4630b778c3911f99ba617fd6318f4fda358bc1129",
+      "size": 1313,
+      "mtime": 1779035210.184478
+    },
+    "rules/macs2_peak_calling.smk": {
+      "hash": "76c1cc94ea4bb8f992d9e6c78302d6e1ec0273ee3580326190bb092e96255dfa",
+      "size": 1475,
+      "mtime": 1779035873.9448514
+    },
+    "rules/samtools_index.smk": {
+      "hash": "79b07079fce936d03bc16950cb32bc652f9b87b089aa993f30fddeb4935c8965",
+      "size": 1034,
+      "mtime": 1778855412.0276847
+    },
+    "rules/fastqc.smk": {
+      "hash": "2a9926a0212783b4c47e522e8620c00cd9cdefd9d4ea851d12d9e1696ed5f674",
+      "size": 1502,
+      "mtime": 1779035159.1785252
+    },
+    "rules/cross_correlation.smk": {
+      "hash": "ca30a9059fc2f9ae6eae8ecab432ad323c1f559a7de0b5da89ac1604723f8f30",
+      "size": 1419,
+      "mtime": 1779027966.632434
+    },
+    "rules/envs/02_alignment/chromap.yaml": {
+      "hash": "ae1b6b838f43e072e765a6da7893d020c1231453080815247f645a48a6810478",
+      "size": 103,
+      "mtime": 1779030137.480628
+    },
+    "rules/envs/02_alignment/bowtie2.yaml": {
+      "hash": "cda0eee681ea16431cf7df228476a3115d9a6adfe197425fc341ecdd901f64f2",
+      "size": 103,
+      "mtime": 1778821866.4514134
+    },
+    "rules/envs/scatac/archr.yaml": {
+      "hash": "75a97c0417429cb5503d84c2a8a7ee109e88e281e50410331ad2ba91c69d491f",
+      "size": 200,
+      "mtime": 1779030137.480628
+    },
+    "rules/envs/scatac/cicero.yaml": {
+      "hash": "7f841f54b6ba2512b5d92032fbe38531b4c953dd5967d6d498aeaa5b4be84b57",
+      "size": 202,
+      "mtime": 1779030137.484628
+    },
+    "rules/envs/06_visualization/bedGraph_to_bigwig.yaml": {
+      "hash": "d68b95279644867e5da817ad881a8123af608f4f9a424a0bb44fa8cd6b1944e7",
+      "size": 108,
+      "mtime": 1778821918.5305645
+    },
+    "rules/envs/06_visualization/sorted_bedgraph.yaml": {
+      "hash": "2777e26caeebb58740a8bf1800c4cea6d34a020155fb302949b861799cfe2132",
+      "size": 93,
+      "mtime": 1778837561.1149144
+    },
+    "rules/envs/06_visualization/deeptools.yaml": {
+      "hash": "130425f00e8be067223a4720104c595c024fb90f33b9197958387a9205f1ecff",
+      "size": 107,
+      "mtime": 1778821916.4285185
+    },
+    "rules/envs/03_post_alignment/bedtools.yaml": {
+      "hash": "eb33bb0190410415d6a126bf04525e7b85a77ee69e5916cb0ecb4bf31800ab10",
+      "size": 102,
+      "mtime": 1779027429.482141
+    },
+    "rules/envs/03_post_alignment/samtools.yaml": {
+      "hash": "d1f6ab240a6272033c627ef7f3f24861b7997d88febcef57f7b7e4045f1fd12c",
+      "size": 100,
+      "mtime": 1779027429.479141
+    },
+    "rules/envs/misc/template_tool.yaml": {
+      "hash": "c78273622eb38ae5b991605f05469fb3662072bfb225180f687a55a3889b111d",
+      "size": 325,
+      "mtime": 1778792687.0644972
+    },
+    "rules/envs/05_peak_calling/tobias.yaml": {
+      "hash": "adad6cb2b3ae10da552676d2f8b0fc1c400433765b96ac4032cfe2749cf687e2",
+      "size": 84,
+      "mtime": 1779050638.1521518
+    },
+    "rules/envs/05_peak_calling/chipseeker.yaml": {
+      "hash": "19697197d15b1d95aaa5b239e4ffcc12502f92b366e73c3d20d995dd2efccf55",
+      "size": 105,
+      "mtime": 1778821913.662458
+    },
+    "rules/envs/05_peak_calling/homer.yaml": {
+      "hash": "0dfcacbe00df465d4a06e262e3478b740fd76d7f0cf7198bb745ebb409ea0799",
+      "size": 80,
+      "mtime": 1778821909.613369
+    },
+    "rules/envs/05_peak_calling/macs2.yaml": {
+      "hash": "d5b8efe321a4748db1c61ce1043ac84a6a639c94febad32c6c5d8042d6b015cc",
+      "size": 83,
+      "mtime": 1778821906.523301
+    },
+    "rules/envs/05_peak_calling/idr.yaml": {
+      "hash": "d3d77c3e73a24b7b0ea9d107c6381cab7892faebde5eb4d650443d4de57ebd11",
+      "size": 79,
+      "mtime": 1779028017.562819
+    },
+    "rules/envs/05_peak_calling/motif_analysis.yaml": {
+      "hash": "19b1c1de7a46b473eabbc41ee5925de255cfd9c8d3e5a0787caebd75ca180a62",
+      "size": 109,
+      "mtime": 1779027219.0201974
+    },
+    "rules/envs/05_peak_calling/chromvar.yaml": {
+      "hash": "a7a92f48407c8c6371aa3703d96141284e589fa8186d314014117f2ac6471c70",
+      "size": 265,
+      "mtime": 1779039067.1321616
+    },
+    "rules/envs/05_peak_calling/diff_accessibility.yaml": {
+      "hash": "db6d80776dd542097db9cb44086ef2111add6e424e1d3cf70c0f858993be55c3",
+      "size": 190,
+      "mtime": 1779038327.439913
+    },
+    "rules/envs/05_peak_calling/consensus.yaml": {
+      "hash": "184bb8b43f7b00f2e339daa1757dd8710987f4fe2d2e62bad1e3b90ad9916bc5",
+      "size": 95,
+      "mtime": 1779028017.5918202
+    },
+    "rules/envs/05_peak_calling/footprinting.yaml": {
+      "hash": "9625704f401d400da6511eb06b55954fecd0f3e5d1f8d9a0f78e2a3b6baec627",
+      "size": 147,
+      "mtime": 1779045257.3658667
+    },
+    "rules/envs/01_preprocessing/fastp.yaml": {
+      "hash": "21761069cd762f4f69d839faf58e8b89e77d3bf5bcb1930a825c5181785761a8",
+      "size": 82,
+      "mtime": 1779027151.086928
+    },
+    "rules/envs/01_preprocessing/fastqc.yaml": {
+      "hash": "13be109df59a6c3cfe02d11dc2b73b2d8b55609fd057026a2db8e555bdb271e1",
+      "size": 84,
+      "mtime": 1778821861.4783025
+    },
+    "rules/envs/01_preprocessing/multiqc.yaml": {
+      "hash": "9e1b16398c031392e5b9718d4a14b9f54248930ab25543af91f521bd2d3538dc",
+      "size": 84,
+      "mtime": 1778821863.9413574
+    },
+    "rules/envs/04_metrics_qc/picard.yaml": {
+      "hash": "b0c12775a00fb1043be77bff34f2ff77f7207c32196fc153bc21768095348fa4",
+      "size": 83,
+      "mtime": 1778821880.6107283
+    },
+    "rules/envs/04_metrics_qc/qualimap.yaml": {
+      "hash": "d33e77d76d296d3d0a90cccc86afa5bbf321066db6f52e9b4565807f7e7b8481",
+      "size": 85,
+      "mtime": 1778821885.2378309
+    },
+    "rules/envs/04_metrics_qc/fragment_size_analysis.yaml": {
+      "hash": "140a677463178f2e11ad38a7ec627f48496ada484ed866624007c666d12a1b03",
+      "size": 138,
+      "mtime": 1779022541.84844
+    },
+    "rules/envs/04_metrics_qc/tss_enrichment.yaml": {
+      "hash": "618b63e2db5ab6314cb8f7fbc27a021e1fe7199c1659c8785aeb0b3cedc0254f",
+      "size": 247,
+      "mtime": 1779048791.5874543
+    },
+    "rules/envs/04_metrics_qc/cross_correlation.yaml": {
+      "hash": "37bfae629e0bcd088a58c35b717f1bb1388f1950d0ce12dc51cb01b9b3474f42",
+      "size": 126,
+      "mtime": 1779047843.7541997
+    },
+    "rules/envs/04_metrics_qc/preseq.yaml": {
+      "hash": "b6452b2407499dea37220df35b03960e598cec98fc83452c6d2931aff578a61d",
+      "size": 83,
+      "mtime": 1778821883.024782
+    },
+    "rules/envs/04_metrics_qc/qc_gate.yaml": {
+      "hash": "297c15e615688e9db99950174d174e29b95251ed3bda1fdfbc3184c7d8c9fdb5",
+      "size": 83,
+      "mtime": 1778855080.4600966
+    },
+    "rules/envs/04_metrics_qc/fragment_analysis.yaml": {
+      "hash": "b223560c0a9be9daf472b8cbf23cbdf8e95dab4fdb1f6eb5bf5385fd65f35d2b",
+      "size": 109,
+      "mtime": 1779027151.0809278
+    },
+    "rules/config/multiqc_config.yaml": {
+      "hash": "50a5d105a0ad0fa6ff5b72cd8c3a12b886ccfdc840bef47540dc35b1409d000c",
+      "size": 844,
+      "mtime": 1779029149.0880604
+    },
+    "rules/scripts/parse_qc_metrics.py": {
+      "hash": "86b4b1f9f95f41a59e0db9290500e7f6d591ee862cb3d8a88baca2d7221afeac",
+      "size": 8948,
+      "mtime": 1779019875.0665376
+    },
+    "rules/scripts/run_batched.py": {
+      "hash": "01509c43b794ba3f7f2138b0b06498b06b814b2319b6be4f5477cd6a3c00957f",
+      "size": 6660,
+      "mtime": 1779046019.7952607
+    },
+    "rules/scripts/archr_doublets.R": {
+      "hash": "00095bfbbf77cb730bee9a06c56458e4d364674a9039b9d89ceaea72b97a13cd",
+      "size": 1317,
+      "mtime": 1779045801.621285
+    },
+    "rules/scripts/archr_pseudobulk.R": {
+      "hash": "d2562f2d46ba2f9f51773bac2d61f752233b4d02ecb2c116e30f73620f29314b",
+      "size": 1677,
+      "mtime": 1779045769.7921429
+    },
+    "rules/scripts/validate_config.py": {
+      "hash": "0f8dff2efba665bec8c83bc6ed13d26877167cd3c3a989a64674a1e9f73299c8",
+      "size": 21234,
+      "mtime": 1779046503.9974027
+    },
+    "rules/scripts/tss_enrichment.R": {
+      "hash": "0bf37c0804a53ae906d150cf4e93fa9f56d50bb6c7267c54cdb5a758e6f93087",
+      "size": 14749,
+      "mtime": 1779046056.069423
+    },
+    "rules/scripts/archr_clustering.R": {
+      "hash": "0d6e022a761c75e516eefbee63f45459f893de44393594324cc099d7f6bf33ae",
+      "size": 2360,
+      "mtime": 1779045793.596249
+    },
+    "rules/scripts/peak_annotation.R": {
+      "hash": "d348a42286b808dbbff98af36b10c3afb4167d50dd5ca04e4e2e77487d12c95c",
+      "size": 1652,
+      "mtime": 1779022756.1629765
+    },
+    "rules/scripts/cicero_analysis.R": {
+      "hash": "4f0b8cb50391123388dec7080f93870e66f18cfb514056038969abb48d778745",
+      "size": 3083,
+      "mtime": 1779045844.5664768
+    },
+    "rules/scripts/diff_accessibility.R": {
+      "hash": "5999c7131ecc60352092393d3ddefb566b9318627103f22af471f2df0cc15ed9",
+      "size": 5162,
+      "mtime": 1779046063.896458
+    },
+    "rules/scripts/download_real_data.sh": {
+      "hash": "b940f83333ee5591ba7335bb14a263300aa3ed03f4755d4f8611191cec52f928",
+      "size": 3997,
+      "mtime": 1779037339.7803106
+    },
+    "rules/scripts/generate_test_data.py": {
+      "hash": "b6fe67fc93812c93907fe7c7f67fffb7d9653ced54fcc854df6d95072b1f26dc",
+      "size": 5141,
+      "mtime": 1779028312.9679818
+    },
+    "rules/scripts/chromvar_analysis.R": {
+      "hash": "96fca67b76a7e7213adb35ea22b3d70d99514540d06abbc1c0c5cc0552174932",
+      "size": 3539,
+      "mtime": 1779045865.5385706
+    },
+    "envs/main.yaml": {
+      "hash": "97bbaa3a572b487d1ee770d47ebcbd61dab19b331feaf6282415351835b7db84",
+      "size": 257,
+      "mtime": 1779053167.578049
+    },
+    "envs/02_alignment/chromap.yaml": {
+      "hash": "ae1b6b838f43e072e765a6da7893d020c1231453080815247f645a48a6810478",
+      "size": 103,
+      "mtime": 1779046723.0146089
+    },
+    "envs/02_alignment/bowtie2.yaml": {
+      "hash": "cda0eee681ea16431cf7df228476a3115d9a6adfe197425fc341ecdd901f64f2",
+      "size": 103,
+      "mtime": 1779046723.0143888
+    },
+    "envs/scatac/archr.yaml": {
+      "hash": "75a97c0417429cb5503d84c2a8a7ee109e88e281e50410331ad2ba91c69d491f",
+      "size": 200,
+      "mtime": 1779046723.0242984
+    },
+    "envs/scatac/cicero.yaml": {
+      "hash": "7f841f54b6ba2512b5d92032fbe38531b4c953dd5967d6d498aeaa5b4be84b57",
+      "size": 202,
+      "mtime": 1779046723.0245843
+    },
+    "envs/06_visualization/bedGraph_to_bigwig.yaml": {
+      "hash": "d68b95279644867e5da817ad881a8123af608f4f9a424a0bb44fa8cd6b1944e7",
+      "size": 108,
+      "mtime": 1779046723.023068
+    },
+    "envs/06_visualization/sorted_bedgraph.yaml": {
+      "hash": "2777e26caeebb58740a8bf1800c4cea6d34a020155fb302949b861799cfe2132",
+      "size": 93,
+      "mtime": 1779046723.0227554
+    },
+    "envs/06_visualization/deeptools.yaml": {
+      "hash": "130425f00e8be067223a4720104c595c024fb90f33b9197958387a9205f1ecff",
+      "size": 107,
+      "mtime": 1779046723.023266
+    },
+    "envs/03_post_alignment/bedtools.yaml": {
+      "hash": "eb33bb0190410415d6a126bf04525e7b85a77ee69e5916cb0ecb4bf31800ab10",
+      "size": 102,
+      "mtime": 1779046723.0163515
+    },
+    "envs/03_post_alignment/samtools.yaml": {
+      "hash": "d1f6ab240a6272033c627ef7f3f24861b7997d88febcef57f7b7e4045f1fd12c",
+      "size": 100,
+      "mtime": 1779046723.0161011
+    },
+    "envs/misc/template_tool.yaml": {
+      "hash": "c78273622eb38ae5b991605f05469fb3662072bfb225180f687a55a3889b111d",
+      "size": 325,
+      "mtime": 1779046723.0237339
+    },
+    "envs/05_peak_calling/tobias.yaml": {
+      "hash": "e7cffd16675abe42353dd06c045be1bff152bc5f675ddb15cee682fd304d0d54",
+      "size": 216,
+      "mtime": 1779046723.0215876
+    },
+    "envs/05_peak_calling/chipseeker.yaml": {
+      "hash": "19697197d15b1d95aaa5b239e4ffcc12502f92b366e73c3d20d995dd2efccf55",
+      "size": 105,
+      "mtime": 1779046723.0222313
+    },
+    "envs/05_peak_calling/homer.yaml": {
+      "hash": "0dfcacbe00df465d4a06e262e3478b740fd76d7f0cf7198bb745ebb409ea0799",
+      "size": 80,
+      "mtime": 1779046723.022028
+    },
+    "envs/05_peak_calling/macs2.yaml": {
+      "hash": "d5b8efe321a4748db1c61ce1043ac84a6a639c94febad32c6c5d8042d6b015cc",
+      "size": 83,
+      "mtime": 1779046723.021609
+    },
+    "envs/05_peak_calling/idr.yaml": {
+      "hash": "d3d77c3e73a24b7b0ea9d107c6381cab7892faebde5eb4d650443d4de57ebd11",
+      "size": 79,
+      "mtime": 1779046723.0204563
+    },
+    "envs/05_peak_calling/motif_analysis.yaml": {
+      "hash": "19b1c1de7a46b473eabbc41ee5925de255cfd9c8d3e5a0787caebd75ca180a62",
+      "size": 109,
+      "mtime": 1779046723.0199907
+    },
+    "envs/05_peak_calling/chromvar.yaml": {
+      "hash": "a7a92f48407c8c6371aa3703d96141284e589fa8186d314014117f2ac6471c70",
+      "size": 265,
+      "mtime": 1779046723.0213897
+    },
+    "envs/05_peak_calling/diff_accessibility.yaml": {
+      "hash": "db6d80776dd542097db9cb44086ef2111add6e424e1d3cf70c0f858993be55c3",
+      "size": 190,
+      "mtime": 1779046723.0209417
+    },
+    "envs/05_peak_calling/consensus.yaml": {
+      "hash": "184bb8b43f7b00f2e339daa1757dd8710987f4fe2d2e62bad1e3b90ad9916bc5",
+      "size": 95,
+      "mtime": 1779046723.0207033
+    },
+    "envs/05_peak_calling/footprinting.yaml": {
+      "hash": "9625704f401d400da6511eb06b55954fecd0f3e5d1f8d9a0f78e2a3b6baec627",
+      "size": 147,
+      "mtime": 1779046723.0211637
+    },
+    "envs/01_preprocessing/fastp.yaml": {
+      "hash": "21761069cd762f4f69d839faf58e8b89e77d3bf5bcb1930a825c5181785761a8",
+      "size": 82,
+      "mtime": 1779046723.013742
+    },
+    "envs/01_preprocessing/fastqc.yaml": {
+      "hash": "13be109df59a6c3cfe02d11dc2b73b2d8b55609fd057026a2db8e555bdb271e1",
+      "size": 84,
+      "mtime": 1779046723.0131972
+    },
+    "envs/01_preprocessing/multiqc.yaml": {
+      "hash": "9e1b16398c031392e5b9718d4a14b9f54248930ab25543af91f521bd2d3538dc",
+      "size": 84,
+      "mtime": 1779046723.0134704
+    },
+    "envs/04_metrics_qc/picard.yaml": {
+      "hash": "b0c12775a00fb1043be77bff34f2ff77f7207c32196fc153bc21768095348fa4",
+      "size": 83,
+      "mtime": 1779046723.0184793
+    },
+    "envs/04_metrics_qc/qualimap.yaml": {
+      "hash": "d33e77d76d296d3d0a90cccc86afa5bbf321066db6f52e9b4565807f7e7b8481",
+      "size": 85,
+      "mtime": 1779046723.019103
+    },
+    "envs/04_metrics_qc/fragment_size_analysis.yaml": {
+      "hash": "140a677463178f2e11ad38a7ec627f48496ada484ed866624007c666d12a1b03",
+      "size": 138,
+      "mtime": 1779046723.017609
+    },
+    "envs/04_metrics_qc/tss_enrichment.yaml": {
+      "hash": "dd7f644766597ab27b993978b16a466daa1f0b9f7d2d0f254250648b1e86caf2",
+      "size": 354,
+      "mtime": 1779046723.0193293
+    },
+    "envs/04_metrics_qc/cross_correlation.yaml": {
+      "hash": "a2d6b14784bd9a037f82eecda9c7100b4e7fb9356e2ed9d9bbcbb4a6766feb20",
+      "size": 136,
+      "mtime": 1779046723.0175314
+    },
+    "envs/04_metrics_qc/preseq.yaml": {
+      "hash": "b6452b2407499dea37220df35b03960e598cec98fc83452c6d2931aff578a61d",
+      "size": 83,
+      "mtime": 1779046723.018609
+    },
+    "envs/04_metrics_qc/qc_gate.yaml": {
+      "hash": "297c15e615688e9db99950174d174e29b95251ed3bda1fdfbc3184c7d8c9fdb5",
+      "size": 83,
+      "mtime": 1779046723.0172637
+    },
+    "envs/04_metrics_qc/fragment_analysis.yaml": {
+      "hash": "b223560c0a9be9daf472b8cbf23cbdf8e95dab4fdb1f6eb5bf5385fd65f35d2b",
+      "size": 109,
+      "mtime": 1779046723.0170066
+    },
+    "profile/local/config.yaml": {
+      "hash": "3fc7859990f166dbe13ac0a5205888318d443a30cf18da32a19a0cc9492932d2",
+      "size": 385,
+      "mtime": 1779051534.2942963
+    },
+    "profile/low_resource/config.yaml": {
+      "hash": "3886991794faf5d1765b90aaafe5dba69740f05bd322388db32ddc58dab42b73",
+      "size": 2356,
+      "mtime": 1779029199.1489358
+    },
+    "profile/test/config.yaml": {
+      "hash": "ccf6abf889fd0fe99c38e1d688724c43dae4a2c01d717c620542d27104177c6c",
+      "size": 318,
+      "mtime": 1779052893.5125165
+    },
+    "profile/slurm/config.yaml": {
+      "hash": "3d5d9011bed85acb5d73b23ddb34cbfd435bb5b63d94d4df2d034715d5ab55d5",
+      "size": 360,
+      "mtime": 1779051882.539181
+    },
+    "assets/readme_animation.svg": {
+      "hash": "d0e0194a390bdb909e62683a87fec9d12ddc4dc16dad5982d2da9b0b0db87c4c",
+      "size": 7668,
+      "mtime": 1778792687.062497
+    },
+    "assets/pipeline_diagram.svg": {
+      "hash": "4ab5fbe051c11453756c93017b4f51a43bcb3e210e0d9e978855fa5250dfcf53",
+      "size": 12425,
+      "mtime": 1778792687.062497
+    }
+  }
+}

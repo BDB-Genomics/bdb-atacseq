@@ -18,6 +18,7 @@ Ideal for machines with ≤4GB RAM where even --jobs 2 causes OOM.
 
 import argparse
 import csv
+import os
 import subprocess
 import sys
 import yaml
@@ -37,22 +38,30 @@ def run_batch(
     cores: int,
     memory: int,
     config: dict,
+    mode: str,
     extra_args: list[str],
 ) -> int:
     """Run snakemake for a single batch of samples."""
     target_files = []
     for s in samples:
-        target_files.extend([
-            f"{config['fastp']['output']}/{s}_R1_trimmed.fastq.gz",
-            f"{config['bowtie2']['output']}/{s}.bam",
-            f"{config['samtools_sort']['output']['sorted_bam']}/{s}.sorted.bam",
-            f"{config['samtools_markdup']['output']['markdup_bam']}/{s}_noMT.sorted.dedup.bam",
-            f"{config['tn5_shift']['output']['shifted_bam']}/{s}.filtered.shifted.bam",
-            f"{config['macs2']['output']['peaks']}/{s}_peaks.narrowPeak",
-            f"{config['blacklist_filter']['output']['filtered_peaks']}/{s}_filtered_peaks.bed",
-            f"{config['qc_gate']['output']}/{s}_qc_pass.txt",
-            f"{config['bigwig']['output']['bigwig']}/{s}.bw",
-        ])
+        if mode == "bulk":
+            target_files.extend([
+                f"{config['fastp']['output']}/{s}_R1_trimmed.fastq.gz",
+                f"{config['bowtie2']['output']}/{s}.bam",
+                f"{config['samtools_sort']['output']['sorted_bam']}/{s}.sorted.bam",
+                f"{config['samtools_markdup']['output']['markdup_bam']}/{s}_noMT.sorted.dedup.bam",
+                f"{config['tn5_shift']['output']['shifted_bam']}/{s}.filtered.shifted.bam",
+                f"{config['macs2']['output']['peaks']}/{s}_peaks.narrowPeak",
+                f"{config['blacklist_filter']['output']['filtered_peaks']}/{s}_filtered_peaks.bed",
+                f"{config['qc_gate']['output']}/{s}_qc_pass.txt",
+                f"{config['bigwig']['output']['bigwig']}/{s}.bw",
+            ])
+        else:  # scatac
+            target_files.extend([
+                f"{config['fastp']['output']}/{s}_R1_trimmed.fastq.gz",
+                f"{config['chromap']['output']}/{s}.bam",
+                f"{config['bigwig']['output']['bigwig']}/{s}.bw",
+            ])
 
     cmd = [
         "snakemake",
@@ -67,12 +76,15 @@ def run_batch(
         *extra_args,
     ]
 
+    env = os.environ.copy()
+    env["ATAC_MODE"] = mode
+
     print(f"\n{'='*60}")
     print(f"BATCH {batch_id}: {', '.join(samples)}")
     print(f"{'='*60}")
     print(f"Command: {' '.join(cmd)}\n")
 
-    result = subprocess.run(cmd)
+    result = subprocess.run(cmd, env=env)
     return result.returncode
 
 
@@ -81,6 +93,8 @@ def main():
     parser.add_argument("--batch-size", type=int, default=1, help="Samples per batch (default: 1)")
     parser.add_argument("--cores", type=int, default=2, help="CPU cores per batch (default: 2)")
     parser.add_argument("--memory", type=int, default=4000, help="Memory limit in MB (default: 4000)")
+    parser.add_argument("--mode", type=str, default=None, choices=["bulk", "scatac"],
+                        help="Pipeline mode: bulk or scatac (default: read from config.yaml)")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to config.yaml")
     parser.add_argument("--sample-sheet", type=str, default="data/fastp/samples.tsv", help="Path to sample sheet")
     parser.add_argument("--dry-run", action="store_true", help="Show batches without running")
@@ -102,6 +116,11 @@ def main():
     with config_path.open() as f:
         config = yaml.safe_load(f)
 
+    mode = args.mode or os.getenv("ATAC_MODE") or config.get("global", {}).get("mode", "bulk")
+    if mode not in ("bulk", "scatac"):
+        print(f"ERROR: Invalid mode '{mode}'. Use 'bulk' or 'scatac'.", file=sys.stderr)
+        sys.exit(1)
+
     samples = get_samples(sample_sheet)
     if not samples:
         print("ERROR: No samples found in sample sheet", file=sys.stderr)
@@ -115,6 +134,7 @@ def main():
     print(f"Total batches: {len(batches)}")
     print(f"Cores per batch: {args.cores}")
     print(f"Memory limit: {args.memory} MB")
+    print(f"Mode: {mode}")
 
     if args.dry_run:
         print("\nBatches (dry-run):")
@@ -125,7 +145,7 @@ def main():
     # Run batches sequentially
     failed_batches = []
     for i, batch in enumerate(batches, 1):
-        ret = run_batch(batch, i, args.cores, args.memory, config, args.extra_args)
+        ret = run_batch(batch, i, args.cores, args.memory, config, mode, args.extra_args)
         if ret != 0:
             failed_batches.append((i, batch))
             print(f"WARNING: Batch {i} had errors (exit code {ret})")

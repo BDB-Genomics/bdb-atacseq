@@ -5,7 +5,7 @@ rule bowtie2_align:
         R2_fastp=lambda wildcards: f"{config['bowtie2']['input']}/{wildcards.sample}_R2_trimmed.fastq.gz"
         
     output:
-        BAM=f"{config[ 'bowtie2']['output']}/{{sample}}.bam"
+        BAM=f"{config['bowtie2']['output']}/{{sample}}.bam"
         
     params:
         index = config['bowtie2']['params']['index'],

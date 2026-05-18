@@ -28,7 +28,7 @@ rule heatmap:
     shell:
         """
         computeMatrix reference-point \
-            --referencePoint TSS \
+            --referencePoint center \
             -b {params.upstream} -a {params.downstream} \
             -R {input.filtered_peaks} \
             -S {input.bigwig} \
@@ -43,7 +43,7 @@ rule heatmap:
             -m {output.matrix} \
             -out {output.plot} \
             --colorMap {params.colormap} \
-            --regionsLabel "TSS" \
+            --regionsLabel "Peak Centers" \
             --samplesLabel {wildcards.sample} \
             --heatmapHeight 12 --heatmapWidth 6 \
             2>> {log.plot}

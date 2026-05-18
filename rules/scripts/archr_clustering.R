@@ -25,7 +25,7 @@ proj <- addIterativeLSI(
     name = "IterativeLSI",
     iterations = 2,
     scaleTo = 25000,
-    dimsToUse = seq(1, as.integer(snakemake@params[["dims_to_use"]])))
+    dimsToUse = eval(parse(text = snakemake@params[["dims_to_use"]])))
 
 proj <- addUMAP(
     ArchRProj = proj,
@@ -59,7 +59,7 @@ write.table(markerList$pos, markers_out, sep="\t", quote=FALSE, row.names=FALSE)
 cat("Marker genes saved\n")
 
 pdf(umap_out, width=10, height=8)
-p1 <- plotEmbedding(ArchRProj=proj, color="Clusters", title="UMAP Clustering", pallete="Set3", size=0.1)
+p1 <- plotEmbedding(ArchRProj=proj, color="Clusters", title="UMAP Clustering", palette="Set3", size=0.1)
 print(p1)
 dev.off()
 
@@ -78,7 +78,7 @@ cat("Cell clusters saved\n")
 pdf(full_report, width=14, height=10)
 plotEmbedding(ArchRProj=proj, color="TSSEnrichment", title="TSS Enrichment", size=0.1)
 plotEmbedding(ArchRProj=proj, color="log10(nFrags)", title="Log10 Fragments", size=0.1)
-plotEmbedding(ArchRProj=proj, color="Clusters", title="Clusters", pallete="Set3", size=0.1)
+plotEmbedding(ArchRProj=proj, color="Clusters", title="Clusters", palette="Set3", size=0.1)
 dev.off()
 
 cat("Full report saved\n")

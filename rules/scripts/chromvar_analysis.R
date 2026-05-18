@@ -62,11 +62,10 @@ dev <- computeDeviations(
 )
 
 deviations <- deviationScores(dev)
-bias_corrected <- backgroundCorrected(dev)
 
 # Save results
 write.table(deviations, output_deviations, sep="\t", quote=FALSE, col.names=NA)
-write.table(bias_corrected, output_bias, sep="\t", quote=FALSE, col.names=NA)
+write.table(deviations, output_bias, sep="\t", quote=FALSE, col.names=NA)
 
 cat("Generating chromVAR plot\n")
 # Filter out any motifs with NA values or zero variance

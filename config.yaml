@@ -49,6 +49,7 @@ global:
     genome_fa: &GENOME_FA "data/reference/genome.fa"
     genome_sizes: &GENOME_SIZES "data/reference/genome.chrom.sizes"
     bowtie2_index: &BOWTIE2_INDEX "data/reference/index/genome"
+    chromap_index: &CHROMAP_INDEX "data/reference/chromap/genome.index"
     blacklist: &BLACKLIST "data/reference/ENCODE_blacklist.bed"
     annotation_gtf: &ANNOTATION_GTF "data/reference/annotation.gtf"
     motif_db: &MOTIF_DB "data/motifs/jaspar_vertebrates.meme"
@@ -161,7 +162,7 @@ samtools_markdup:
   output:
     markdup_bam: "results/post_alignment/samtools_markdup"
   params:
-    remove_duplicates: "r"
+    remove_duplicates: true
   threads: 4
   resources:
     mem_mb: 8000
@@ -542,12 +543,11 @@ differential_accessibility:
 # ==============================================================================
 tobias:
   input:
-    shifted_bam: "results/post_alignment/tn5_shift"
+    filtered_bam: "results/post_alignment/samtools_view"
   output:
-    corrected_bam: "results/peak_calling/tobias/corrected_bam"
+    corrected_bw: "results/peak_calling/tobias/corrected_bw"
     bias_track: "results/peak_calling/tobias/bias_track"
     footprint_bw: "results/peak_calling/tobias/footprint_bw"
-    regions: "results/peak_calling/tobias/regions"
     bindetect: "results/peak_calling/tobias/bindetect"
     logs: "results/peak_calling/tobias/logs"
   params:
@@ -562,18 +562,16 @@ tobias:
     time: "04:00:00"
 
 # ==============================================================================
-# Footprinting (HINT-ATAC)
+# Footprinting (HINT-ATAC via RGT)
 # ==============================================================================
 footprinting:
   input:
-    shifted_bam: "results/post_alignment/tn5_shift"
+    filtered_bam: "results/post_alignment/samtools_view"
   output:
     footprints: "results/peak_calling/footprinting/footprints"
-    regions: "results/peak_calling/footprinting/regions"
     plots: "results/peak_calling/footprinting/plots"
   params:
-    genome_fa: *GENOME_FA
-    method: "HINT-ATAC"
+    organism: "hg38"
   threads: 8
   resources:
     mem_mb: 16000
@@ -624,7 +622,7 @@ chromap:
   input: "results/preprocessing/fastp"
   output: "results/alignment/chromap"
   params:
-    index: *BOWTIE2_INDEX
+    index: *CHROMAP_INDEX
     preset: "atac"
   threads: 16
   resources:

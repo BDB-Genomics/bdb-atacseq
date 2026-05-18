@@ -1,7 +1,7 @@
 rule idr_analysis:
     input:
-        rep1=lambda wildcards: f"{config['macs2']['output']['peaks']}/{wildcards.condition}_rep{wildcards.rep1}_peaks.narrowPeak",
-        rep2=lambda wildcards: f"{config['macs2']['output']['peaks']}/{wildcards.condition}_rep{wildcards.rep2}_peaks.narrowPeak"
+        rep1=lambda wildcards: f"{config['macs2']['output']['peaks']}/{COND_REP_TO_SAMPLE[(wildcards.condition, wildcards.rep1)]}_peaks.narrowPeak",
+        rep2=lambda wildcards: f"{config['macs2']['output']['peaks']}/{COND_REP_TO_SAMPLE[(wildcards.condition, wildcards.rep2)]}_peaks.narrowPeak"
 
     output:
         idr_peaks=f"{config['idr']['output']['idr_peaks']}/{{condition}}_rep{{rep1}}_rep{{rep2}}_idr_peaks.bed",
@@ -34,6 +34,8 @@ rule idr_analysis:
             --plot \
             --log-output-file {log} 2>&1 | tee -a {log}
 
-        mv ${{output.idr_peaks%.bed}}_*-plot.png {output.plot} 2>/dev/null || true
-        cp ${{output.idr_peaks%.bed}}_optimal* {output.opt_peaks} 2>/dev/null || true
+        IDR_PREFIX="{output.idr_peaks}"
+        IDR_PREFIX="${{IDR_PREFIX%.bed}}"
+        mv ${{IDR_PREFIX}}_*-plot.png {output.plot} 2>/dev/null || true
+        cp ${{IDR_PREFIX}}_optimal* {output.opt_peaks} 2>/dev/null || true
         """

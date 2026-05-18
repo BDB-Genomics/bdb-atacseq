@@ -1,7 +1,6 @@
 suppressPackageStartupMessages({
     library(ArchR)
     library(cicero)
-    library(monocle3)
     library(GenomicRanges)
     library(ggplot2)
 })
@@ -33,29 +32,21 @@ peaks_char <- paste(seqnames(peaks), start(peaks), end(peaks), sep = "_")
 rownames(counts) <- peaks_char
 
 cat("Creating cell_data_set for Cicero\n")
-cell_metadata <- as.data.frame(getCellColData(proj))
-feature_metadata <- data.frame(
-    gene_short_name = peaks_char,
-    row.names = peaks_char
-)
-
-cds <- new_cell_data_set(expression_data = counts,
-                         cell_metadata = cell_metadata,
-                         gene_metadata = feature_metadata)
+input_cds <- make_atac_cds(counts, binarize = TRUE)
 
 cat("Running Cicero co-accessibility\n")
 genome_size <- read.delim(genome_sizes_file, header=FALSE, sep="\t")
 
 # run_cicero expects a CellDataSet and a data.frame of chromosome sizes
 cicero_conns <- run_cicero(
-    cds,
+    input_cds,
     genomic_coords = genome_size,
     window_size = as.integer(snakemake@params[["window_size"]])
 )
 
 cat("Co-accessibility connections computed\n")
 
-ccans <- generate_ccans(cicero_conns, threshold = 0.3)
+ccans <- generate_ccans(cicero_conns, coaccess_cutoff = 0.3)
 
 cat("CCANs generated\n")
 

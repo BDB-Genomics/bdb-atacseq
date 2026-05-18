@@ -28,7 +28,7 @@ rule archr_pseudobulk:
 
 rule archr_doublet_detection:
     input:
-        arrow_dir=config['archr']['output']['arrow']
+        arrow_dir=directory(config['archr']['output']['arrow'])
 
     output:
         doublet_report=f"{config['archr']['output']['doublets']}/doublet_enrichment.pdf",
@@ -52,7 +52,7 @@ rule archr_doublet_detection:
 
 rule archr_clustering:
     input:
-        arrow_dir=config['archr']['output']['filtered_arrow']
+        arrow_dir=directory(config['archr']['output']['filtered_arrow'])
 
     output:
         clusters=f"{config['archr']['output']['clusters']}/cell_clusters.tsv",

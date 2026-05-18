@@ -11,7 +11,7 @@ rule fragment_size_analysis:
         min_length=config['fragment_size_analysis']['params']['min_length'], 
         max_length=config['fragment_size_analysis']['params']['max_length'],  
         max_fragment=config['fragment_size_analysis']['params']['max_fragment'],    
-        sample="{sample}"
+        sample=lambda wildcards: wildcards.sample
         
     resources:
         mem_mb=config['fragment_size_analysis']['resources']['mem_mb'], 

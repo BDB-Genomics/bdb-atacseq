@@ -40,7 +40,7 @@ proj <- filterDoublets(proj, cutEnrich = snakemake@params[["doublet_threshold"]]
 cat("Doublets filtered\n")
 
 pdf(doublet_report, width=10, height=8)
-p <- plotDoubletEnrichment(proj)
+p <- plotEmbedding(proj, colorBy = "cellColData", name = "DoubletEnrichment")
 print(p)
 dev.off()
 

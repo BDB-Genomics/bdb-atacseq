@@ -47,6 +47,38 @@ else:
 if not SAMPLES:
     raise ValueError(f"No samples found in sample sheet: {SAMPLES_TSV}")
 
+# Build IDR pairs: all replicate pairs per condition
+if not IS_CI:
+    from itertools import combinations
+    from collections import defaultdict
+    _cond_reps = defaultdict(list)
+    COND_REP_TO_SAMPLE = {}
+    for row in rows:
+        _cond_reps[row["condition"]].append(row["replicate"])
+        COND_REP_TO_SAMPLE[(row["condition"], row["replicate"])] = row["sample"]
+    IDR_TARGETS = [
+        expand(
+            "{path}/{condition}_rep{rep1}_rep{rep2}_idr_peaks.bed",
+            path=config['idr']['output']['idr_peaks'],
+            condition=[cond],
+            rep1=[pair[0]],
+            rep2=[pair[1]]
+        )
+        for cond, reps in _cond_reps.items()
+        for pair in combinations(sorted(set(reps)), 2)
+    ]
+    # flatten
+    IDR_TARGETS = [f for sublist in IDR_TARGETS for f in sublist]
+    IDR_BENCHMARKS = [
+        f"benchmarks/idr/{cond}_rep{pair[0]}_rep{pair[1]}.txt"
+        for cond, reps in _cond_reps.items()
+        for pair in combinations(sorted(set(reps)), 2)
+    ]
+else:
+    COND_REP_TO_SAMPLE = {}
+    IDR_TARGETS = []
+    IDR_BENCHMARKS = []
+
 
 # --- Includes ------------------------------------------------------------------
 include: "rules/fastp.smk"
@@ -95,15 +127,12 @@ elif MODE == "scatac":
     include: "rules/chromap.smk"
     include: "rules/archr.smk"
     include: "rules/cicero.smk"
-    include: "rules/tn5_shift.smk"
     include: "rules/bedtools_genomecov.smk"
     include: "rules/sorted_bedgraph.smk"
     include: "rules/bigwig.smk"
     include: "rules/correlation_analysis.smk"
-    include: "rules/normalize_coverage.smk"
     include: "rules/motif_analysis.smk"
     include: "rules/chromvar_analysis.smk"
-    include: "rules/qc_gate.smk"
 
 include: "rules/benchmark_summary.smk"
 include: "rules/multiqc.smk"
@@ -156,21 +185,20 @@ if MODE == "bulk":
         expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
         f"{config['consensus_peaks']['output']['consensus']}/consensus_peaks.bed",
         f"{config['consensus_peaks']['output']['counts']}/peak_sample_counts.txt",
+        *IDR_TARGETS,
         f"{config['differential_accessibility']['output']['results']}/diff_accessibility_results.tsv",
         f"{config['differential_accessibility']['output']['plots']}/volcano_plot.pdf",
         f"{config['differential_accessibility']['output']['plots']}/ma_plot.pdf",
         f"{config['differential_accessibility']['output']['plots']}/pca_plot.pdf",
         expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES),
-        expand("{path}/{sample}_corrected.bam", path=config['tobias']['output']['corrected_bam'], sample=SAMPLES),
+        expand("{path}/{sample}_corrected.bw", path=config['tobias']['output']['corrected_bw'], sample=SAMPLES),
         expand("{path}/{sample}_footprints.bw", path=config['tobias']['output']['footprint_bw'], sample=SAMPLES),
         config['tobias']['output']['bindetect'],
         expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
         config['benchmark_summary']['output']
     ]
 elif MODE == "scatac":
-    QC_GATE_TARGETS = [
-        expand("{path}/{sample}_qc_pass.txt", path=config['qc_gate']['output'], sample=SAMPLES)
-    ]
+    QC_GATE_TARGETS = []
     PREPROCESSING_TARGETS = [
         expand("{path}/{sample}_R1_trimmed.fastq.gz", path=config['fastp']['output'], sample=SAMPLES),
         expand("{path}/{sample}_R1_trimmed_fastqc.html", path=config['fastqc']['output'], sample=SAMPLES)
@@ -179,15 +207,12 @@ elif MODE == "scatac":
         expand("{path}/{sample}.bam", path=config['chromap']['output'], sample=SAMPLES),
         expand("{path}/{sample}_tag.bam", path=config['chromap']['output'], sample=SAMPLES)
     ]
-    POST_FILTERING_TARGETS = [
-        expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=SAMPLES)
-    ]
+    POST_FILTERING_TARGETS = []
     QC_METRICS_TARGETS = [
         f"{config['archr']['output']['qc_report']}/ArchR_full_report.pdf"
     ]
     VISUALIZATION_TARGETS = [
         expand("{path}/{sample}.bw", path=config['bigwig']['output']['bigwig'], sample=SAMPLES),
-        expand("{path}/{sample}_{method}.bw", path=config['normalized_coverage']['output']['normalized_coverage'], method=config['normalized_coverage']['params']['method'], sample=SAMPLES),
         f"{config['correlation_analysis']['output']}/correlation_heatmap.png"
     ]
     PEAK_TARGETS = [

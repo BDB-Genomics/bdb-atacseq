@@ -1,7 +1,7 @@
 
 rule correlation_analysis: 
     input: 
-        bigwig=lambda wildcards: expand("{path}/{sample}.bw", path=config['correlation_analysis']['input']['bigwig'], sample=SAMPLES)
+        bigwig=expand("{path}/{sample}.bw", path=config['correlation_analysis']['input']['bigwig'], sample=SAMPLES)
         
     output: 
          npz=f"{config['correlation_analysis']['output']}/matrix.npz", 
