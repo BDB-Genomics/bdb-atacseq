@@ -4,7 +4,6 @@
 #>              Author: Himanshu Bhandary                                                                        #>
 #>              Mail: 2032ushimanshu@gmail.com                                                                   #>
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#restartable: True
 
 import os
 import csv
@@ -12,6 +11,11 @@ import subprocess
 from pathlib import Path
 
 configfile: "config.yaml"
+
+wildcard_constraints:
+    sample="[^/]+",
+    condition="[^/]+",
+    replicate="[0-9]+"
 
 # CLI Mode Switching: bulk (default) or scatac
 MODE = os.getenv("ATAC_MODE", config.get("global", {}).get("mode", "bulk"))
@@ -34,6 +38,7 @@ if not IS_CI:
 
 if IS_CI:
     SAMPLES = ["CI_SAMPLE"]
+    SAMPLES_TSV = None
     FASTQ_R1 = {"CI_SAMPLE": "ci_r1.fq.gz"}
     FASTQ_R2 = {"CI_SAMPLE": "ci_r2.fq.gz"}
 else:

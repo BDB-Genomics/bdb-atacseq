@@ -22,8 +22,8 @@ rule fastp_trim :
     log: "logs/fastp/{sample}.err"
     conda:  "envs/01_preprocessing/fastp.yaml"
     container: "https://depot.galaxyproject.org/singularity/fastp:0.24.0--heae3180_1"
-    threads:config["fastp"]["threads"]
-    message:"[FASTP] SAMPLES: {input.R1} {input.R2}|OUTPUT: {output.R1_trimmed} {output.R2_trimmed} {output.html} {output.json}| TRIMFRONT1: {params.trim_front1}| TRIMFRONT2: {params.trim_front2}|LENGTH REQUIRED: {params.length_required}"
+    threads: config["fastp"]["threads"]
+    message: "[FASTP] SAMPLES: {input.R1} {input.R2}|OUTPUT: {output.R1_trimmed} {output.R2_trimmed} {output.html} {output.json}| TRIMFRONT1: {params.trim_front1}| TRIMFRONT2: {params.trim_front2}|LENGTH REQUIRED: {params.length_required}"
     
     shell:
       """

@@ -9,8 +9,8 @@ rule samtools_fixmate:
         mem_mb = config["samtools_fixmate"]['resources']['mem_mb'], 
         time = config["samtools_fixmate"]['resources']['time']
 
-    log: "logs/samtools_fixmate/{sample}_noMT.sorted.fixmate.bam.log"
-    benchmark: "benchmarks/samtools_fixmate/{sample}_noMT.sorted.fixmate.bam.txt"
+    log: "logs/samtools_fixmate/{sample}.err"
+    benchmark: "benchmarks/samtools_fixmate/{sample}.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
     container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
     threads: config["samtools_fixmate"]["threads"]

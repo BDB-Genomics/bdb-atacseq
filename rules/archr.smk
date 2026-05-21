@@ -44,6 +44,7 @@ rule archr_doublet_detection:
     log: "logs/archr/doublets.err"
     benchmark: "benchmarks/archr/doublets.txt"
     conda: "envs/scatac/archr.yaml"
+    container: "https://depot.galaxyproject.org/singularity/bioconductor-archr:1.0.2--r42hdfd78af_0"
     threads: config['archr']['threads']
     message: "[ArchR Doublet Detection] Removing doublets from scATAC-seq data"
 

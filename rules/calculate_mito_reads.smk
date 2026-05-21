@@ -1,6 +1,7 @@
 rule calculate_mito_reads:
     input:
-        sorted_bam=lambda wildcards: f"{config['mitoATAC_calculate']['input']['sorted_bam']}/{wildcards.sample}.sorted.bam"
+        sorted_bam=lambda wildcards: f"{config['mitoATAC_calculate']['input']['sorted_bam']}/{wildcards.sample}.sorted.bam",
+        sorted_bam_index=lambda wildcards: f"{config['samtools_index']['output']['index']}/{wildcards.sample}.sorted.bam.bai"
         
     output:
         mito_stats=f"{config['mitoATAC_calculate']['output']['mito_stats']}/{{sample}}_mito_stats.txt"
@@ -26,8 +27,6 @@ rule calculate_mito_reads:
         mito_chr=$(samtools view -H {input.sorted_bam} | grep -o -E "SN:(chr)?(M|MT)" | cut -d':' -f2 | head -n1)
         [ -z "$mito_chr" ] && mito_chr="{params.mito_chr}"
 
-        # Index BAM if not already indexed
-        [ -f {input.sorted_bam}.bai ] || samtools index {input.sorted_bam} 2> {log}
         
         # Total mapped reads (excluding unmapped)
         total=$(samtools view -c -F 4 {input.sorted_bam} 2>> {log})
