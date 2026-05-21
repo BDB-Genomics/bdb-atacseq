@@ -1,7 +1,7 @@
 rule bedtools_genomecov:
     input:
         shifted_bam=lambda wildcards: f"{config['bedtools_genomecov']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam",
-        qc_pass=lambda wildcards: f"{config['qc_gate']['output']}/{wildcards.sample}_qc_pass.txt"
+        qc_pass=lambda wildcards: f"{config['qc_gate']['output']}/{wildcards.sample}_qc_pass.txt" if MODE == "bulk" else []
 
     output:
         bedgraph=f"{config['bedtools_genomecov']['output']['bedgraph']}/{{sample}}.bedGraph"

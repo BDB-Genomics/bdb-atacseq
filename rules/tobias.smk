@@ -108,7 +108,7 @@ rule tobias_bindetect:
         SAMPLES_FLAG=""
         while IFS=$'\\t' read -r sample fastq_r1 fastq_r2 replicate condition; do
             if [ "$sample" != "sample" ]; then
-                SAMPLES_FLAG="$SAMPLES_FLAG --bam {params.corrected_bw_dir}/${{sample}}_corrected.bw"
+                SAMPLES_FLAG="$SAMPLES_FLAG --signals {params.corrected_bw_dir}/${{sample}}_corrected.bw"
             fi
         done < {input.sample_sheet}
 
