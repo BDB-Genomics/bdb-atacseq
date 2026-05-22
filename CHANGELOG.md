@@ -2,7 +2,23 @@
 #Notable changes made to the pipeline will be recorded in this file 
 
 ## [Unreleased]
-- Placeholder for  upcoming features, bug fixes or improvement.
+- Placeholder for upcoming features, bug fixes or improvements.
+
+## [V3.0.1] - 2026-05-22
+### Added
+- **Global Wildcard Constraints**: Added regex constraints for `{sample}` (`[^/]+`), `{condition}` (`[^/]+`), and `{replicate}` (`[0-9]+`) at the global level in the `Snakefile` to prevent ambiguous path matching and ensure robust DAG resolution.
+
+### Changed
+- **calculate_mito_reads.smk**: Refactored to include `.bam.bai` as an official Snakemake input dependency instead of executing an inline indexing command in the shell directive, preventing potential job race conditions.
+- **bedtools_genomecov.smk**: Modified to dynamically ignore bulk QC (`qc_pass` file) when the pipeline is switched to `scatac` mode, allowing scATAC-seq target coverage rules to execute seamlessly.
+
+### Fixed
+- **tobias.smk**: Corrected TOBIAS BINDetect argument from `--bam` to `--signals` to prevent runtime crashes during bias-corrected TF footprinting.
+- **bedtools.yaml**: Added missing `samtools` dependency to the `03_post_alignment/bedtools` conda environment to resolve runtime failures in FRiP calculation.
+- **archr.smk**: Restored the missing galaxy project Singularity `container` directive for the `archr_doublet_detection` rule.
+- **fastp.smk**: Restored missing whitespace in `threads: config["fastp"]["threads"]` directive.
+- **samtools_fixmate.smk**: Normalized log and benchmark extensions (`.err` and `.txt`) to maintain consistency with the global framework logging convention.
+- **Snakefile**: Standardized CI block to define `SAMPLES_TSV = None` under `IS_CI` mode, avoiding a potential `NameError` on empty sample checks.
 
 ## [V3.0.0] - 2026-05-17
 ### Added
