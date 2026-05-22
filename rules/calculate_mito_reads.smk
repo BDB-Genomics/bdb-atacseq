@@ -1,7 +1,6 @@
 rule calculate_mito_reads:
     input:
-        sorted_bam=lambda wildcards: f"{config['mitoATAC_calculate']['input']['sorted_bam']}/{wildcards.sample}.sorted.bam",
-        sorted_bam_index=lambda wildcards: f"{config['samtools_index']['output']['index']}/{wildcards.sample}.sorted.bam.bai"
+        sorted_bam=lambda wildcards: f"{config['mitoATAC_calculate']['input']['sorted_bam']}/{wildcards.sample}.sorted.bam"
         
     output:
         mito_stats=f"{config['mitoATAC_calculate']['output']['mito_stats']}/{{sample}}_mito_stats.txt"
@@ -23,6 +22,9 @@ rule calculate_mito_reads:
         
     shell:
         """
+        # Generate inline index for the raw sorted bam (required for samtools region query)
+        samtools index -@ {threads} {input.sorted_bam}
+
         # Get BAM header chromosome names to dynamically locate MT/M/chrM/chrMT
         mito_chr=$(samtools view -H {input.sorted_bam} | grep -o -E "SN:(chr)?(M|MT)" | cut -d':' -f2 | head -n1)
         [ -z "$mito_chr" ] && mito_chr="{params.mito_chr}"
@@ -41,4 +43,7 @@ rule calculate_mito_reads:
         echo "Total Reads: ${{total}}" > {output.mito_stats}
         echo "Mito Reads: ${{mito}}" >> {output.mito_stats}
         echo "Mito Fraction: ${{fraction}}" >> {output.mito_stats}
+
+        # Remove the inline index to keep the directory clean
+        rm -f {input.sorted_bam}.bai
         """

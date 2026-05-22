@@ -121,7 +121,7 @@ mitoATAC_calculate:
     mito_chr: "MT" 
   threads: 2
   resources:
-    mem_mb: 2000
+    mem_mb: 4000
     time: "00:30:00"
 
 remove_mito_reads:
