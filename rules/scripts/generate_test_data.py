@@ -14,7 +14,7 @@ CHROM_SIZES = {"chr1": 248956422, "chr2": 242193529, "chr3": 198295559, "chrMT":
 def generate_fastq(filename, n_reads=1000, read_len=75):
     """Generate a minimal FASTQ file with random sequences."""
     bases = "ACGT"
-    qualities = "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
+    qualities = "I" * 150
     with gzip.open(filename, "wt") as f:
         for i in range(n_reads):
             seq = "".join(random.choice(bases) for _ in range(read_len))
