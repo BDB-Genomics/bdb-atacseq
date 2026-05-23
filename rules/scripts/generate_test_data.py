@@ -112,6 +112,11 @@ def main():
     generate_bt2_index(f"{root}/data/reference/index")
     generate_samples_tsv(f"{root}/data/fastp/samples.tsv")
 
+    # Generate mock chromap index
+    os.makedirs(f"{root}/data/reference/chromap", exist_ok=True)
+    with open(f"{root}/data/reference/chromap/genome.index", "w") as f:
+        f.write("placeholder")
+
     print("Test data generated successfully.")
     print(f"  Genome: {root}/data/reference/genome.fa")
     print(f"  Samples: {root}/data/fastp/samples.tsv")
