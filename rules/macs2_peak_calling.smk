@@ -6,7 +6,7 @@ rule macs2_peak_calling:
         peaks=f"{config['macs2']['output']['peaks']}/{{sample}}_peaks.narrowPeak"
 
     params:
-        gsize=config['macs2']['params']['genome_size'],
+        gsize="500000" if IS_CI else config['macs2']['params']['genome_size'],
         qval=config['macs2']['params']['qvalue'],
         nomodel=config['macs2']['params']['nomodel'],
         format=config['macs2']['params']['format'],

@@ -24,4 +24,4 @@ rule tss_enrichment:
     message: "[TSS ENRICHMENT] SAMPLE: {wildcards.sample}| INPUT: {input.shifted_bam} {input.shifted_bam_index} | OUTPUT: {output.text} {output.pdf}| T XDB: {params.txdb}| UPSTREAM: {params.upstream}| DOWNSTREAM: {params.downstream}  "
         
     script:
-        config['tss_enrichment']['script']
+        os.path.abspath(config['tss_enrichment']['script'])
