@@ -105,6 +105,10 @@ def main():
         generate_fastq(f"{root}/data/fastq/{sample}_R1.fastq.gz", n_reads=500)
         generate_fastq(f"{root}/data/fastq/{sample}_R2.fastq.gz", n_reads=500)
 
+    # Generate mock CI FASTQ files in root
+    generate_fastq(f"{root}/ci_r1.fq.gz", n_reads=500)
+    generate_fastq(f"{root}/ci_r2.fq.gz", n_reads=500)
+
     generate_genome(f"{root}/data/reference/genome.fa")
     generate_chrom_sizes(f"{root}/data/reference/genome.chrom.sizes")
     generate_blacklist(f"{root}/data/reference/ENCODE_blacklist.bed")
