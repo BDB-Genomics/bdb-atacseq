@@ -29,8 +29,6 @@ rule cross_correlation:
             -out={output.stats} \
             -rf \
             -p={params.num_threads} \
-            -smin=10 \
-            -smax={params.max_range} \
-            -sstep=5 \
+            -s=10:5:{params.max_range} \
             2> {log}
         """
