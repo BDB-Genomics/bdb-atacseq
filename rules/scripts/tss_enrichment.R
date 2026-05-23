@@ -98,6 +98,32 @@ bamParam <- ScanBamParam(
 gal <- readGAlignments(bamfile, use.names = TRUE, param = bamParam)
 cat("Read", format(length(gal), big.mark=","), "alignments within target windows\n")
 
+# Gracefully handle zero alignments overlapping TSS (common in low-depth mock tests)
+if (length(gal) == 0) {
+    cat("[WARNING] Zero alignments found overlapping TSS regions. Creating fallback results and plots.\n")
+    # Save fallback results text file
+    result_df <- data.frame(
+        Sample = sample_name, 
+        TSS_Enrichment = 0.0,
+        Total_Alignments = 0,
+        TSS_Regions = length(tss_regions),
+        Common_Chromosomes = length(common_chroms),
+        Quality = "Poor",
+        stringsAsFactors = FALSE
+    )
+    write.table(result_df, file=out_text, sep="\t", quote=FALSE, row.names=FALSE)
+    
+    # Save fallback plot PDF
+    pdf(out_pdf, width=10, height=5)
+    plot(1, type = "n", xlim = c(-10, 10), ylim = c(-10, 10), 
+         xlab = "", ylab = "", main = paste0(sample_name, " - TSS Enrichment"), axes=FALSE)
+    text(0, 0, "Warning: Zero alignments overlapping TSS regions.\nCannot compute TSS enrichment profile.", cex=1.3, col="red")
+    dev.off()
+    
+    cat("TSS Enrichment Analysis Complete (Graceful Fallback)!\n")
+    quit(save="no", status=0)
+}
+
 # Check overlap between BAM and TSS regions
 cat("\nChecking chromosome overlap...\n")
 gal_chroms <- unique(as.character(seqnames(gal)))
