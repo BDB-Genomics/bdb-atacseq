@@ -19,6 +19,7 @@ CONFIG_KEY_PATTERN = re.compile(r"\[['\"]([^'\"]+)['\"]\]")
 SAMPLES_LIST_USAGE_PATTERN = re.compile(r"sample\s*=\s*config\[['\"]samples['\"]\]")
 PATH_CHECKS = (
     (("global", "references", "bowtie2_index"), "bowtie2_index"),
+    (("global", "references", "chromap_index"), "file"),
     (("global", "references", "genome_fa"), "file"),
     (("global", "references", "genome_sizes"), "file"),
     (("global", "references", "blacklist"), "file"),

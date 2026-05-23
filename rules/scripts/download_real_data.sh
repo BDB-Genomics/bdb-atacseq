@@ -61,6 +61,17 @@ echo "=== Building Bowtie2 Index ==="
 BOWTIE2_BUILD=$(which bowtie2-build 2>/dev/null || find /home/himanshu/miniconda3 -name "bowtie2-build" -print -quit 2>/dev/null || find /home/mangala/miniconda3 -name "bowtie2-build" -print -quit 2>/dev/null || echo "bowtie2-build")
 "${BOWTIE2_BUILD}" "${REF_DIR}/genome.fa" "${INDEX_DIR}/genome"
 
+echo "=== Building Chromap Index ==="
+CHROMAP_DIR="${REF_DIR}/chromap"
+mkdir -p "${CHROMAP_DIR}"
+CHROMAP=$(which chromap 2>/dev/null || find /home/himanshu/miniconda3 -name "chromap" -print -quit 2>/dev/null || echo "chromap")
+if command -v "${CHROMAP}" &> /dev/null; then
+    "${CHROMAP}" -i -r "${REF_DIR}/genome.fa" -o "${CHROMAP_DIR}/genome.index"
+else
+    echo "WARNING: chromap not found, skipping index generation. Please run 'chromap -i -r ${REF_DIR}/genome.fa -o ${CHROMAP_DIR}/genome.index' after installing chromap."
+    touch "${CHROMAP_DIR}/genome.index"
+fi
+
 echo "=== Cleaning Up Temporary Files ==="
 rm -rf "${TMP_DIR}"
 
@@ -71,4 +82,5 @@ echo "Blacklist BED: ${REF_DIR}/ENCODE_blacklist.bed"
 echo "Annotation GTF: ${REF_DIR}/annotation.gtf"
 echo "JASPAR MEME DB: ${MOTIFS_DIR}/jaspar_vertebrates.meme"
 echo "Bowtie2 Index: ${INDEX_DIR}/"
+echo "Chromap Index: ${CHROMAP_DIR}/"
 ls -lh "${FASTQ_DIR}"
