@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-17T21:27:03.940240+00:00",
-  "commit": "80cfdae3239a112bc064e64a25521f497f1d3f7e",
+  "timestamp": "2026-05-23T15:28:51.320855+00:00",
+  "commit": "073ba3b2c416c4f86a4a6d2599f3e73469b97a75",
   "files": {
     "sshkey": {
       "hash": "80d480e106036d47bb713441f15f0ceb6ef15d5dc347290e66b2e65ce2fde176",
@@ -18,14 +18,19 @@
       "mtime": 1779030516.307328
     },
     "CHANGELOG.md": {
-      "hash": "d177cc7bc3d9a67a5437c360d434a66d0dadbcc6a29b75a04e35a302e880daf3",
-      "size": 6138,
-      "mtime": 1779030504.1072242
+      "hash": "be041767e4117643e544a6101fe747fdf77a4387dc6cfac0400bc9d72289140d",
+      "size": 7702,
+      "mtime": 1779459274.8686438
     },
     "LICENSE": {
       "hash": "f001380ff737ffc79c000d3ffb334e7d7cb80a96aa9389afd27e51aee98f48d9",
       "size": 1069,
       "mtime": 1779026838.3770137
+    },
+    "test_envs.sh": {
+      "hash": "861dbf2fe8f6d6edf53f2669afd5a4ff0cbf240ea8b02a33a6f9e2a1a08cdda0",
+      "size": 2389,
+      "mtime": 1779058085.7014453
     },
     "sshkey.pub": {
       "hash": "047d1fcc63b55818d0b149842f77836ce03e8f50453514af5e079b8c89a0f90e",
@@ -33,14 +38,14 @@
       "mtime": 1779042587.6242278
     },
     ".gitignore": {
-      "hash": "740a5736930da4741ec964cc563ea1fd9ba5bb825ec7099241bb55dc0a8543dd",
-      "size": 402,
-      "mtime": 1779027381.2289124
+      "hash": "365b9e0cb6287e88174f09980c3a75c8d5f42e880264527771ed852d96e6bdd8",
+      "size": 451,
+      "mtime": 1779080804.986542
     },
     "config.yaml": {
-      "hash": "aad1c844f0c1f1bb57be8479fe694b54cc82452e20c3fbe3bec61f98852e2127",
-      "size": 20786,
-      "mtime": 1779045457.653753
+      "hash": "91bf3ab36717d4ea99a4c4169135d4a89b0e5ac89e2e84af8468dfa1f8df5fc4",
+      "size": 20789,
+      "mtime": 1779462441.097713
     },
     "CONTRIBUTING.md": {
       "hash": "84f743c254bef043b2bc78648ec371f3d5f0a7bd79e5627cf7194cf6e9816c28",
@@ -53,19 +58,19 @@
       "mtime": 1779037091.334425
     },
     "Snakefile": {
-      "hash": "203236b738f3b94b110a57f827572671e34b7e3b4cec397038d352b2f7de9e39",
-      "size": 13185,
-      "mtime": 1779047423.0976162
+      "hash": "5f49b5e4b9dedfcad10e4c354d149e72400d1fb07162678697fd4d60f04fd1c8",
+      "size": 13278,
+      "mtime": 1779374539.8497825
     },
     "rules/samtools_fixmate.smk": {
-      "hash": "220d9c77f5d5cbc6f6dbd61e3c2187e6d6b4d12c81cd657eed71601beb320e88",
-      "size": 1200,
-      "mtime": 1779027186.8820674
+      "hash": "3a05f5f1323301a316841fb41a9c55dc6793ad6a3774c69bae184cb5a8504075",
+      "size": 1152,
+      "mtime": 1779375334.9071174
     },
     "rules/archr.smk": {
-      "hash": "da476f4ead327196e309a02169a1b7a96c349ecf2929946318a1d3d6f56f2a8f",
-      "size": 2861,
-      "mtime": 1779044987.4786832
+      "hash": "967dc6499723279d36f5ccfe79c9f34b1923ddfbaebe6b225437fb63e2ccaa1a",
+      "size": 2962,
+      "mtime": 1779375334.9651175
     },
     "rules/normalize_coverage.smk": {
       "hash": "89c6fec3220877dd0c0a3b9a193921d46c06430dc044cf9b2d708554c6b3f5bc",
@@ -118,9 +123,9 @@
       "mtime": 1779028584.415514
     },
     "rules/bedtools_genomecov.smk": {
-      "hash": "21856a3fd44bb5653806568080e20692071be70239220987bc758f2d28cab3fb",
-      "size": 1202,
-      "mtime": 1779027333.6596935
+      "hash": "9c9aa15f2857cc86ef266650236c261a69ae55fdd1ed262f95a6853f4f978484",
+      "size": 1228,
+      "mtime": 1779375371.5312943
     },
     "rules/samtools_markdup.smk": {
       "hash": "16b3ef2828baa18b4b89386b5737070dc98ce2fd939004cc7458a7aaa6d1e7e5",
@@ -128,9 +133,9 @@
       "mtime": 1779045171.347488
     },
     "rules/calculate_mito_reads.smk": {
-      "hash": "0b96ad7e5174df2b2e76937690f42cdb2ca7a48f62f80eb183896664dd58316e",
-      "size": 2043,
-      "mtime": 1779035566.3196225
+      "hash": "e0ce2ba52417d9eec212524cb942ccb1df47f36ac601e306dbf9031577b94739",
+      "size": 2164,
+      "mtime": 1779462431.3526688
     },
     "rules/tss_enrichment.smk": {
       "hash": "f072dd689829fcdb411f3ce27a22c42f9cde40404f5eb0c1415db84ec00f4734",
@@ -208,9 +213,9 @@
       "mtime": 1778855351.5596383
     },
     "rules/tobias.smk": {
-      "hash": "1e0a4aa534a29647adeddee45c12baac75593ce22df96d5885b68a9d5db76ee8",
-      "size": 4961,
-      "mtime": 1779050645.2991595
+      "hash": "fae9fb155dd73280e5b3e922505dee900cc599faf7e019b2df8ebf25dbd024a2",
+      "size": 4965,
+      "mtime": 1779375334.9351175
     },
     "rules/multiqc.smk": {
       "hash": "3f460ef5b2f50d502ceca4fbf570ae0337948a3e71124154131aa8e0447bcea3",
@@ -223,9 +228,9 @@
       "mtime": 1779035147.146297
     },
     "rules/fastp.smk": {
-      "hash": "a02278e4cc81303e01974519cde51a3f8844fce2834fa45dcb2d8a10ce1ffca2",
-      "size": 1760,
-      "mtime": 1778880245.9444013
+      "hash": "e4d4fcc641578af368cbb9baa2c2db9ccee968a8c7c12b7b0891d5628b6c2712",
+      "size": 1762,
+      "mtime": 1779375333.0451088
     },
     "rules/samtools_stats.smk": {
       "hash": "323117b1c7917f59707fd8cde29785b0815fde18924589e1f93bfcc4d9520142",
@@ -553,9 +558,9 @@
       "mtime": 1779046723.023266
     },
     "envs/03_post_alignment/bedtools.yaml": {
-      "hash": "eb33bb0190410415d6a126bf04525e7b85a77ee69e5916cb0ecb4bf31800ab10",
-      "size": 102,
-      "mtime": 1779046723.0163515
+      "hash": "206b062370fd2a283638dd690a19d5cf06941c18d57cb467532b8cae48bfeea8",
+      "size": 120,
+      "mtime": 1779375371.484294
     },
     "envs/03_post_alignment/samtools.yaml": {
       "hash": "d1f6ab240a6272033c627ef7f3f24861b7997d88febcef57f7b7e4045f1fd12c",
@@ -678,9 +683,9 @@
       "mtime": 1779051534.2942963
     },
     "profile/low_resource/config.yaml": {
-      "hash": "3886991794faf5d1765b90aaafe5dba69740f05bd322388db32ddc58dab42b73",
-      "size": 2356,
-      "mtime": 1779029199.1489358
+      "hash": "04fa206a8643a40ba5e46649006251fa015877079448c75ed02f3b3466173616",
+      "size": 2804,
+      "mtime": 1779093317.728055
     },
     "profile/test/config.yaml": {
       "hash": "ccf6abf889fd0fe99c38e1d688724c43dae4a2c01d717c620542d27104177c6c",
