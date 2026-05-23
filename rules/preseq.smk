@@ -25,9 +25,9 @@ rule preseq:
         preseq {params.extra} \
             -B {input.markdup_bam} \
             -o {output.complexity} \
-            2> {log} || {
+            2> {log} || {{
                 echo "[WARNING] Preseq failed (usually due to low/insufficient reads or duplicates). Creating placeholder output." >> {log}
                 touch {output.complexity}
-            }
+            }}
         """
 
