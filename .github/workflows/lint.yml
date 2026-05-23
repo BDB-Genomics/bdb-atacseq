@@ -27,6 +27,10 @@ jobs:
         with:
           micromamba-version: 'latest'
 
+      - name: Install Bowtie2 Aligner
+        run: |
+          sudo apt-get update && sudo apt-get install -y bowtie2
+
       - name: Generate Test Data
         run: |
           python3 rules/scripts/generate_test_data.py
@@ -56,6 +60,10 @@ jobs:
         uses: mamba-org/setup-micromamba@v1
         with:
           micromamba-version: 'latest'
+
+      - name: Install Bowtie2 Aligner
+        run: |
+          sudo apt-get update && sudo apt-get install -y bowtie2
 
       - name: Generate Test Data
         run: |

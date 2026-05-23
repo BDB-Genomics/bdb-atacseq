@@ -75,13 +75,25 @@ def generate_motif_db(filename):
         f.write("\n")
 
 def generate_bt2_index(directory):
-    """Generate minimal Bowtie2 index files (binary placeholders)."""
+    """Generate minimal Bowtie2 index files."""
     os.makedirs(directory, exist_ok=True)
-    for ext in ["1.bt2", "2.bt2", "3.bt2", "4.bt2", "rev.1.bt2", "rev.2.bt2"]:
-        path = os.path.join(directory, f"genome.{ext}")
-        with open(path, "wb") as f:
-            f.write(struct.pack("<I", 500000))
-            f.write(b"\x00" * 1000)
+    genome_fa = os.path.join(os.path.dirname(directory), "genome.fa")
+    import subprocess
+    try:
+        subprocess.run(
+            ["bowtie2-build", genome_fa, os.path.join(directory, "genome")],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        print("Real Bowtie2 index built successfully.")
+    except Exception:
+        print("Warning: bowtie2-build not found, writing placeholders.")
+        for ext in ["1.bt2", "2.bt2", "3.bt2", "4.bt2", "rev.1.bt2", "rev.2.bt2"]:
+            path = os.path.join(directory, f"genome.{ext}")
+            with open(path, "wb") as f:
+                f.write(struct.pack("<I", 500000))
+                f.write(b"\x00" * 1000)
 
 def generate_samples_tsv(filename):
     """Generate a minimal sample sheet."""
