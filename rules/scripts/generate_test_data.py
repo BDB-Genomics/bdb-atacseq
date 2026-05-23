@@ -85,6 +85,7 @@ def generate_bt2_index(directory):
 
 def generate_samples_tsv(filename):
     """Generate a minimal sample sheet."""
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w") as f:
         f.write("sample\tfastq_r1\tfastq_r2\treplicate\tcondition\n")
         f.write("sample1\tdata/fastq/sample1_R1.fastq.gz\tdata/fastq/sample1_R2.fastq.gz\t1\tcontrol\n")
