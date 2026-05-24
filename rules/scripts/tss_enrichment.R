@@ -223,7 +223,7 @@ par(mar=c(5, 5, 4, 2))
 # PANEL 1: TSS Enrichment Profile (Main Plot)
 cat("Panel 1: Computing TSS enrichment profile...\n")
 tryCatch({
-    # featureAlignedSignal expects a bamfile path, not a coverage object
+    reads <- coverage(gal)
     n_sample <- min(length(tss_regions), 10000)
     tss_sample <- tss_regions
     if (length(tss_regions) > n_sample) {
@@ -232,7 +232,7 @@ tryCatch({
         cat("  Sampling", n_sample, "TSS regions for visualization\n")
     }
     sigs <- featureAlignedSignal(
-        bamfiles = bamfile,
+        reads,
         feature.gr = tss_sample,
         upstream = upstream,
         downstream = downstream,
