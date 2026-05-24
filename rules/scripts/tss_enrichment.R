@@ -79,8 +79,9 @@ if(has_chr_prefix) {
     standard_chroms <- c(as.character(1:99), "X", "Y", "MT", "M")
 }
 
-# Keep only standard chromosomes that exist in the annotation
+# Keep only standard chromosomes that exist in the annotation and the BAM file header
 available_chroms <- intersect(seqlevels(tss_regions), standard_chroms)
+available_chroms <- intersect(available_chroms, bam_chr_names)
 tss_regions <- keepSeqlevels(tss_regions, available_chroms, pruning.mode="coarse")
 
 cat("TSS regions after filtering:", length(tss_regions), "regions\n")
