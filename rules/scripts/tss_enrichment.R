@@ -5,6 +5,7 @@ if (Sys.getenv("SNAKEMAKE_DEBUG") == "TRUE") {
     library(GenomicAlignments)
     library(Rsamtools)
     library(ChIPpeakAnno)
+    library(GenomeInfoDb)
 } else {
     suppressPackageStartupMessages({
         library(ATACseqQC)
@@ -12,6 +13,7 @@ if (Sys.getenv("SNAKEMAKE_DEBUG") == "TRUE") {
         library(GenomicAlignments)
         library(Rsamtools)
         library(ChIPpeakAnno)
+        library(GenomeInfoDb)
     })
 }
 

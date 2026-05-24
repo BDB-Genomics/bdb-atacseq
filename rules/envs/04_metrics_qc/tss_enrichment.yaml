@@ -7,4 +7,5 @@ dependencies:
   - bioconductor-genomicalignments
   - bioconductor-rsamtools
   - bioconductor-genomicfeatures
+  - bioconductor-genomeinfodb
   - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
