@@ -1,7 +1,12 @@
 {
-  "timestamp": "2026-05-24T08:36:47.120375+00:00",
-  "commit": "acc094c12c0eba23c47693b0009acde2d759bf2b",
+  "timestamp": "2026-05-24T08:55:02.247160+00:00",
+  "commit": "c0287ae36fab2f09cc5b3f27d7fdc8a22a49c1f3",
   "files": {
+    "ci_r2.fq.gz": {
+      "hash": "c5ec9122ae487f1f3a8b4b07f9965889beba658f2e38064975aeecdd3cf5befb",
+      "size": 14080,
+      "mtime": 1779612895.7788656
+    },
     "sshkey": {
       "hash": "80d480e106036d47bb713441f15f0ceb6ef15d5dc347290e66b2e65ce2fde176",
       "size": 399,
@@ -36,6 +41,11 @@
       "hash": "047d1fcc63b55818d0b149842f77836ce03e8f50453514af5e079b8c89a0f90e",
       "size": 94,
       "mtime": 1779042587.6242278
+    },
+    "ci_r1.fq.gz": {
+      "hash": "a46d1bb6c75d9ab0e0368ec09a5807682c4cc650545ed0e53be5c7fad0ee3516",
+      "size": 14078,
+      "mtime": 1779612895.8498657
     },
     ".gitignore": {
       "hash": "365b9e0cb6287e88174f09980c3a75c8d5f42e880264527771ed852d96e6bdd8",
@@ -508,9 +518,9 @@
       "mtime": 1779551528.3572135
     },
     "rules/scripts/generate_test_data.py": {
-      "hash": "e0ca712266acb4972456611ec91c149948d43870a4a6670237fc15968c62559a",
-      "size": 5961,
-      "mtime": 1779554121.4021635
+      "hash": "a39bb349af6d8c78ad9b59fa63c528bfc578354f28d0b4ae8c1280df4c014a62",
+      "size": 8051,
+      "mtime": 1779612886.8098521
     },
     "rules/scripts/chromvar_analysis.R": {
       "hash": "96fca67b76a7e7213adb35ea22b3d70d99514540d06abbc1c0c5cc0552174932",

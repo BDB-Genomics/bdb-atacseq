@@ -11,15 +11,57 @@ random.seed(42)
 CHROMOSOMES = ["chr1", "chr2", "chr3", "chrMT"]
 CHROM_SIZES = {"chr1": 248956422, "chr2": 242193529, "chr3": 198295559, "chrMT": 16569}
 
-def generate_fastq(filename, n_reads=1000, read_len=75):
-    """Generate a minimal FASTQ file with random sequences."""
-    bases = "ACGT"
+def reverse_complement(seq):
+    """Generate reverse complement of a DNA sequence."""
+    complement = {"A": "T", "C": "G", "G": "C", "T": "A", "N": "N",
+                  "a": "t", "c": "g", "g": "c", "t": "a", "n": "n"}
+    return "".join(complement.get(base, "N") for base in reversed(seq))
+
+def load_genome_sequences(genome_fasta):
+    """Load sequences from a FASTA file into a list of strings."""
+    sequences = []
+    current_seq = []
+    with open(genome_fasta, "r") as f:
+        for line in f:
+            if line.startswith(">"):
+                if current_seq:
+                    sequences.append("".join(current_seq))
+                    current_seq = []
+            else:
+                current_seq.append(line.strip().upper())
+        if current_seq:
+            sequences.append("".join(current_seq))
+    return sequences
+
+def generate_fastq_paired(filename1, filename2, genome_seqs, n_reads=1000, read_len=75, fragment_mean=200, fragment_sd=20):
+    """Generate paired-end FASTQ files with sequences matching the genome."""
     qualities = "I" * 150
-    with gzip.open(filename, "wt") as f:
+    with gzip.open(filename1, "wt") as f1, gzip.open(filename2, "wt") as f2:
         for i in range(n_reads):
-            seq = "".join(random.choice(bases) for _ in range(read_len))
-            header = f"@READ{i:06d}/1"
-            f.write(f"{header}\n{seq}\n+\n{qualities[:read_len]}\n")
+            # Select a random chromosome
+            chrom_seq = random.choice(genome_seqs)
+            while len(chrom_seq) <= fragment_mean + 3 * fragment_sd:
+                chrom_seq = random.choice(genome_seqs)
+            
+            # Select fragment size
+            frag_len = int(random.normalvariate(fragment_mean, fragment_sd))
+            frag_len = max(read_len + 10, min(frag_len, 500))
+            
+            # Select a random position on chromosome
+            pos = random.randint(0, len(chrom_seq) - frag_len)
+            fragment = chrom_seq[pos:pos+frag_len]
+            
+            # Read 1 and Read 2
+            r1_seq = fragment[:read_len]
+            r2_seq = reverse_complement(fragment[-read_len:])
+            
+            # Headers
+            header1 = f"@READ{i:06d}/1"
+            header2 = f"@READ{i:06d}/2"
+            
+            # Write to files
+            f1.write(f"{header1}\n{r1_seq}\n+\n{qualities[:read_len]}\n")
+            f2.write(f"{header2}\n{r2_seq}\n+\n{qualities[:read_len]}\n")
 
 def generate_genome(filename, n_bases=500000):
     """Generate a minimal reference genome."""
@@ -113,14 +155,7 @@ def main():
     os.makedirs(f"{root}/data/reference/index", exist_ok=True)
     os.makedirs(f"{root}/data/motifs", exist_ok=True)
 
-    for sample in ["sample1", "sample2", "sample3"]:
-        generate_fastq(f"{root}/data/fastq/{sample}_R1.fastq.gz", n_reads=500)
-        generate_fastq(f"{root}/data/fastq/{sample}_R2.fastq.gz", n_reads=500)
-
-    # Generate mock CI FASTQ files in root
-    generate_fastq(f"{root}/ci_r1.fq.gz", n_reads=500)
-    generate_fastq(f"{root}/ci_r2.fq.gz", n_reads=500)
-
+    # Generate reference files first
     generate_genome(f"{root}/data/reference/genome.fa")
     generate_chrom_sizes(f"{root}/data/reference/genome.chrom.sizes")
     generate_blacklist(f"{root}/data/reference/ENCODE_blacklist.bed")
@@ -128,6 +163,26 @@ def main():
     generate_motif_db(f"{root}/data/motifs/jaspar_vertebrates.meme")
     generate_bt2_index(f"{root}/data/reference/index")
     generate_samples_tsv(f"{root}/data/fastp/samples.tsv")
+
+    # Load genome sequences to draw perfect paired-end reads
+    genome_seqs = load_genome_sequences(f"{root}/data/reference/genome.fa")
+
+    # Generate perfectly aligning paired-end reads
+    for sample in ["sample1", "sample2", "sample3"]:
+        generate_fastq_paired(
+            f"{root}/data/fastq/{sample}_R1.fastq.gz",
+            f"{root}/data/fastq/{sample}_R2.fastq.gz",
+            genome_seqs,
+            n_reads=500
+        )
+
+    # Generate mock CI FASTQ files in root
+    generate_fastq_paired(
+        f"{root}/ci_r1.fq.gz",
+        f"{root}/ci_r2.fq.gz",
+        genome_seqs,
+        n_reads=500
+    )
 
     # Generate mock chromap index
     os.makedirs(f"{root}/data/reference/chromap", exist_ok=True)
