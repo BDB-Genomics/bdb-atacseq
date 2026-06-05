@@ -1,198 +1,358 @@
 #!/usr/bin/env python3
-"""Generate minimal test data for CI pipeline validation."""
+"""Generate synthetic test data for CI pipeline validation.
+
+This script produces a minimal but sufficient synthetic dataset so that
+every rule in the ATAC-seq pipeline — including tss_enrichment.R's
+featureAlignedSignal() call — exits cleanly in CI.
+
+Key sizing decisions (derived from tss_enrichment.R requirements):
+  • featureAlignedSignal() tiles each TSS ±2000 bp (4 kb window) into
+    200 bins (20 bp/bin).  It needs non-zero coverage across those bins
+    for multiple TSS regions, otherwise the names/length mismatch crash
+    occurs.
+  • We therefore generate ≥50 genes spread across chr1 and chr2, and
+    target ~60 % of reads to land within 2 kb of a TSS.  This guarantees
+    dense coverage inside the tiling windows.
+"""
 
 import gzip
 import os
 import random
 import struct
+import subprocess
+from typing import Dict, List
 
 random.seed(42)
 
-CHROMOSOMES = ["chr1", "chr2", "chr3", "chrMT"]
-CHROM_SIZES = {"chr1": 248956422, "chr2": 242193529, "chr3": 198295559, "chrMT": 16569}
+# ---------------------------------------------------------------------------
+# Genome layout
+# ---------------------------------------------------------------------------
+GENOME = {
+    "chr1":  500_000,
+    "chr2":  250_000,
+    "chrMT":  16_569,
+}
 
-def reverse_complement(seq):
-    """Generate reverse complement of a DNA sequence."""
-    complement = {"A": "T", "C": "G", "G": "C", "T": "A", "N": "N",
-                  "a": "t", "c": "g", "g": "c", "t": "a", "n": "n"}
-    return "".join(complement.get(base, "N") for base in reversed(seq))
+# ---------------------------------------------------------------------------
+# Annotation parameters
+# ---------------------------------------------------------------------------
+GENES_CHR1 = 35          # genes on chr1
+GENES_CHR2 = 20          # genes on chr2
+GENE_LENGTH = 3000        # bp per gene body
+GENE_SPACING_CHR1 = 12_000
+GENE_SPACING_CHR2 = 10_000
+GENE_START_OFFSET = 10_000  # first gene starts here
 
-def load_genome_sequences(genome_fasta):
-    """Load sequences from a FASTA file into a list of strings."""
-    sequences = []
-    current_seq = []
-    with open(genome_fasta, "r") as f:
-        for line in f:
-            if line.startswith(">"):
-                if current_seq:
-                    sequences.append("".join(current_seq))
-                    current_seq = []
-            else:
-                current_seq.append(line.strip().upper())
-        if current_seq:
-            sequences.append("".join(current_seq))
+# ---------------------------------------------------------------------------
+# FASTQ parameters
+# ---------------------------------------------------------------------------
+READS_PER_SAMPLE = 5000
+READ_LENGTH = 75
+FRAGMENT_MEAN = 200
+FRAGMENT_SD = 30
+TSS_TARGETED_FRACTION = 0.60   # fraction of reads placed near TSSes
+TSS_WINDOW = 2000              # how far from TSS we scatter targeted reads
+SAMPLES = ["sample1", "sample2", "sample3"]
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def reverse_complement(seq: str) -> str:
+    """Return the reverse complement of a DNA sequence."""
+    table = str.maketrans("ACGTNacgtn", "TGCANtgcan")
+    return seq.translate(table)[::-1]
+
+
+def random_seq(length: int) -> str:
+    """Generate a random DNA sequence of the given length."""
+    return "".join(random.choice("ACGT") for _ in range(length))
+
+
+# ---------------------------------------------------------------------------
+# Genome generation
+# ---------------------------------------------------------------------------
+
+def generate_genome(filepath: str) -> Dict[str, str]:
+    """Write a FASTA genome and return {chrom: sequence}."""
+    sequences = {}
+    with open(filepath, "w") as fh:
+        for chrom, size in GENOME.items():
+            seq = random_seq(size)
+            sequences[chrom] = seq
+            fh.write(f">{chrom}\n")
+            for i in range(0, len(seq), 80):
+                fh.write(seq[i : i + 80] + "\n")
     return sequences
 
-def generate_fastq_paired(filename1, filename2, genome_seqs, n_reads=1000, read_len=75, fragment_mean=200, fragment_sd=20):
-    """Generate paired-end FASTQ files with sequences matching the genome."""
-    qualities = "I" * 150
-    with gzip.open(filename1, "wt") as f1, gzip.open(filename2, "wt") as f2:
-        for i in range(n_reads):
-            # Select a random chromosome
-            chrom_seq = random.choice(genome_seqs)
-            while len(chrom_seq) <= fragment_mean + 3 * fragment_sd:
-                chrom_seq = random.choice(genome_seqs)
-            
-            # Select fragment size
-            frag_len = int(random.normalvariate(fragment_mean, fragment_sd))
-            frag_len = max(read_len + 10, min(frag_len, 500))
-            
-            # Select a random position on chromosome
-            pos = random.randint(0, len(chrom_seq) - frag_len)
-            fragment = chrom_seq[pos:pos+frag_len]
-            
-            # Read 1 and Read 2
-            r1_seq = fragment[:read_len]
-            r2_seq = reverse_complement(fragment[-read_len:])
-            
-            # Headers
-            header1 = f"@READ{i:06d}/1"
-            header2 = f"@READ{i:06d}/2"
-            
-            # Write to files
-            f1.write(f"{header1}\n{r1_seq}\n+\n{qualities[:read_len]}\n")
-            f2.write(f"{header2}\n{r2_seq}\n+\n{qualities[:read_len]}\n")
 
-def generate_genome(filename, n_bases=500000):
-    """Generate a minimal reference genome."""
-    bases = "ACGT"
-    with open(filename, "w") as f:
-        f.write(">chr1\n")
-        seq = "".join(random.choice(bases) for _ in range(n_bases))
-        for i in range(0, len(seq), 80):
-            f.write(seq[i:i+80] + "\n")
-        f.write(">chr2\n")
-        seq = "".join(random.choice(bases) for _ in range(n_bases // 2))
-        for i in range(0, len(seq), 80):
-            f.write(seq[i:i+80] + "\n")
-        f.write(">chrMT\n")
-        seq = "".join(random.choice(bases) for _ in range(16569))
-        for i in range(0, len(seq), 80):
-            f.write(seq[i:i+80] + "\n")
+def generate_chrom_sizes(filepath: str) -> None:
+    """Write a chrom.sizes file matching the genome."""
+    with open(filepath, "w") as fh:
+        for chrom, size in GENOME.items():
+            fh.write(f"{chrom}\t{size}\n")
 
-def generate_chrom_sizes(filename):
-    """Generate chromosome sizes file."""
-    with open(filename, "w") as f:
-        f.write("chr1\t500000\n")
-        f.write("chr2\t250000\n")
-        f.write("chrMT\t16569\n")
 
-def generate_blacklist(filename):
-    """Generate a minimal blacklist file."""
-    with open(filename, "w") as f:
-        f.write("chr1\t100000\t101000\n")
-        f.write("chr2\t50000\t51000\n")
+# ---------------------------------------------------------------------------
+# Annotation generation
+# ---------------------------------------------------------------------------
 
-def generate_annotation(filename):
-    """Generate a minimal GTF annotation file."""
-    with open(filename, "w") as f:
-        f.write('chr1\ttest\tgene\t50000\t55000\t.\t+\t.\tgene_id "GENE1"; gene_name "TEST1";\n')
-        f.write('chr1\ttest\texon\t50000\t51000\t.\t+\t.\tgene_id "GENE1"; transcript_id "TX1";\n')
-        f.write('chr1\ttest\texon\t53000\t55000\t.\t+\t.\tgene_id "GENE1"; transcript_id "TX1";\n')
-        f.write('chr2\ttest\tgene\t100000\t105000\t.\t-\t.\tgene_id "GENE2"; gene_name "TEST2";\n')
-        f.write('chr2\ttest\texon\t100000\t102000\t.\t-\t.\tgene_id "GENE2"; transcript_id "TX2";\n')
+def _make_genes(chrom: str, n_genes: int, spacing: int, chrom_size: int) -> List[dict]:
+    """Return a list of gene dicts for one chromosome."""
+    genes = []
+    for i in range(n_genes):
+        start = GENE_START_OFFSET + i * spacing
+        end = start + GENE_LENGTH
+        if end >= chrom_size - 1000:
+            break
+        strand = "+" if i % 2 == 0 else "-"
+        gene_id = f"{chrom.upper()}_GENE{i + 1:03d}"
+        genes.append(dict(
+            chrom=chrom, start=start, end=end,
+            strand=strand, gene_id=gene_id,
+        ))
+    return genes
 
-def generate_motif_db(filename):
-    """Generate a minimal MEME motif database."""
-    with open(filename, "w") as f:
-        f.write("MEME version 5\n\n")
-        f.write("ALPHABET= ACGT\n\n")
-        f.write("strands: + -\n\n")
-        f.write("Background letter frequencies\n")
-        f.write("A 0.25 C 0.25 G 0.25 T 0.25\n\n")
-        f.write("MOTIF TEST_MOTIF_1\n")
-        f.write("letter-probability matrix: alength= 4 w= 8 nsites= 20 E= 1e-5\n")
+
+def generate_annotation(filepath: str) -> List[dict]:
+    """Write a GTF annotation and return the list of gene records."""
+    all_genes: List[dict] = []
+    all_genes += _make_genes("chr1", GENES_CHR1, GENE_SPACING_CHR1, GENOME["chr1"])
+    all_genes += _make_genes("chr2", GENES_CHR2, GENE_SPACING_CHR2, GENOME["chr2"])
+
+    with open(filepath, "w") as fh:
+        for g in all_genes:
+            c, s, e, st, gid = g["chrom"], g["start"], g["end"], g["strand"], g["gene_id"]
+            tx_id = f"TX_{gid}"
+            # gene line
+            fh.write(f'{c}\ttest\tgene\t{s}\t{e}\t.\t{st}\t.\t'
+                     f'gene_id "{gid}"; gene_name "{gid}";\n')
+            # transcript line
+            fh.write(f'{c}\ttest\ttranscript\t{s}\t{e}\t.\t{st}\t.\t'
+                     f'gene_id "{gid}"; transcript_id "{tx_id}";\n')
+            # exon 1 (first 1000 bp)
+            fh.write(f'{c}\ttest\texon\t{s}\t{s + 1000}\t.\t{st}\t.\t'
+                     f'gene_id "{gid}"; transcript_id "{tx_id}";\n')
+            # exon 2 (last 1000 bp)
+            fh.write(f'{c}\ttest\texon\t{e - 1000}\t{e}\t.\t{st}\t.\t'
+                     f'gene_id "{gid}"; transcript_id "{tx_id}";\n')
+    return all_genes
+
+
+# ---------------------------------------------------------------------------
+# FASTQ generation
+# ---------------------------------------------------------------------------
+
+def _tss_position(gene: dict) -> int:
+    """Return the TSS coordinate for a gene."""
+    return gene["start"] if gene["strand"] == "+" else gene["end"]
+
+
+def generate_fastq_paired(
+    r1_path: str,
+    r2_path: str,
+    genome_seqs: Dict[str, str],
+    genes: List[dict],
+    n_reads: int = READS_PER_SAMPLE,
+) -> None:
+    """Generate paired-end FASTQ with reads enriched near TSSes."""
+    quals = "I" * READ_LENGTH
+    n_targeted = int(n_reads * TSS_TARGETED_FRACTION)
+    n_random = n_reads - n_targeted
+
+    # Pre-compute TSS positions grouped by chromosome
+    tss_by_chrom: Dict[str, List[int]] = {}
+    for g in genes:
+        tss_by_chrom.setdefault(g["chrom"], []).append(_tss_position(g))
+
+    # Chromosomes that have genes (for targeted reads)
+    gene_chroms = [c for c in tss_by_chrom if c in genome_seqs]
+
+    with gzip.open(r1_path, "wt") as f1, gzip.open(r2_path, "wt") as f2:
+        read_idx = 0
+
+        # --- Targeted reads: placed within TSS_WINDOW of a TSS -----------
+        for _ in range(n_targeted):
+            chrom = random.choice(gene_chroms)
+            seq = genome_seqs[chrom]
+            tss = random.choice(tss_by_chrom[chrom])
+
+            # Pick a random position within ±TSS_WINDOW of the TSS
+            frag_len = max(
+                READ_LENGTH + 10,
+                min(int(random.gauss(FRAGMENT_MEAN, FRAGMENT_SD)), 400),
+            )
+            offset = random.randint(-TSS_WINDOW, TSS_WINDOW)
+            pos = tss + offset
+            pos = max(0, min(pos, len(seq) - frag_len))
+
+            fragment = seq[pos : pos + frag_len]
+            r1_seq = fragment[:READ_LENGTH]
+            r2_seq = reverse_complement(fragment[-READ_LENGTH:])
+
+            f1.write(f"@READ{read_idx:06d}/1\n{r1_seq}\n+\n{quals}\n")
+            f2.write(f"@READ{read_idx:06d}/2\n{r2_seq}\n+\n{quals}\n")
+            read_idx += 1
+
+        # --- Random reads: uniformly distributed across the genome --------
+        chrom_list = list(genome_seqs.keys())
+        for _ in range(n_random):
+            chrom = random.choice(chrom_list)
+            seq = genome_seqs[chrom]
+            frag_len = max(
+                READ_LENGTH + 10,
+                min(int(random.gauss(FRAGMENT_MEAN, FRAGMENT_SD)), 400),
+            )
+            if len(seq) <= frag_len:
+                continue
+            pos = random.randint(0, len(seq) - frag_len)
+
+            fragment = seq[pos : pos + frag_len]
+            r1_seq = fragment[:READ_LENGTH]
+            r2_seq = reverse_complement(fragment[-READ_LENGTH:])
+
+            f1.write(f"@READ{read_idx:06d}/1\n{r1_seq}\n+\n{quals}\n")
+            f2.write(f"@READ{read_idx:06d}/2\n{r2_seq}\n+\n{quals}\n")
+            read_idx += 1
+
+
+# ---------------------------------------------------------------------------
+# Supporting files
+# ---------------------------------------------------------------------------
+
+def generate_blacklist(filepath: str) -> None:
+    """Write a minimal ENCODE-style blacklist BED."""
+    with open(filepath, "w") as fh:
+        fh.write("chr1\t100000\t101000\n")
+        fh.write("chr2\t50000\t51000\n")
+
+
+def generate_motif_db(filepath: str) -> None:
+    """Write a minimal MEME motif database."""
+    with open(filepath, "w") as fh:
+        fh.write("MEME version 5\n\n")
+        fh.write("ALPHABET= ACGT\n\n")
+        fh.write("strands: + -\n\n")
+        fh.write("Background letter frequencies\n")
+        fh.write("A 0.25 C 0.25 G 0.25 T 0.25\n\n")
+        fh.write("MOTIF TEST_MOTIF_1\n")
+        fh.write("letter-probability matrix: alength= 4 w= 8 nsites= 20 E= 1e-5\n")
         for _ in range(8):
-            f.write("0.25 0.25 0.25 0.25\n")
-        f.write("\n")
+            fh.write("0.25 0.25 0.25 0.25\n")
+        fh.write("\n")
 
-def generate_bt2_index(directory):
-    """Generate minimal Bowtie2 index files."""
-    os.makedirs(directory, exist_ok=True)
-    genome_fa = os.path.join(os.path.dirname(directory), "genome.fa")
-    import subprocess
+
+def generate_bt2_index(index_dir: str, genome_fa: str) -> None:
+    """Build a real Bowtie2 index, falling back to placeholders."""
+    os.makedirs(index_dir, exist_ok=True)
     try:
         subprocess.run(
-            ["bowtie2-build", genome_fa, os.path.join(directory, "genome")],
+            ["bowtie2-build", genome_fa, os.path.join(index_dir, "genome")],
             check=True,
             stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
+            stderr=subprocess.DEVNULL,
         )
-        print("Real Bowtie2 index built successfully.")
+        print("  Bowtie2 index built successfully.")
     except Exception:
-        print("Warning: bowtie2-build not found, writing placeholders.")
+        print("  Warning: bowtie2-build not found, writing placeholder index files.")
         for ext in ["1.bt2", "2.bt2", "3.bt2", "4.bt2", "rev.1.bt2", "rev.2.bt2"]:
-            path = os.path.join(directory, f"genome.{ext}")
-            with open(path, "wb") as f:
-                f.write(struct.pack("<I", 500000))
-                f.write(b"\x00" * 1000)
+            path = os.path.join(index_dir, f"genome.{ext}")
+            with open(path, "wb") as fh:
+                fh.write(struct.pack("<I", 500_000))
+                fh.write(b"\x00" * 1000)
 
-def generate_samples_tsv(filename):
-    """Generate a minimal sample sheet."""
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, "w") as f:
-        f.write("sample\tfastq_r1\tfastq_r2\treplicate\tcondition\n")
-        f.write("sample1\tdata/fastq/sample1_R1.fastq.gz\tdata/fastq/sample1_R2.fastq.gz\t1\tcontrol\n")
-        f.write("sample2\tdata/fastq/sample2_R1.fastq.gz\tdata/fastq/sample2_R2.fastq.gz\t2\tcontrol\n")
-        f.write("sample3\tdata/fastq/sample3_R1.fastq.gz\tdata/fastq/sample3_R2.fastq.gz\t1\ttreated\n")
 
-def main():
+def generate_samples_tsv(filepath: str) -> None:
+    """Write the sample sheet expected by the pipeline."""
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    with open(filepath, "w") as fh:
+        fh.write("sample\tfastq_r1\tfastq_r2\treplicate\tcondition\n")
+        fh.write("sample1\tdata/fastq/sample1_R1.fastq.gz\tdata/fastq/sample1_R2.fastq.gz\t1\tcontrol\n")
+        fh.write("sample2\tdata/fastq/sample2_R1.fastq.gz\tdata/fastq/sample2_R2.fastq.gz\t2\tcontrol\n")
+        fh.write("sample3\tdata/fastq/sample3_R1.fastq.gz\tdata/fastq/sample3_R2.fastq.gz\t1\ttreated\n")
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
+def main() -> None:
     root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-    print("Generating test data...")
+    print("=" * 60)
+    print("Generating synthetic CI test data")
+    print("=" * 60)
 
-    os.makedirs(f"{root}/data/fastq", exist_ok=True)
-    os.makedirs(f"{root}/data/reference/index", exist_ok=True)
-    os.makedirs(f"{root}/data/motifs", exist_ok=True)
+    # Create directory tree
+    for subdir in ["data/fastq", "data/reference/index", "data/motifs",
+                    "data/reference/chromap", "data/fastp"]:
+        os.makedirs(os.path.join(root, subdir), exist_ok=True)
 
-    # Generate reference files first
-    generate_genome(f"{root}/data/reference/genome.fa")
-    generate_chrom_sizes(f"{root}/data/reference/genome.chrom.sizes")
-    generate_blacklist(f"{root}/data/reference/ENCODE_blacklist.bed")
-    generate_annotation(f"{root}/data/reference/annotation.gtf")
-    generate_motif_db(f"{root}/data/motifs/jaspar_vertebrates.meme")
-    generate_bt2_index(f"{root}/data/reference/index")
-    generate_samples_tsv(f"{root}/data/fastp/samples.tsv")
+    # --- Reference genome ---------------------------------------------------
+    genome_fa = os.path.join(root, "data/reference/genome.fa")
+    print("\n[1/7] Reference genome ...")
+    genome_seqs = generate_genome(genome_fa)
+    for chrom, seq in genome_seqs.items():
+        print(f"  {chrom}: {len(seq):,} bp")
 
-    # Load genome sequences to draw perfect paired-end reads
-    genome_seqs = load_genome_sequences(f"{root}/data/reference/genome.fa")
+    # --- Chromosome sizes ---------------------------------------------------
+    print("[2/7] Chromosome sizes ...")
+    generate_chrom_sizes(os.path.join(root, "data/reference/genome.chrom.sizes"))
 
-    # Generate perfectly aligning paired-end reads
-    for sample in ["sample1", "sample2", "sample3"]:
+    # --- Annotation GTF -----------------------------------------------------
+    print("[3/7] Gene annotation ...")
+    genes = generate_annotation(os.path.join(root, "data/reference/annotation.gtf"))
+    print(f"  {len(genes)} genes ({sum(1 for g in genes if g['chrom'] == 'chr1')} chr1, "
+          f"{sum(1 for g in genes if g['chrom'] == 'chr2')} chr2)")
+
+    # --- Blacklist, motifs --------------------------------------------------
+    print("[4/7] Blacklist + motif database ...")
+    generate_blacklist(os.path.join(root, "data/reference/ENCODE_blacklist.bed"))
+    generate_motif_db(os.path.join(root, "data/motifs/jaspar_vertebrates.meme"))
+
+    # --- Bowtie2 index ------------------------------------------------------
+    print("[5/7] Bowtie2 index ...")
+    generate_bt2_index(os.path.join(root, "data/reference/index"), genome_fa)
+
+    # --- Paired-end FASTQs --------------------------------------------------
+    print(f"[6/7] Paired-end FASTQs ({READS_PER_SAMPLE} reads/sample, "
+          f"{int(TSS_TARGETED_FRACTION * 100)}% TSS-targeted) ...")
+    for sample in SAMPLES:
         generate_fastq_paired(
-            f"{root}/data/fastq/{sample}_R1.fastq.gz",
-            f"{root}/data/fastq/{sample}_R2.fastq.gz",
+            os.path.join(root, f"data/fastq/{sample}_R1.fastq.gz"),
+            os.path.join(root, f"data/fastq/{sample}_R2.fastq.gz"),
             genome_seqs,
-            n_reads=500
+            genes,
         )
+        print(f"  {sample} ✓")
 
-    # Generate mock CI FASTQ files in root
+    # CI-level mock FASTQs (used by lint job dry-run)
     generate_fastq_paired(
-        f"{root}/ci_r1.fq.gz",
-        f"{root}/ci_r2.fq.gz",
+        os.path.join(root, "ci_r1.fq.gz"),
+        os.path.join(root, "ci_r2.fq.gz"),
         genome_seqs,
-        n_reads=500
+        genes,
+        n_reads=500,
     )
+    print("  ci mock reads ✓")
 
-    # Generate mock chromap index
-    os.makedirs(f"{root}/data/reference/chromap", exist_ok=True)
-    with open(f"{root}/data/reference/chromap/genome.index", "w") as f:
-        f.write("placeholder")
+    # --- Misc placeholders --------------------------------------------------
+    print("[7/7] Chromap index placeholder ...")
+    with open(os.path.join(root, "data/reference/chromap/genome.index"), "w") as fh:
+        fh.write("placeholder")
 
+    # --- Sample sheet -------------------------------------------------------
+    generate_samples_tsv(os.path.join(root, "data/fastp/samples.tsv"))
+
+    # --- Summary ------------------------------------------------------------
+    print("\n" + "=" * 60)
     print("Test data generated successfully.")
-    print(f"  Genome: {root}/data/reference/genome.fa")
-    print(f"  Samples: {root}/data/fastp/samples.tsv")
-    print(f"  FASTQ: {root}/data/fastq/")
+    print(f"  Genome  : {genome_fa}")
+    print(f"  Genes   : {len(genes)}")
+    print(f"  Samples : {len(SAMPLES)} × {READS_PER_SAMPLE} reads")
+    print(f"  TSS-targeted fraction : {TSS_TARGETED_FRACTION:.0%}")
+    print("=" * 60)
+
 
 if __name__ == "__main__":
     main()
