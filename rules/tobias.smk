@@ -3,6 +3,7 @@ import os
 rule tobias_atacorrect:
     input:
         bam=lambda wildcards: f"{config['tobias']['input']['filtered_bam']}/{wildcards.sample}.filtered.bam",
+        peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed",
         genome=config['tobias']['params']['genome_fa'],
         blacklist=config['tobias']['params']['blacklist']
 
@@ -24,13 +25,14 @@ rule tobias_atacorrect:
     conda: "envs/05_peak_calling/tobias.yaml"
     container: "https://depot.galaxyproject.org/singularity/tobias:0.17.3--pyhdfd78af_0"
     threads: config['tobias']['threads']
-    message: "[TOBIAS ATACorrect] Sample: {wildcards.sample} | BAM: {input.bam} | Genome: {input.genome}"
+    message: "[TOBIAS ATACorrect] Sample: {wildcards.sample} | BAM: {input.bam} | Peaks: {input.peaks} | Genome: {input.genome}"
 
     shell:
         """
         TOBIAS ATACorrect \
             --bam {input.bam} \
             --genome {input.genome} \
+            --peaks {input.peaks} \
             --blacklist {input.blacklist} \
             --outdir {params.out_dir} \
             --prefix {wildcards.sample} \
