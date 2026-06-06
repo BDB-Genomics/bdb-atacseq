@@ -118,7 +118,7 @@ mitoATAC_calculate:
   output: 
     mito_stats: "results/post_alignment/mito-ATAC"
   params: 
-    mito_chr: "MT" 
+    mito_chr: "chrMT" 
   threads: 2
   resources:
     mem_mb: 4000
@@ -130,7 +130,7 @@ remove_mito_reads:
   output: 
     noMT_sorted_bam: "results/post_alignment/remove_mito_reads"
   params: 
-    mito_chr: "MT"
+    mito_chr: "chrMT"
   threads: 2
   resources:
     mem_mb: 2000
@@ -427,7 +427,7 @@ motif_analysis:
 # ==============================================================================
 cross_correlation:
   input:
-    shifted_bam: "results/post_alignment/tn5_shift"
+    filtered_bam: "results/post_alignment/samtools_view"
   output: "results/metrics_qc/cross_correlation"
   params:
     num_threads: 4
@@ -442,8 +442,7 @@ cross_correlation:
 # ------------------------------------------------------------------------------
 preseq:
   input: 
-    markdup_bam: "results/post_alignment/samtools_markdup"
-    markdup_bam_index: "results/post_alignment/samtools_index/post_markdup"
+    sorted_bam_noMT_fixmate: "results/post_alignment/samtools_fixmate"
   output:
     predicted_complexity: "results/reporting_qc/preseq"
   threads: 1
