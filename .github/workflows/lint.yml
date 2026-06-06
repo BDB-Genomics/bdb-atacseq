@@ -10,10 +10,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -34,6 +34,14 @@ jobs:
       - name: Generate Test Data
         run: |
           python3 rules/scripts/generate_test_data.py
+
+      - name: Cache Conda Environments
+        uses: actions/cache@v3
+        with:
+          path: .snakemake/conda
+          key: snakemake-conda-${{ runner.os }}-${{ hashFiles('rules/envs/**/*.yaml') }}
+          restore-keys: |
+            snakemake-conda-${{ runner.os }}-
 
       - name: Validate Workflow (Dry-run)
         run: |
@@ -44,10 +52,10 @@ jobs:
     needs: lint
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -68,6 +76,14 @@ jobs:
       - name: Generate Test Data
         run: |
           python3 rules/scripts/generate_test_data.py
+
+      - name: Cache Conda Environments
+        uses: actions/cache@v3
+        with:
+          path: .snakemake/conda
+          key: snakemake-conda-${{ runner.os }}-${{ hashFiles('rules/envs/**/*.yaml') }}
+          restore-keys: |
+            snakemake-conda-${{ runner.os }}-
 
       - name: Run Pipeline (Test Mode)
         run: |

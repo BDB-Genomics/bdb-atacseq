@@ -2,6 +2,7 @@
 
 > **The only ATAC-seq pipeline that stops bad samples before they waste your time and money.**
 
+[![CI](https://github.com/BDB-Genomics/atacseq-pipeline/actions/workflows/lint.yml/badge.svg)](https://github.com/BDB-Genomics/atacseq-pipeline/actions/workflows/lint.yml)
 [![Snakemake](https://img.shields.io/badge/Snakemake-≥8.0-blue.svg)](https://snakemake.github.io)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.placeholder.svg)](https://doi.org/10.5281/zenodo.placeholder)
