@@ -31,16 +31,10 @@ gr_peaks <- GRanges(seqnames=peaks$V1,
                     ranges=IRanges(start=peaks$V2, end=peaks$V3))
 gr_peaks <- resize(gr_peaks, width=500, fix="center")
 
-# Select genome object (fall back to BSgenome.Hsapiens.UCSC.hg38 if hg38 is used)
-if (grepl("hg38", genome_fa, ignore.case=TRUE)) {
-    cat("Using BSgenome.Hsapiens.UCSC.hg38 package\n")
-    library(BSgenome.Hsapiens.UCSC.hg38)
-    genome_obj <- BSgenome.Hsapiens.UCSC.hg38
-} else {
-    cat("Using custom FASTA file:", genome_fa, "\n")
-    library(Rsamtools)
-    genome_obj <- FaFile(genome_fa)
-}
+# Unconditionally use custom FASTA file
+cat("Using custom FASTA file:", genome_fa, "\n")
+library(Rsamtools)
+genome_obj <- FaFile(genome_fa)
 
 cat("Computing GC bias and fragment counts from BAM\n")
 # chromVAR getCounts expects: bamfile, peaks, paired=TRUE
