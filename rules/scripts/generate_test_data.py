@@ -76,13 +76,21 @@ def random_seq(length: int) -> str:
 def generate_genome(filepath: str) -> Dict[str, str]:
     """Write a FASTA genome and return {chrom: sequence}."""
     sequences = {}
-    with open(filepath, "w") as fh:
+    offset = 0
+    with open(filepath, "w") as fh, open(filepath + ".fai", "w") as fai:
         for chrom, size in GENOME.items():
             seq = random_seq(size)
             sequences[chrom] = seq
-            fh.write(f">{chrom}\n")
+            header = f">{chrom}\n"
+            fh.write(header)
+            offset += len(header)
+            
+            fai.write(f"{chrom}\t{size}\t{offset}\t80\t81\n")
+            
             for i in range(0, len(seq), 80):
-                fh.write(seq[i : i + 80] + "\n")
+                chunk = seq[i : i + 80] + "\n"
+                fh.write(chunk)
+                offset += len(chunk)
     return sequences
 
 
@@ -156,7 +164,8 @@ def generate_fastq_paired(
     n_reads: int = READS_PER_SAMPLE,
 ) -> None:
     """Generate paired-end FASTQ with reads enriched near TSSes."""
-    quals = "I" * READ_LENGTH
+    # Degrade quality at the ends of the reads so FastQC actually flags them
+    quals = "I" * (READ_LENGTH - 15) + "5" * 15
     n_targeted = int(n_reads * TSS_TARGETED_FRACTION)
     n_random = n_reads - n_targeted
 
