@@ -8,7 +8,7 @@ rule tss_enrichment:
         pdf=f"{config['tss_enrichment']['output']}/{{sample}}_tss_enrichment.pdf"
         
     params:
-        txdb=config['tss_enrichment']['params']['txdb'], 
+        annotation=config['tss_enrichment']['params']['annotation'], 
         upstream=config['tss_enrichment']['params']['upstream'], 
         downstream=config['tss_enrichment']['params']['downstream']
         
@@ -21,7 +21,7 @@ rule tss_enrichment:
     conda: "envs/04_metrics_qc/tss_enrichment.yaml"
     container: "https://depot.galaxyproject.org/singularity/bioconductor-atacseqqc:1.22.0--r42hdfd78af_0"
     threads: config['tss_enrichment']['threads']
-    message: "[TSS ENRICHMENT] SAMPLE: {wildcards.sample}| INPUT: {input.shifted_bam} {input.shifted_bam_index} | OUTPUT: {output.text} {output.pdf}| T XDB: {params.txdb}| UPSTREAM: {params.upstream}| DOWNSTREAM: {params.downstream}  "
+    message: "[TSS ENRICHMENT] SAMPLE: {wildcards.sample}| INPUT: {input.shifted_bam} {input.shifted_bam_index} | OUTPUT: {output.text} {output.pdf}| ANNOTATION: {params.annotation}| UPSTREAM: {params.upstream}| DOWNSTREAM: {params.downstream}  "
         
     script:
         os.path.abspath(config['tss_enrichment']['script'])

@@ -22,7 +22,7 @@ bamfile <- snakemake@input[["shifted_bam"]]
 out_text <- snakemake@output[["text"]]
 out_pdf <- snakemake@output[["pdf"]]
 sample_name <- snakemake@wildcards[["sample"]]
-txdb_pkg <- snakemake@params[["txdb"]]
+annotation_file <- snakemake@params[["annotation"]]
 upstream <- as.numeric(snakemake@params[["upstream"]])
 downstream <- as.numeric(snakemake@params[["downstream"]])
 
@@ -31,17 +31,11 @@ cat("TSS Enrichment Analysis\n")
 cat("===========================================\n")
 cat("Sample:", sample_name, "\n")
 cat("BAM file:", bamfile, "\n")
-cat("TxDb:", txdb_pkg, "\n")
+cat("Annotation:", annotation_file, "\n")
 cat("===========================================\n\n")
 
-# Load the specified TxDb package with pre-flight requireNamespace guard
-if (!requireNamespace(txdb_pkg, quietly = TRUE)) {
-    stop("ERROR: The required annotation package '", txdb_pkg, 
-         "' is not installed in the R environment. Please install it using BiocManager::install('", 
-         txdb_pkg, "') or check your environment configuration.")
-}
-library(txdb_pkg, character.only = TRUE)
-txdb <- get(txdb_pkg)
+cat("Loading transcript database from:", annotation_file, "\n")
+txdb <- makeTxDbFromGFF(annotation_file)
 
 # Check BAM chromosome names
 cat("Checking BAM chromosome naming style...\n")

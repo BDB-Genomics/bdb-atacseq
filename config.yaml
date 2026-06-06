@@ -53,7 +53,6 @@ global:
     blacklist: &BLACKLIST "data/reference/ENCODE_blacklist.bed"
     annotation_gtf: &ANNOTATION_GTF "data/reference/annotation.gtf"
     motif_db: &MOTIF_DB "data/motifs/jaspar_vertebrates.meme"
-    txdb: &TXDB "TxDb.Hsapiens.UCSC.hg38.knownGene"
 
 # ==============================================================================
 # Tool Specific Configurations
@@ -247,7 +246,7 @@ tss_enrichment:
   script: "rules/scripts/tss_enrichment.R"
   threads: 4
   params:
-    txdb: *TXDB
+    annotation: *ANNOTATION_GTF
     upstream: 2000
     downstream: 2000
   resources:
