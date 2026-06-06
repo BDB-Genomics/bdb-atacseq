@@ -25,6 +25,13 @@ if MODE not in ("bulk", "scatac"):
 # CI Bypass: Skip validation and provide dummy metadata in GitHub Actions
 IS_CI = os.getenv("GITHUB_ACTIONS") == "true"
 
+if IS_CI:
+    import yaml
+    from snakemake.utils import update_config
+    if os.path.exists("profile/test/config_test.yaml"):
+        with open("profile/test/config_test.yaml") as f:
+            update_config(config, yaml.safe_load(f))
+
 if not IS_CI:
     try:
         subprocess.run(

@@ -1,0 +1,6 @@
+qc_gate:
+  params:
+    min_frip: 0.0
+    min_tss_enr: 0.0
+    min_mapping_rate: 0.0
+    max_duplicate_rate: 100.0
