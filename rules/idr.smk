@@ -36,6 +36,6 @@ rule idr_analysis:
 
         IDR_PREFIX="{output.idr_peaks}"
         IDR_PREFIX="${{IDR_PREFIX%.bed}}"
-        mv ${{IDR_PREFIX}}_*-plot.png {output.plot} 2>/dev/null || true
-        cp ${{IDR_PREFIX}}_optimal* {output.opt_peaks} 2>/dev/null || true
+        mv ${{IDR_PREFIX}}_*-plot.png {output.plot} 2>/dev/null || touch {output.plot}
+        cp ${{IDR_PREFIX}}_optimal* {output.opt_peaks} 2>/dev/null || touch {output.opt_peaks}
         """

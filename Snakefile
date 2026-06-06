@@ -36,53 +36,42 @@ if not IS_CI:
         print(f"Please check the validation script output above for specific missing keys or errors.\n")
         raise e
 
-if IS_CI:
-    SAMPLES = ["CI_SAMPLE"]
-    SAMPLES_TSV = None
-    FASTQ_R1 = {"CI_SAMPLE": "ci_r1.fq.gz"}
-    FASTQ_R2 = {"CI_SAMPLE": "ci_r2.fq.gz"}
-else:
-    SAMPLES_TSV = Path(config["global"]["samples"])
-    with SAMPLES_TSV.open(newline="") as handle:
-        rows = list(csv.DictReader(handle, delimiter="\t"))
-    SAMPLES = [row["sample"] for row in rows]
-    FASTQ_R1 = {row["sample"]: row["fastq_r1"] for row in rows}
-    FASTQ_R2 = {row["sample"]: row["fastq_r2"] for row in rows}
+SAMPLES_TSV = Path(config["global"]["samples"])
+with SAMPLES_TSV.open(newline="") as handle:
+    rows = list(csv.DictReader(handle, delimiter="\t"))
+SAMPLES = [row["sample"] for row in rows]
+FASTQ_R1 = {row["sample"]: row["fastq_r1"] for row in rows}
+FASTQ_R2 = {row["sample"]: row["fastq_r2"] for row in rows}
 
 if not SAMPLES:
     raise ValueError(f"No samples found in sample sheet: {SAMPLES_TSV}")
 
 # Build IDR pairs: all replicate pairs per condition
-if not IS_CI:
-    from itertools import combinations
-    from collections import defaultdict
-    _cond_reps = defaultdict(list)
-    COND_REP_TO_SAMPLE = {}
-    for row in rows:
-        _cond_reps[row["condition"]].append(row["replicate"])
-        COND_REP_TO_SAMPLE[(row["condition"], row["replicate"])] = row["sample"]
-    IDR_TARGETS = [
-        expand(
-            "{path}/{condition}_rep{rep1}_rep{rep2}_idr_peaks.bed",
-            path=config['idr']['output']['idr_peaks'],
-            condition=[cond],
-            rep1=[pair[0]],
-            rep2=[pair[1]]
-        )
-        for cond, reps in _cond_reps.items()
-        for pair in combinations(sorted(set(reps)), 2)
-    ]
-    # flatten
-    IDR_TARGETS = [f for sublist in IDR_TARGETS for f in sublist]
-    IDR_BENCHMARKS = [
-        f"benchmarks/idr/{cond}_rep{pair[0]}_rep{pair[1]}.txt"
-        for cond, reps in _cond_reps.items()
-        for pair in combinations(sorted(set(reps)), 2)
-    ]
-else:
-    COND_REP_TO_SAMPLE = {}
-    IDR_TARGETS = []
-    IDR_BENCHMARKS = []
+from itertools import combinations
+from collections import defaultdict
+_cond_reps = defaultdict(list)
+COND_REP_TO_SAMPLE = {}
+for row in rows:
+    _cond_reps[row["condition"]].append(row["replicate"])
+    COND_REP_TO_SAMPLE[(row["condition"], row["replicate"])] = row["sample"]
+IDR_TARGETS = [
+    expand(
+        "{path}/{condition}_rep{rep1}_rep{rep2}_idr_peaks.bed",
+        path=config['idr']['output']['idr_peaks'],
+        condition=[cond],
+        rep1=[pair[0]],
+        rep2=[pair[1]]
+    )
+    for cond, reps in _cond_reps.items()
+    for pair in combinations(sorted(set(reps)), 2)
+]
+# flatten
+IDR_TARGETS = [f for sublist in IDR_TARGETS for f in sublist]
+IDR_BENCHMARKS = [
+    f"benchmarks/idr/{cond}_rep{pair[0]}_rep{pair[1]}.txt"
+    for cond, reps in _cond_reps.items()
+    for pair in combinations(sorted(set(reps)), 2)
+]
 
 
 # --- Includes ------------------------------------------------------------------

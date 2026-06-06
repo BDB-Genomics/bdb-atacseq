@@ -127,16 +127,21 @@ cat("  PCA plot saved\n")
 
 top_n <- min(50, nrow(res_df))
 top_genes <- head(rownames(res_df[!is.na(res_df$padj), ]), top_n)
-top_mat <- vsd_mat[top_genes, ]
+top_mat <- vsd_mat[top_genes, , drop=FALSE]
 
 pdf(output_heatmap, width=10, height=12)
-pheatmap(top_mat,
-         annotation_col=coldata[, "condition", drop=FALSE],
-         scale="row",
-         clustering_distance_rows="correlation",
-         clustering_distance_cols="correlation",
-         main="Top Differentially Accessible Regions",
-         color=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100))
+if (is.matrix(top_mat) && nrow(top_mat) >= 2) {
+    pheatmap(top_mat,
+             annotation_col=coldata[, "condition", drop=FALSE],
+             scale="row",
+             clustering_distance_rows="correlation",
+             clustering_distance_cols="correlation",
+             main="Top Differentially Accessible Regions",
+             color=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100))
+} else {
+    plot.new()
+    text(0.5, 0.5, "Not enough significant regions for heatmap (>1 required)")
+}
 dev.off()
 cat("  Heatmap saved\n")
 

@@ -326,15 +326,7 @@ def main() -> None:
         )
         print(f"  {sample} ✓")
 
-    # CI-level mock FASTQs (used by lint job dry-run)
-    generate_fastq_paired(
-        os.path.join(root, "ci_r1.fq.gz"),
-        os.path.join(root, "ci_r2.fq.gz"),
-        genome_seqs,
-        genes,
-        n_reads=500,
-    )
-    print("  ci mock reads ✓")
+
 
     # --- Misc placeholders --------------------------------------------------
     print("[7/7] Chromap index placeholder ...")
