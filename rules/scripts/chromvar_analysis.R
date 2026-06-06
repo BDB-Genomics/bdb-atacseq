@@ -55,17 +55,18 @@ dev <- computeDeviations(
     annotations = motif_ix
 )
 
-deviations <- deviationScores(dev)
+dev_scores <- deviationScores(dev)
+raw_dev <- deviations(dev)
 
 # Save results
-write.table(deviations, output_deviations, sep="\t", quote=FALSE, col.names=NA)
-write.table(deviations, output_bias, sep="\t", quote=FALSE, col.names=NA)
+write.table(dev_scores, output_deviations, sep="\t", quote=FALSE, col.names=NA)
+write.table(raw_dev, output_bias, sep="\t", quote=FALSE, col.names=NA)
 
 cat("Generating chromVAR plot\n")
 # Filter out any motifs with NA values or zero variance
-valid_rows <- apply(deviations, 1, function(x) !any(is.na(x)) && sd(x) > 0)
+valid_rows <- apply(dev_scores, 1, function(x) !any(is.na(x)) && sd(x) > 0)
 if (sum(valid_rows) >= 2) {
-    deviations_filtered <- deviations[valid_rows, , drop=FALSE]
+    deviations_filtered <- dev_scores[valid_rows, , drop=FALSE]
     top_n <- min(20, nrow(deviations_filtered))
     top_motifs <- head(rownames(deviations_filtered)[order(apply(deviations_filtered, 1, sd), decreasing=TRUE)], top_n)
     

@@ -110,7 +110,7 @@ if (length(gal) == 0) {
         TSS_Enrichment = 0.0,
         Total_Alignments = 0,
         TSS_Regions = length(tss_regions),
-        Common_Chromosomes = length(common_chroms),
+        Common_Chromosomes = 0,
         Quality = "Poor",
         stringsAsFactors = FALSE
     )

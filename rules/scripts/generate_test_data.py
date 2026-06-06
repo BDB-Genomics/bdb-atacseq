@@ -52,7 +52,7 @@ FRAGMENT_MEAN = 200
 FRAGMENT_SD = 30
 TSS_TARGETED_FRACTION = 0.60   # fraction of reads placed near TSSes
 TSS_WINDOW = 2000              # how far from TSS we scatter targeted reads
-SAMPLES = ["sample1", "sample2", "sample3"]
+SAMPLES = ["sample1", "sample2", "sample3", "sample4"]
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -270,6 +270,7 @@ def generate_samples_tsv(filepath: str) -> None:
         fh.write("sample1\tdata/fastq/sample1_R1.fastq.gz\tdata/fastq/sample1_R2.fastq.gz\t1\tcontrol\n")
         fh.write("sample2\tdata/fastq/sample2_R1.fastq.gz\tdata/fastq/sample2_R2.fastq.gz\t2\tcontrol\n")
         fh.write("sample3\tdata/fastq/sample3_R1.fastq.gz\tdata/fastq/sample3_R2.fastq.gz\t1\ttreated\n")
+        fh.write("sample4\tdata/fastq/sample4_R1.fastq.gz\tdata/fastq/sample4_R2.fastq.gz\t2\ttreated\n")
 
 
 # ---------------------------------------------------------------------------
