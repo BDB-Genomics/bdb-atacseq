@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-05-24T09:28:06.615497+00:00",
-  "commit": "6960ac2e565721bb18c1bf5df331a5f82fe7898b",
+  "timestamp": "2026-06-06T05:27:20.825050+00:00",
+  "commit": "835149d402c32ee333c4e4876b77dc93331eedff",
   "files": {
     "ci_r2.fq.gz": {
-      "hash": "c5ec9122ae487f1f3a8b4b07f9965889beba658f2e38064975aeecdd3cf5befb",
-      "size": 14080,
-      "mtime": 1779612895.7788656
+      "hash": "caebdef42f4ff349dbae7904e839e6c91812393e8ab41c02bb96a0a72eed48d8",
+      "size": 14363,
+      "mtime": 1780693136.0603347
     },
     "sshkey": {
       "hash": "80d480e106036d47bb713441f15f0ceb6ef15d5dc347290e66b2e65ce2fde176",
@@ -43,9 +43,9 @@
       "mtime": 1779042587.6242278
     },
     "ci_r1.fq.gz": {
-      "hash": "a46d1bb6c75d9ab0e0368ec09a5807682c4cc650545ed0e53be5c7fad0ee3516",
-      "size": 14078,
-      "mtime": 1779612895.8498657
+      "hash": "94a30acd524bc2d5aea9ae9d92cf2d00378ac5c226d92b9f9c63e9acca84940a",
+      "size": 14280,
+      "mtime": 1780693136.066335
     },
     ".gitignore": {
       "hash": "365b9e0cb6287e88174f09980c3a75c8d5f42e880264527771ed852d96e6bdd8",
@@ -68,9 +68,9 @@
       "mtime": 1779037091.334425
     },
     "Snakefile": {
-      "hash": "5f49b5e4b9dedfcad10e4c354d149e72400d1fb07162678697fd4d60f04fd1c8",
-      "size": 13278,
-      "mtime": 1779374539.8497825
+      "hash": "9867312a1c86554564041752713b7e6d424bb7721c36b2bc0d5273bcce3708f4",
+      "size": 12906,
+      "mtime": 1780723536.6851509
     },
     "rules/samtools_fixmate.smk": {
       "hash": "3a05f5f1323301a316841fb41a9c55dc6793ad6a3774c69bae184cb5a8504075",
@@ -188,9 +188,9 @@
       "mtime": 1779045144.6593707
     },
     "rules/idr.smk": {
-      "hash": "4d6086da97a43a9df5c94541d156a60a3776b146f2494e53975bb97716e82fbf",
-      "size": 1925,
-      "mtime": 1779046907.135731
+      "hash": "0123be93f84e040ea247af3aec19c6f2589e2cdbeac293764bca1f3100105082",
+      "size": 1960,
+      "mtime": 1780723597.921328
     },
     "rules/blacklist_filter.smk": {
       "hash": "de32bacdd17e093b212b82dc56659c163f5a5c2be262cb37ae7c2e320fb6ce10",
@@ -223,9 +223,9 @@
       "mtime": 1778855351.5596383
     },
     "rules/tobias.smk": {
-      "hash": "fae9fb155dd73280e5b3e922505dee900cc599faf7e019b2df8ebf25dbd024a2",
-      "size": 4965,
-      "mtime": 1779375334.9351175
+      "hash": "8a0d322dba89306446041ab833b0b5d2d8323d2fd5f53343d558607c97d521b7",
+      "size": 5155,
+      "mtime": 1780695249.0721064
     },
     "rules/multiqc.smk": {
       "hash": "3f460ef5b2f50d502ceca4fbf570ae0337948a3e71124154131aa8e0447bcea3",
@@ -368,9 +368,9 @@
       "mtime": 1778821909.613369
     },
     "rules/envs/05_peak_calling/macs2.yaml": {
-      "hash": "d5b8efe321a4748db1c61ce1043ac84a6a639c94febad32c6c5d8042d6b015cc",
-      "size": 83,
-      "mtime": 1778821906.523301
+      "hash": "039975258c9c95b1423a363cce85e0029ff21edfe7c97e871905495ca80101fd",
+      "size": 129,
+      "mtime": 1780696432.4487486
     },
     "rules/envs/05_peak_calling/idr.yaml": {
       "hash": "d3d77c3e73a24b7b0ea9d107c6381cab7892faebde5eb4d650443d4de57ebd11",
@@ -508,9 +508,9 @@
       "mtime": 1779045844.5664768
     },
     "rules/scripts/diff_accessibility.R": {
-      "hash": "5999c7131ecc60352092393d3ddefb566b9318627103f22af471f2df0cc15ed9",
-      "size": 5162,
-      "mtime": 1779046063.896458
+      "hash": "b847abb45ef46e2410c5932af41f12d1711c6da16e664d047631dfe4e2bfba3a",
+      "size": 5355,
+      "mtime": 1780723627.3054433
     },
     "rules/scripts/download_real_data.sh": {
       "hash": "d6c95b1f2cc3361ef51674a8bfcd16d40f6e723bc7a1e430c0d67e3d55c7571d",
@@ -518,9 +518,9 @@
       "mtime": 1779551528.3572135
     },
     "rules/scripts/generate_test_data.py": {
-      "hash": "a39bb349af6d8c78ad9b59fa63c528bfc578354f28d0b4ae8c1280df4c014a62",
-      "size": 8051,
-      "mtime": 1779612886.8098521
+      "hash": "a2a10670e8e24ccc0d331ce96a5c9aa7fe5524d28717a58c03d28e3adc6d295a",
+      "size": 13885,
+      "mtime": 1780723548.3921766
     },
     "rules/scripts/chromvar_analysis.R": {
       "hash": "96fca67b76a7e7213adb35ea22b3d70d99514540d06abbc1c0c5cc0552174932",
