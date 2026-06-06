@@ -4,4 +4,4 @@ channels:
   - bioconda
 dependencies:
   - phantompeakqualtools=1.2.2
-  - samtools=1.22
+  - samtools=1.15.1

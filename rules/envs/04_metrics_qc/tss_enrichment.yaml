@@ -8,4 +8,5 @@ dependencies:
   - bioconductor-rsamtools
   - bioconductor-genomicfeatures
   - bioconductor-genomeinfodb
+  - bioconductor-chippeakanno
   - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene

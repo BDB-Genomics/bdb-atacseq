@@ -9,4 +9,4 @@ dependencies:
   - pysam
   - numpy
   - pip:
-    - RGT
+    - RGT==1.0.2
