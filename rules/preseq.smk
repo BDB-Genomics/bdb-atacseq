@@ -1,7 +1,6 @@
 rule preseq:
     input:
-        markdup_bam_index=lambda wildcards: f"{config['preseq']['input']['markdup_bam_index']}/{wildcards.sample}_noMT.sorted.dedup.bam.bai",
-        markdup_bam=lambda wildcards: f"{config['preseq']['input']['markdup_bam']}/{wildcards.sample}_noMT.sorted.dedup.bam"
+        bam=lambda wildcards: f"{config['preseq']['input']['sorted_bam_noMT_fixmate']}/{wildcards.sample}_noMT.sorted.fixmate.bam"
          
     output:
         complexity=f"{config['preseq']['output']['predicted_complexity']}/{{sample}}.ccurve.txt"
@@ -18,12 +17,12 @@ rule preseq:
     conda: "envs/04_metrics_qc/preseq.yaml"
     container: "https://depot.galaxyproject.org/singularity/preseq:3.2.0--h0f4d3ed_3"
     threads: config['preseq'].get('threads', 1)
-    message: "[Preseq Sample: {wildcards.sample} | Markedup Bam Index: {input.markdup_bam_index} , Markedup Bam: {input.markdup_bam} | Complexity: {output.complexity} | Extra: {params.extra} ]"
+    message: "[Preseq Sample: {wildcards.sample} | Bam: {input.bam} | Complexity: {output.complexity} | Extra: {params.extra} ]"
     
     shell:
         """
         preseq {params.extra} \
-            -B {input.markdup_bam} \
+            -B {input.bam} \
             -o {output.complexity} \
             2> {log} || {{
                 echo "[WARNING] Preseq failed (usually due to low/insufficient reads or duplicates). Creating placeholder output." >> {log}

@@ -28,14 +28,30 @@ rule consensus_peaks:
 
         bedtools merge -i {output.consensus}.merged.tmp \
             -d {params.merge_distance} \
-            -c 1 \
-            -o count \
-        > {output.consensus}.counted.tmp
+        > {output.consensus}.candidate.bed
 
-        awk -v min="$(( {params.min_samples} ))" '$4 >= min' {output.consensus}.counted.tmp \
-        > {output.consensus}
+        > {output.consensus}.overlaps.tmp
+        for peak_file in {input.peaks}; do
+            sample=$(basename "$peak_file" _filtered_peaks.bed)
+            bedtools intersect -u -a {output.consensus}.candidate.bed -b "$peak_file" \
+            | awk -v s="$sample" '{{print $1"\\t"$2"\\t"$3"\\t"s}}' >> {output.consensus}.overlaps.tmp
+        done
 
-        cut -f1-3,4 {output.consensus} > {output.counts}
+        awk -v min="{params.min_samples}" '
+            {{
+                key=$1"\\t"$2"\\t"$3
+                count[key]++
+            }}
+            END {{
+                for (k in count) {{
+                    if (count[k] >= min) {{
+                        print k"\\t"count[k]
+                    }}
+                }}
+            }}
+        ' {output.consensus}.overlaps.tmp | sort -k1,1 -k2,2n > {output.consensus}
 
-        rm -f {output.consensus}.merged.tmp {output.consensus}.counted.tmp
+        cp {output.consensus} {output.counts}
+
+        rm -f {output.consensus}.merged.tmp {output.consensus}.candidate.bed {output.consensus}.overlaps.tmp
         """

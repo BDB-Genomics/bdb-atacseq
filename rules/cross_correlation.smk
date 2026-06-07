@@ -1,6 +1,6 @@
 rule cross_correlation:
     input:
-        shifted_bam=lambda wildcards: f"{config['cross_correlation']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam"
+        filtered_bam=lambda wildcards: f"{config['cross_correlation']['input']['filtered_bam']}/{wildcards.sample}.filtered.bam"
 
     output:
         stats=f"{config['cross_correlation']['output']}/{{sample}}_crosscorr.txt",
@@ -19,12 +19,12 @@ rule cross_correlation:
     conda: "envs/04_metrics_qc/cross_correlation.yaml"
     container: "https://depot.galaxyproject.org/singularity/phantompeakqualtools:1.2.2--r42hdfd78af_0"
     threads: config['cross_correlation']['threads']
-    message: "[Cross-Correlation] Sample: {wildcards.sample} | BAM: {input.shifted_bam} | Output: {output.stats}"
+    message: "[Cross-Correlation] Sample: {wildcards.sample} | BAM: {input.filtered_bam} | Output: {output.stats}"
 
     shell:
         """
         Rscript $(which run_spp.R) \
-            -c={input.shifted_bam} \
+            -c={input.filtered_bam} \
             -savp={output.plot} \
             -out={output.stats} \
             -rf \
@@ -32,7 +32,7 @@ rule cross_correlation:
             -s=10:5:{params.max_range} \
             2> {log} || {{
                 echo "[WARNING] phantompeakqualtools cross-correlation analysis failed. Creating fallback placeholder outputs." >> {log}
-                echo -e "{wildcards.sample}.filtered.shifted.bam\t500\t150\t0.5\t500\t100\t100\t1.1\t0" > {output.stats}
+                echo -e "{wildcards.sample}.filtered.bam\t500\t150\t0.5\t500\t100\t100\t1.1\t0" > {output.stats}
                 touch {output.plot}
             }}
         """
