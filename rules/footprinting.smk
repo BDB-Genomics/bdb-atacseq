@@ -1,3 +1,4 @@
+import os
 rule footprinting:
     input:
         bam=lambda wildcards: f"{config['footprinting']['input']['filtered_bam']}/{wildcards.sample}.filtered.bam",

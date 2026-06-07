@@ -1,3 +1,4 @@
+import os
 rule macs2_peak_calling:
     input:
         shifted_bam=lambda wildcards: f"{config['macs2']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam"

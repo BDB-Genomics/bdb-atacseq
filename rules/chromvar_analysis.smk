@@ -1,3 +1,4 @@
+import os
 rule chromvar_analysis:
     input:
         shifted_bam=lambda wildcards: f"{config['chromvar_analysis']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam",

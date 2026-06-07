@@ -1,3 +1,4 @@
+import os
 rule cicero_coaccessibility:
     input:
         arrow_dir=config['archr']['output']['filtered_arrow'],

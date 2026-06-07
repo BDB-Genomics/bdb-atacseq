@@ -1,3 +1,4 @@
+import os
 rule multiqc:
     input:
         expand("{path}/{sample}_R1_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),

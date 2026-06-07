@@ -1,3 +1,4 @@
+import os
 rule fastqc:
     input: 
         R1_trimmed=lambda wildcards: f"{config['fastqc']['input']['R1']}/{wildcards.sample}_R1_trimmed.fastq.gz",

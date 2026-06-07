@@ -43,6 +43,10 @@ jobs:
           restore-keys: |
             snakemake-conda-${{ runner.os }}-
 
+      - name: Lint Workflow
+        run: |
+          snakemake --lint
+
       - name: Validate Workflow (Dry-run)
         run: |
           snakemake -n --use-conda --conda-frontend mamba --profile profile/test
