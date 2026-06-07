@@ -1,21 +1,11 @@
 {
-  "timestamp": "2026-06-06T19:49:25.269217+00:00",
-  "commit": "13256a8ee4e3965bb101fd8d30f24181703fc825",
+  "timestamp": "2026-06-07T09:08:36.983851+00:00",
+  "commit": "90328e59745093afc0b5de2dd1f8ec7d1229fe0b",
   "files": {
-    "ci_r2.fq.gz": {
-      "hash": "caebdef42f4ff349dbae7904e839e6c91812393e8ab41c02bb96a0a72eed48d8",
-      "size": 14363,
-      "mtime": 1780693136.0603347
-    },
-    "sshkey": {
-      "hash": "80d480e106036d47bb713441f15f0ceb6ef15d5dc347290e66b2e65ce2fde176",
-      "size": 399,
-      "mtime": 1779042587.6237178
-    },
     "README.md": {
-      "hash": "217ea38237cc7af5e436535e5391b8bb4136509b4673f5aae2e5a4ef465c8350",
-      "size": 13655,
-      "mtime": 1779030488.1490898
+      "hash": "109b8a2497043c7d72fe8861be594a97d77b0e2f8db8284f7778ba0c31fb8381",
+      "size": 13827,
+      "mtime": 1780776058.9934068
     },
     "CITATION.cff": {
       "hash": "65a2a47ad5584c5b8c55bf368fdc1c801979edca1c26ee93549b04169c5a0e9e",
@@ -37,25 +27,15 @@
       "size": 2389,
       "mtime": 1779058085.7014453
     },
-    "sshkey.pub": {
-      "hash": "047d1fcc63b55818d0b149842f77836ce03e8f50453514af5e079b8c89a0f90e",
-      "size": 94,
-      "mtime": 1779042587.6242278
-    },
-    "ci_r1.fq.gz": {
-      "hash": "94a30acd524bc2d5aea9ae9d92cf2d00378ac5c226d92b9f9c63e9acca84940a",
-      "size": 14280,
-      "mtime": 1780693136.066335
-    },
     ".gitignore": {
       "hash": "365b9e0cb6287e88174f09980c3a75c8d5f42e880264527771ed852d96e6bdd8",
       "size": 451,
       "mtime": 1779080804.986542
     },
     "config.yaml": {
-      "hash": "91bf3ab36717d4ea99a4c4169135d4a89b0e5ac89e2e84af8468dfa1f8df5fc4",
-      "size": 20789,
-      "mtime": 1780775303.9869022
+      "hash": "a76e00402ab3b8fbd35f0a871e849a5cad337837f4b6bd13bd54631c6b4b1cda",
+      "size": 20700,
+      "mtime": 1780778200.314039
     },
     "CONTRIBUTING.md": {
       "hash": "84f743c254bef043b2bc78648ec371f3d5f0a7bd79e5627cf7194cf6e9816c28",
@@ -68,9 +48,9 @@
       "mtime": 1779037091.334425
     },
     "Snakefile": {
-      "hash": "9867312a1c86554564041752713b7e6d424bb7721c36b2bc0d5273bcce3708f4",
-      "size": 12906,
-      "mtime": 1780723536.6851509
+      "hash": "cc599feb5b521a5dd817716de43d7c6b9549a5f5c4ad986e3236049669b9e0fd",
+      "size": 12735,
+      "mtime": 1780822867.406482
     },
     "rules/samtools_fixmate.smk": {
       "hash": "3a05f5f1323301a316841fb41a9c55dc6793ad6a3774c69bae184cb5a8504075",
@@ -78,9 +58,9 @@
       "mtime": 1779375334.9071174
     },
     "rules/archr.smk": {
-      "hash": "20bf62dce1d9de9c355fd549e30e13ca36862316903d3a45ada52b390a95fb07",
-      "size": 3013,
-      "mtime": 1779556015.8533647
+      "hash": "829ce84ade403fcac24fd88dd2e4c7b64e630a088b92c4699aceb569dae7dee6",
+      "size": 3023,
+      "mtime": 1780812191.7210217
     },
     "rules/normalize_coverage.smk": {
       "hash": "89c6fec3220877dd0c0a3b9a193921d46c06430dc044cf9b2d708554c6b3f5bc",
@@ -88,9 +68,9 @@
       "mtime": 1779025931.0812933
     },
     "rules/footprinting.smk": {
-      "hash": "7cf6b5f76b7093de5c5456c672fd44433b7b87370946024886209494581c6548",
-      "size": 2082,
-      "mtime": 1779046202.41837
+      "hash": "af6b6fa74d431644ed584eb3b2a2416f0f54caae5b26feab1e59471a7e4b9984",
+      "size": 2092,
+      "mtime": 1780812191.7221193
     },
     "rules/correlation_analysis.smk": {
       "hash": "703136192d8b06daac72904f6b3c5be326b33a58d87ae5a58892c34c66e15d84",
@@ -98,9 +78,9 @@
       "mtime": 1779044715.835513
     },
     "rules/cicero.smk": {
-      "hash": "bb7fe84b1e28b6b1d543ceb2216bbfa7e1b8564f02f8645a607e928f49598e77",
-      "size": 1329,
-      "mtime": 1779556001.991154
+      "hash": "d8f4560e0d70c1131146f89539e3b94d87789ae7362dde7b60d7b010a4a91088",
+      "size": 1339,
+      "mtime": 1780812191.7228293
     },
     "rules/picard_insert_size_metrics.smk": {
       "hash": "058f49e9bb7987957bfcbdbd7f071ff0516ddba4c430d6b7ddcbf3284fc43b4a",
@@ -128,9 +108,9 @@
       "mtime": 1779045674.326717
     },
     "rules/chromvar_analysis.smk": {
-      "hash": "2c6a4310bcdfce9c0fec3b56166cced63404b99e25b24e576a17cfc7ddb2bac3",
-      "size": 1492,
-      "mtime": 1779555995.3740532
+      "hash": "2d5abc78e0672bacf7beb572c39d796970abb513a2687b2edfbb56e85c5d9cbb",
+      "size": 1502,
+      "mtime": 1780812191.723732
     },
     "rules/bedtools_genomecov.smk": {
       "hash": "9c9aa15f2857cc86ef266650236c261a69ae55fdd1ed262f95a6853f4f978484",
@@ -148,9 +128,9 @@
       "mtime": 1779462431.3526688
     },
     "rules/tss_enrichment.smk": {
-      "hash": "f682066f27ffd141b029c9a68fe015c66bfbb175a7568ffbbeb5aadb51c34d56",
-      "size": 1491,
-      "mtime": 1779555976.003758
+      "hash": "d9a4f3f728986a3945c25ebc24ec6b53e38cfdfde46f176deeb5beef1225d095",
+      "size": 1524,
+      "mtime": 1780812191.724595
     },
     "rules/benchmark_summary.smk": {
       "hash": "e05153e26e0af0fcde2a79f89436fba1c1a8b2e3018154ad2c433b66d056ba33",
@@ -158,9 +138,9 @@
       "mtime": 1779047605.7034209
     },
     "rules/consensus_peaks.smk": {
-      "hash": "c479e1ff51c2292cf45a3d9091f0de13126d6732c2c4a6c66679e11b1cd2d100",
-      "size": 1678,
-      "mtime": 1779035998.6510632
+      "hash": "5038c02c43001a975df5d94626f0927d93dc344d38e39e134469393fb6f13b9f",
+      "size": 2316,
+      "mtime": 1780819494.9137485
     },
     "rules/count_peaks.smk": {
       "hash": "7147ae54e348491d304fae604ce432788226756af5017ee62bfd23117408e6c6",
@@ -178,9 +158,9 @@
       "mtime": 1779027186.8750675
     },
     "rules/differential_accessibility.smk": {
-      "hash": "30ec8fa38bd54d7da223fc83a0742900a097ae7eacbebf5aee2104293b0e1c29",
-      "size": 1623,
-      "mtime": 1779555983.945879
+      "hash": "a341120f9d57ab5fe152e53cc247f7f98235f2e4fc35a9ee146030c571b13f3a",
+      "size": 1633,
+      "mtime": 1780812191.7256756
     },
     "rules/fragment_size_analysis.smk": {
       "hash": "ade3b6e50e7fbfebf28a521d99b5d0cd2739b2bd73f581db58515000725ddb23",
@@ -228,14 +208,14 @@
       "mtime": 1780695249.0721064
     },
     "rules/multiqc.smk": {
-      "hash": "3f460ef5b2f50d502ceca4fbf570ae0337948a3e71124154131aa8e0447bcea3",
-      "size": 2155,
-      "mtime": 1779045680.7487457
+      "hash": "facc699b9d699db291c15ebcc1c607657a7966f03c6fbb808b5a6fbfa940d45d",
+      "size": 2165,
+      "mtime": 1780812191.7285857
     },
     "rules/preseq.smk": {
-      "hash": "1f37ab719d11ec6ad019a1af62444151b6a44280d650527b12e232ce6f1745cf",
-      "size": 1462,
-      "mtime": 1780775304.1713786
+      "hash": "df318914eea470155045e7b13a3736367af284a1ff4aafed46849241f81ae077",
+      "size": 1253,
+      "mtime": 1780819479.7225454
     },
     "rules/fastp.smk": {
       "hash": "e4d4fcc641578af368cbb9baa2c2db9ccee968a8c7c12b7b0891d5628b6c2712",
@@ -283,9 +263,9 @@
       "mtime": 1779035210.184478
     },
     "rules/macs2_peak_calling.smk": {
-      "hash": "485609a67edb6587853a49f3b53d5267bf2f21a24f6d70928e4e5994a41492a5",
-      "size": 1498,
-      "mtime": 1779556026.2545226
+      "hash": "72a8254c0542662ada62cbf202bc66f7c4ce9eb06bf538a971dccf5125bec5b1",
+      "size": 1543,
+      "mtime": 1780812191.7294364
     },
     "rules/samtools_index.smk": {
       "hash": "79b07079fce936d03bc16950cb32bc652f9b87b089aa993f30fddeb4935c8965",
@@ -293,14 +273,14 @@
       "mtime": 1778855412.0276847
     },
     "rules/fastqc.smk": {
-      "hash": "2a9926a0212783b4c47e522e8620c00cd9cdefd9d4ea851d12d9e1696ed5f674",
-      "size": 1502,
-      "mtime": 1779035159.1785252
+      "hash": "05a3e642b3907967197abfd2e88c2d486942a4a1ed5d64bc67d5a5acb111a51c",
+      "size": 1512,
+      "mtime": 1780812191.7326238
     },
     "rules/cross_correlation.smk": {
-      "hash": "4f008381f58c8e239b90a4f868fb6c99131f9b5d1d3fa5b7fbf0b4d734042601",
-      "size": 1690,
-      "mtime": 1780775303.9939024
+      "hash": "adebc9a89acb5e825fdbd8c355cddfc090bb4482040392243ca56a5fc15dbb42",
+      "size": 1678,
+      "mtime": 1780819473.931858
     },
     "rules/envs/02_alignment/chromap.yaml": {
       "hash": "ae1b6b838f43e072e765a6da7893d020c1231453080815247f645a48a6810478",
@@ -368,9 +348,9 @@
       "mtime": 1778821909.613369
     },
     "rules/envs/05_peak_calling/macs2.yaml": {
-      "hash": "039975258c9c95b1423a363cce85e0029ff21edfe7c97e871905495ca80101fd",
-      "size": 129,
-      "mtime": 1780696432.4487486
+      "hash": "0bc8bc51390c4b6de2004bcff5a0991cfd910161e2fac8c849962088fb74fbf0",
+      "size": 109,
+      "mtime": 1780776578.4774299
     },
     "rules/envs/05_peak_calling/idr.yaml": {
       "hash": "d3d77c3e73a24b7b0ea9d107c6381cab7892faebde5eb4d650443d4de57ebd11",
@@ -383,9 +363,9 @@
       "mtime": 1779027219.0201974
     },
     "rules/envs/05_peak_calling/chromvar.yaml": {
-      "hash": "a7a92f48407c8c6371aa3703d96141284e589fa8186d314014117f2ac6471c70",
-      "size": 265,
-      "mtime": 1779039067.1321616
+      "hash": "8952142a943da07b30a95115d5d5d436011e5555649a91eca7a2a082cb115b67",
+      "size": 220,
+      "mtime": 1780776583.4037178
     },
     "rules/envs/05_peak_calling/diff_accessibility.yaml": {
       "hash": "db6d80776dd542097db9cb44086ef2111add6e424e1d3cf70c0f858993be55c3",
@@ -398,9 +378,9 @@
       "mtime": 1779028017.5918202
     },
     "rules/envs/05_peak_calling/footprinting.yaml": {
-      "hash": "9625704f401d400da6511eb06b55954fecd0f3e5d1f8d9a0f78e2a3b6baec627",
-      "size": 147,
-      "mtime": 1779045257.3658667
+      "hash": "9656a8c5f31b3e3e0f3b502f02c154f137f9ba3aeedbc901f57db0e8849b9744",
+      "size": 154,
+      "mtime": 1780776581.037059
     },
     "rules/envs/01_preprocessing/fastp.yaml": {
       "hash": "21761069cd762f4f69d839faf58e8b89e77d3bf5bcb1930a825c5181785761a8",
@@ -433,14 +413,14 @@
       "mtime": 1779022541.84844
     },
     "rules/envs/04_metrics_qc/tss_enrichment.yaml": {
-      "hash": "24ff56f3387fe2f2b3ab865f5cfea74330d5f5d072e2c84008041896d3ba93ac",
-      "size": 277,
-      "mtime": 1780775303.967902
+      "hash": "c6fbd0004706ac35c6b17783f3307e9b4a23941cf5ac1f7d8dc6a9eed77d5735",
+      "size": 307,
+      "mtime": 1780777055.780347
     },
     "rules/envs/04_metrics_qc/cross_correlation.yaml": {
-      "hash": "37bfae629e0bcd088a58c35b717f1bb1388f1950d0ce12dc51cb01b9b3474f42",
-      "size": 126,
-      "mtime": 1779047843.7541997
+      "hash": "63f64fe97ac6eaccdddd9f76b714a3c30378c5b232b64e4a2a09a4f23f4e24bf",
+      "size": 128,
+      "mtime": 1780776587.7610924
     },
     "rules/envs/04_metrics_qc/preseq.yaml": {
       "hash": "b6452b2407499dea37220df35b03960e598cec98fc83452c6d2931aff578a61d",
@@ -488,9 +468,9 @@
       "mtime": 1779551516.4592996
     },
     "rules/scripts/tss_enrichment.R": {
-      "hash": "4887af9fc95be33238f292bfbd95d7b89a90b6cebf83e633afe5ea60fb4cc7d3",
-      "size": 15922,
-      "mtime": 1779614875.923371
+      "hash": "9751641ef870b32d9066938d8123a5e7c1ae4b141445810f5e092696157be656",
+      "size": 15613,
+      "mtime": 1780778206.4078252
     },
     "rules/scripts/archr_clustering.R": {
       "hash": "0d6e022a761c75e516eefbee63f45459f893de44393594324cc099d7f6bf33ae",
@@ -518,14 +498,14 @@
       "mtime": 1779551528.3572135
     },
     "rules/scripts/generate_test_data.py": {
-      "hash": "a2a10670e8e24ccc0d331ce96a5c9aa7fe5524d28717a58c03d28e3adc6d295a",
-      "size": 13885,
-      "mtime": 1780775303.9939024
+      "hash": "7a541aa47cf16cbacf5b1b5fe677766e61bea9f5c4286581a3e2f3ec60e3011f",
+      "size": 14366,
+      "mtime": 1780777674.0204172
     },
     "rules/scripts/chromvar_analysis.R": {
-      "hash": "96fca67b76a7e7213adb35ea22b3d70d99514540d06abbc1c0c5cc0552174932",
-      "size": 3539,
-      "mtime": 1779045865.5385706
+      "hash": "3bc29b2fbbcfed1b3ae06cb4a45131111babf7305b31e599acde29595a8488c1",
+      "size": 3306,
+      "mtime": 1780777303.4809778
     },
     "envs/main.yaml": {
       "hash": "97bbaa3a572b487d1ee770d47ebcbd61dab19b331feaf6282415351835b7db84",
@@ -697,10 +677,15 @@
       "size": 2804,
       "mtime": 1779093317.728055
     },
+    "profile/test/config_test.yaml": {
+      "hash": "bc5e2118fa7ed4b6cbe5ea4c59437b22e205d62cb5595bbde3b51840fe442cfc",
+      "size": 114,
+      "mtime": 1780780257.0498412
+    },
     "profile/test/config.yaml": {
-      "hash": "ccf6abf889fd0fe99c38e1d688724c43dae4a2c01d717c620542d27104177c6c",
-      "size": 318,
-      "mtime": 1779052893.5125165
+      "hash": "816c523a435062a4f387ed6e68f63ae36decab998baa3972d8ce4b62da613124",
+      "size": 301,
+      "mtime": 1780812205.8396306
     },
     "profile/slurm/config.yaml": {
       "hash": "3d5d9011bed85acb5d73b23ddb34cbfd435bb5b63d94d4df2d034715d5ab55d5",

@@ -22,26 +22,15 @@ MODE = os.getenv("ATAC_MODE", config.get("global", {}).get("mode", "bulk"))
 if MODE not in ("bulk", "scatac"):
     raise ValueError(f"Invalid mode '{MODE}'. Use 'bulk' or 'scatac'. Set via ATAC_MODE env var or config.yaml global.mode")
 
-# CI Bypass: Skip validation and provide dummy metadata in GitHub Actions
-IS_CI = os.getenv("GITHUB_ACTIONS") == "true"
-
-if IS_CI:
-    import yaml
-    from snakemake.utils import update_config
-    if os.path.exists("profile/test/config_test.yaml"):
-        with open("profile/test/config_test.yaml") as f:
-            update_config(config, yaml.safe_load(f))
-
-if not IS_CI:
-    try:
-        subprocess.run(
-            ["python3", "rules/scripts/validate_config.py", "config.yaml"],
-            check=True,
-        )
-    except subprocess.CalledProcessError as e:
-        print(f"\n[CRITICAL ERROR] Configuration validation failed for 'config.yaml'.")
-        print(f"Please check the validation script output above for specific missing keys or errors.\n")
-        raise e
+try:
+    subprocess.run(
+        ["python3", "rules/scripts/validate_config.py", "config.yaml"],
+        check=True,
+    )
+except subprocess.CalledProcessError as e:
+    print(f"\n[CRITICAL ERROR] Configuration validation failed for 'config.yaml'.")
+    print(f"Please check the validation script output above for specific missing keys or errors.\n")
+    raise e
 
 SAMPLES_TSV = Path(config["global"]["samples"])
 with SAMPLES_TSV.open(newline="") as handle:
