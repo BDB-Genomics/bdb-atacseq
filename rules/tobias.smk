@@ -82,7 +82,8 @@ rule tobias_score_bigwig:
         footprint_bw=f"{config['tobias']['output']['footprint_bw']}/{{sample}}_footprints.bw"
 
     params:
-        out_dir=lambda wildcards, output: os.path.dirname(output.footprint_bw)
+        out_dir=lambda wildcards, output: os.path.dirname(output.footprint_bw),
+        genome_sizes=config['global']['references']['genome_sizes']
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -102,7 +103,7 @@ rule tobias_score_bigwig:
             python3 -c "
 import pyBigWig
 headers = []
-with open('{config[global][references][genome_sizes]}') as f:
+with open('{params.genome_sizes}') as f:
     for line in f:
         if line.strip():
             parts = line.strip().split()

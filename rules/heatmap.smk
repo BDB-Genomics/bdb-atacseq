@@ -27,9 +27,9 @@ rule heatmap:
 
     shell:
         """
-        mkdir -p {config[heatmap][output][plot]}
-        mkdir -p {config[heatmap][output][matrix]}
-        mkdir -p {config[heatmap][output][regions]}
+        mkdir -p $(dirname {output.plot})
+        mkdir -p $(dirname {output.matrix})
+        mkdir -p $(dirname {output.regions})
 
         tmp_peaks=$(mktemp)
         if [ ! -s {input.filtered_peaks} ] || [ $(wc -l < {input.filtered_peaks}) -eq 0 ]; then
