@@ -31,7 +31,7 @@ rule multiqc:
         
     shell:
         """
-        multiqc {input} -o {params.out_dir} \
+        multiqc {input} -f -o {params.out_dir} \
             -c {params.config} \
             --title "ATAC-seq Pipeline QC Report" \
             --comment "Comprehensive quality control metrics for ATAC-seq analysis" \
