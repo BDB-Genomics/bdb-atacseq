@@ -32,12 +32,36 @@ rule peak_annotation:
 
         peakfile <- "{input.filtered_peaks}";
 
-        txdb <- makeTxDbFromGFF("{params.gff}", format="gtf");
-        peakAnno <- annotatePeak(peakfile, TxDb=txdb, tssRegion=c(-3000, 3000), verbose=FALSE);
+        is_empty <- TRUE
+        if (file.exists(peakfile) && file.info(peakfile)$size > 0) {{
+            lines <- readLines(peakfile, n=1)
+            if (length(lines) > 0 && trimws(lines[1]) != "") {{
+                is_empty <- FALSE
+            }}
+        }}
 
-        write.table(as.data.frame(peakAnno), "{output.annotation}", sep="\t", row.names=FALSE, quote=FALSE);
+        if (is_empty) {{
+            cat("Peak file is empty. Generating dummy annotation and summary.\\n");
+            dummy_anno <- data.frame(
+                seqnames = character(), start = integer(), end = integer(), width = integer(),
+                strand = character(), annotation = character(), geneChr = character(),
+                geneStart = integer(), geneEnd = integer(), geneLength = integer(),
+                geneStrand = character(), geneId = character(), distanceToTSS = numeric()
+            )
+            write.table(dummy_anno, "{output.annotation}", sep="\\t", row.names=FALSE, quote=FALSE);
 
-        feature_summary <- as.data.frame(table(peakAnno@anno$annotation));
-        write.table(feature_summary, "{output.summary}", sep="\t", row.names=FALSE, quote=FALSE)' \
-        2> {log}
+            dummy_summary <- data.frame(Var1 = character(), Freq = integer())
+            write.table(dummy_summary, "{output.summary}", sep="\\t", row.names=FALSE, quote=FALSE);
+        }} else {{
+            txdb <- makeTxDbFromGFF("{params.gff}", format="gtf");
+            peakAnno <- annotatePeak(peakfile, TxDb=txdb, tssRegion=c(-3000, 3000), verbose=FALSE);
+
+            write.table(as.data.frame(peakAnno), "{output.annotation}", sep="\\t", row.names=FALSE, quote=FALSE);
+
+            feature_summary <- as.data.frame(table(peakAnno@anno$annotation));
+            write.table(feature_summary, "{output.summary}", sep="\\t", row.names=FALSE, quote=FALSE);
+        }}
+        ' 2> {log}
         """
+
+
