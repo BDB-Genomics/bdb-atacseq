@@ -83,6 +83,7 @@ if MODE == "bulk":
     include: "rules/samtools_fixmate.smk"
     include: "rules/samtools_markdup.smk"
     include: "rules/samtools_view.smk"
+    include: "rules/remove_blacklist_reads.smk"
     include: "rules/samtools_index_post_filter.smk"
     include: "rules/samtools_index_after_markdup.smk"
     include: "rules/tn5_shift.smk"
@@ -146,9 +147,10 @@ if MODE == "bulk":
         expand("{path}/{sample}_mito_stats.txt", path=config['mitoATAC_calculate']['output']['mito_stats'], sample=SAMPLES),
         expand("{path}/{sample}_noMT.sorted.bam", path=config['remove_mito_reads']['output']['noMT_sorted_bam'], sample=SAMPLES),
         expand("{path}/{sample}_noMT.sorted.bam.bai", path=config['samtools_index']['output']['index'], sample=SAMPLES),
-        expand("{path}/{sample}_noMT.sorted.dedup.bam", path=config['samtools_markdup']['output']['markdup_bam'], sample=SAMPLES),
-        expand("{path}/{sample}_noMT.sorted.dedup.bam.bai", path=config['samtools_index_post_markdup']['output']['index'], sample=SAMPLES),
-        expand("{path}/{sample}.filtered.bam", path=config['samtools_view']['output']['filtered_bam'], sample=SAMPLES),
+        expand("{path}/{sample}.sorted.dedup.bam", path=config['samtools_markdup']['output']['markdup_bam'], sample=SAMPLES),
+        expand("{path}/{sample}.sorted.dedup.bam.bai", path=config['samtools_index_post_markdup']['output']['index'], sample=SAMPLES),
+        expand("{path}/{sample}.filtered.pre_blacklist.bam", path=config['samtools_view']['output']['filtered_bam'], sample=SAMPLES),
+        expand("{path}/{sample}.filtered.bam", path=config['remove_blacklist_reads']['output']['filtered_bam_clean'], sample=SAMPLES),
         expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=SAMPLES)
     ]
     QC_METRICS_TARGETS = [

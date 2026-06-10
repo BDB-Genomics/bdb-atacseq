@@ -1,9 +1,9 @@
 rule samtools_markdup:
     input:
-        sorted_bam_noMT_fixmate=lambda wildcards: f"{config['samtools_markdup']['input']['sorted_bam_noMT_fixmate']}/{wildcards.sample}_noMT.sorted.fixmate.bam"
+        sorted_bam_noMT_fixmate=lambda wildcards: f"{config['samtools_markdup']['input']['sorted_bam_noMT_fixmate']}/{wildcards.sample}.sorted.fixmate.bam"
         
     output:
-        deduplicated_bam=f"{config['samtools_markdup']['output']['markdup_bam']}/{{sample}}_noMT.sorted.dedup.bam"
+        deduplicated_bam=f"{config['samtools_markdup']['output']['markdup_bam']}/{{sample}}.sorted.dedup.bam"
     
     params:
         dup_flag="-r" if config['samtools_markdup']['params']['remove_duplicates'] else ""

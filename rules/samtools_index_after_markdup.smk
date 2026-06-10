@@ -1,9 +1,9 @@
 rule samtools_index_postmarkdup:
     input:
-        markdup_bam=lambda wildcards: f"{config['samtools_index_post_markdup']['input']['markdup_bam']}/{wildcards.sample}_noMT.sorted.dedup.bam"
+        markdup_bam=lambda wildcards: f"{config['samtools_index_post_markdup']['input']['markdup_bam']}/{wildcards.sample}.sorted.dedup.bam"
         
     output:
-        indexed_markdup_bam=f"{config['samtools_index_post_markdup']['output']['index']}/{{sample}}_noMT.sorted.dedup.bam.bai"
+        indexed_markdup_bam=f"{config['samtools_index_post_markdup']['output']['index']}/{{sample}}.sorted.dedup.bam.bai"
 
     resources:
         mem_mb=config['samtools_index_post_markdup']['resources']['mem_mb'], 

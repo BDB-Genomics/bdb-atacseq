@@ -1,9 +1,9 @@
 rule samtools_fixmate:
     input:
-        sorted_bam_noMT = lambda wildcards: f"{config['samtools_fixmate']['input']['sorted_bam_noMT']}/{wildcards.sample}_noMT.sorted.bam"
+        sorted_bam_noMT = lambda wildcards: f"{config['samtools_fixmate']['input']['sorted_bam_noMT']}/{wildcards.sample}.sorted.bam"
     
     output:
-        sorted_bam_noMT_fixmate = f"{config['samtools_fixmate']['output']['sorted_bam_noMT_fixmate']}/{{sample}}_noMT.sorted.fixmate.bam"
+        sorted_bam_noMT_fixmate = f"{config['samtools_fixmate']['output']['sorted_bam_noMT_fixmate']}/{{sample}}.sorted.fixmate.bam"
 
     resources:
         mem_mb = config["samtools_fixmate"]['resources']['mem_mb'], 

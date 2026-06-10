@@ -1,9 +1,9 @@
 rule samtools_view:
     input:
-        dedup_bam=lambda wildcards: f"{config['samtools_view']['input']['markdup_bam']}/{wildcards.sample}_noMT.sorted.dedup.bam"
+        dedup_bam=lambda wildcards: f"{config['samtools_view']['input']['noMT_sorted_bam']}/{wildcards.sample}_noMT.sorted.bam"
         
     output:
-        filtered_bam=f"{config['samtools_view']['output']['filtered_bam']}/{{sample}}.filtered.bam"
+        filtered_bam=f"{config['samtools_view']['output']['filtered_bam']}/{{sample}}.filtered.pre_blacklist.bam"
     
     params:
         minimum_mapq=config['samtools_view']['params']['MAPQ'], 

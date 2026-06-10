@@ -1,6 +1,6 @@
 rule remove_mito_reads:
     input:
-        sorted_bam=lambda wildcards: f"{config['remove_mito_reads']['input']['sorted_bam']}/{wildcards.sample}.sorted.bam"
+        sorted_bam=lambda wildcards: f"{config['remove_mito_reads']['input']['sorted_bam']}/{wildcards.sample}.sorted.dedup.bam"
     
     output:
         noMT_sorted_bam=f"{config['remove_mito_reads']['output']['noMT_sorted_bam']}/{{sample}}_noMT.sorted.bam"
