@@ -22,11 +22,13 @@
 ### Gold-Standard Features
 
 - **🛡️ QC Gate** — Samples that fail TSS, FRiP, or mapping thresholds are **blocked** from expensive downstream steps. Other pipelines just warn you.
+- **🛡️ Robust Pipeline Safeguards** — Downstream R/Python scripts natively handle zero-count/zero-peak failed samples with dummy placeholder files, guaranteeing the DAG never crashes mid-run. 
+- **📦 Immutable Containerization** — Every single rule natively integrates Galaxy Project Singularity containers. Run with `--use-singularity` for 100% OS-agnostic reproducibility without Conda dependency risks.
 - **🔍 Pre-Flight Validation** — Catches missing files, bad configs, and sample sheet errors **before** the pipeline starts. Zero wasted compute.
 - **💻 Runs Anywhere** — 2GB RAM laptop → 100-node SLURM cluster. One pipeline, four resource profiles.
 - **📊 ENCODE-Compliant** — TSS enrichment, FRiP, NSC/RSC, IDR, library complexity, mapping rate, duplicate rate. All included.
 - **🧬 Complete Analysis** — Preprocessing → Alignment → Peak Calling → IDR → Footprinting (HINT-ATAC + TOBIAS) → chromVAR → Differential Accessibility → MultiQC report.
-- **⚙️ One Config File** — Every parameter, path, and threshold in `config.yaml`. Nothing hidden in code.
+- **⚙️ Dynamic Config-Driven** — Every parameter, path, reference genome, and threshold lives in `config.yaml`. No hardcoded reference packages hidden in environments or scripts.
 
 ---
 
