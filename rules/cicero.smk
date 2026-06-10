@@ -28,4 +28,4 @@ rule cicero_coaccessibility:
     message: "[Cicero] Computing chromatin co-accessibility networks"
 
     script:
-        os.path.abspath("rules/scripts/cicero_analysis.R")
+        "scripts/cicero.R"

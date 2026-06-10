@@ -4,3 +4,4 @@ channels:
   - bioconda
 dependencies:
   - bioconductor-chipseeker=1.42.0
+  - bioconductor-txdbmaker

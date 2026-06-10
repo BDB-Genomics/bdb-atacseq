@@ -3,4 +3,4 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - idr=2.0.4.3
+  - idr=2.0.4.2

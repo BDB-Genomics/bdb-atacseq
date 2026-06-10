@@ -25,7 +25,7 @@ rule archr_pseudobulk:
     message: "[ArchR Pseudo-bulk] Creating Arrow files from scATAC-seq BAMs"
 
     script:
-        os.path.abspath("rules/scripts/archr_pseudobulk.R")
+        "scripts/archr_pseudobulk.R"
 
 rule archr_doublet_detection:
     input:
@@ -50,7 +50,7 @@ rule archr_doublet_detection:
     message: "[ArchR Doublet Detection] Removing doublets from scATAC-seq data"
 
     script:
-        os.path.abspath("rules/scripts/archr_doublets.R")
+        "scripts/archr_doublets.R"
 
 rule archr_clustering:
     input:
@@ -78,4 +78,4 @@ rule archr_clustering:
     message: "[ArchR Clustering] Identifying cell types from scATAC-seq data"
 
     script:
-        os.path.abspath("rules/scripts/archr_clustering.R")
+        "scripts/archr_clustering.R"

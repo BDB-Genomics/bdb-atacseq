@@ -28,4 +28,4 @@ rule differential_accessibility:
     message: "[Differential Accessibility] Running DESeq2 on {params.n_counts} samples"
 
     script:
-        os.path.abspath("rules/scripts/diff_accessibility.R")
+        "scripts/diff_accessibility.R"

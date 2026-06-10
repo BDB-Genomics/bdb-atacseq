@@ -5,6 +5,7 @@ channels:
 dependencies:
   - r-base=4.3
   - bioconductor-chromvar>=1.24.0
+  - bioconductor-motifmatchr>=1.24.0
   - bioconductor-tfbstools>=1.40.0
   - bioconductor-jaspar2024
   - r-ggplot2=3.5

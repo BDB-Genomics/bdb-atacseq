@@ -4,9 +4,14 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - python=3.9
+  - python=3.8
   - pip
   - pysam
-  - numpy
+  - numpy<1.24.0
+  - scipy
+  - matplotlib
+  - pyfaidx
+  - hmmlearn=0.2.2
+  - setuptools
   - pip:
     - RGT==1.0.2
