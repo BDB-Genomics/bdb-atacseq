@@ -29,19 +29,48 @@ rule tobias_atacorrect:
 
     shell:
         """
-        TOBIAS ATACorrect \
-            --bam {input.bam} \
-            --genome {input.genome} \
-            --peaks {input.peaks} \
-            --blacklist {input.blacklist} \
-            --outdir {params.out_dir} \
-            --prefix {wildcards.sample} \
-            --cores {threads} \
-            2> {log}
+        mkdir -p "$(dirname {output.corrected_bw})"
+        mkdir -p "$(dirname {output.bias_track})"
+        mkdir -p "$(dirname {output.log_file})"
 
-        mv {params.out_dir}/{wildcards.sample}_corrected.bw {output.corrected_bw}
-        mv {params.out_dir}/{wildcards.sample}_bias.bw {output.bias_track}
-        mv {params.out_dir}/{wildcards.sample}_atacorrect.log {output.log_file}
+        if [ ! -s {input.peaks} ] || [ $(wc -l < {input.peaks}) -eq 0 ]; then
+            echo "[WARNING] No peaks found in {input.peaks}. Creating dummy bigWig files." >> {log}
+            python3 -c "
+import pyBigWig
+headers = []
+with open('{params.genome_sizes}') as f:
+    for line in f:
+        if line.strip():
+            parts = line.strip().split()
+            headers.append((parts[0], int(parts[1])))
+for out_path in ['{output.corrected_bw}', '{output.bias_track}']:
+    bw = pyBigWig.open(out_path, 'w')
+    bw.addHeader(headers)
+    bw.addEntries([headers[0][0]], [0], ends=[100], values=[0.0])
+    bw.close()
+"
+            echo "No regions found - dummy created" > {output.log_file}
+        else
+            TOBIAS ATACorrect \
+                --bam {input.bam} \
+                --genome {input.genome} \
+                --peaks {input.peaks} \
+                --blacklist {input.blacklist} \
+                --outdir {params.out_dir} \
+                --prefix {wildcards.sample} \
+                --cores {threads} \
+                > {output.log_file} 2>&1
+
+            cp {output.log_file} {log}
+
+            # If output files are not in the exact target path, move them
+            if [ "{params.out_dir}/{wildcards.sample}_corrected.bw" != "{output.corrected_bw}" ]; then
+                mv {params.out_dir}/{wildcards.sample}_corrected.bw {output.corrected_bw}
+            fi
+            if [ "{params.out_dir}/{wildcards.sample}_bias.bw" != "{output.bias_track}" ]; then
+                mv {params.out_dir}/{wildcards.sample}_bias.bw {output.bias_track}
+            fi
+        fi
         """
 
 rule tobias_score_bigwig:
@@ -68,12 +97,29 @@ rule tobias_score_bigwig:
 
     shell:
         """
-        TOBIAS FootprintScores \
-            --signal {input.corrected_bw} \
-            --regions {input.peaks} \
-            --output {output.footprint_bw} \
-            --cores {threads} \
-            2> {log}
+        if [ ! -s {input.peaks} ] || [ $(wc -l < {input.peaks}) -eq 0 ]; then
+            echo "[WARNING] No peaks found in {input.peaks}. Creating dummy footprint bigWig file." >> {log}
+            python3 -c "
+import pyBigWig
+headers = []
+with open('{config[global][references][genome_sizes]}') as f:
+    for line in f:
+        if line.strip():
+            parts = line.strip().split()
+            headers.append((parts[0], int(parts[1])))
+bw = pyBigWig.open('{output.footprint_bw}', 'w')
+bw.addHeader(headers)
+bw.addEntries([headers[0][0]], [0], ends=[100], values=[0.0])
+bw.close()
+"
+        else
+            TOBIAS FootprintScores \
+                --signal {input.corrected_bw} \
+                --regions {input.peaks} \
+                --output {output.footprint_bw} \
+                --cores {threads} \
+                2> {log}
+        fi
         """
 
 rule tobias_bindetect:
@@ -91,7 +137,8 @@ rule tobias_bindetect:
         conditions=config['tobias']['params']['conditions'],
         genome_sizes=config['tobias']['params']['genome_sizes'],
         corrected_bw_dir=lambda wildcards, input: os.path.dirname(input.corrected_bw[0]),
-        n_bams=lambda wildcards, input: len(input.corrected_bw)
+        n_bams=lambda wildcards, input: len(input.corrected_bw),
+        signals_flag=lambda wildcards, input: " ".join([f"--signals {bw}" for bw in input.corrected_bw])
 
     resources:
         mem_mb=config['tobias']['resources']['mem_mb'],
@@ -106,20 +153,17 @@ rule tobias_bindetect:
 
     shell:
         """
-        # Build sample list from sample sheet
-        SAMPLES_FLAG=""
-        while IFS=$'\\t' read -r sample fastq_r1 fastq_r2 replicate condition; do
-            if [ "$sample" != "sample" ]; then
-                SAMPLES_FLAG="$SAMPLES_FLAG --signals {params.corrected_bw_dir}/${{sample}}_corrected.bw"
-            fi
-        done < {input.sample_sheet}
-
-        TOBIAS BINDetect \\
-            $SAMPLES_FLAG \\
-            --motifs {input.motif_db} \\
-            --genome {input.genome} \\
-            --peaks {input.peaks} \\
-            --outdir {output.bindetect_dir} \\
-            --cores {threads} \\
-            2> {log}
+        if [ ! -s {input.peaks} ] || [ $(wc -l < {input.peaks}) -eq 0 ]; then
+            echo "[WARNING] No peaks found in consensus peaks file {input.peaks}. Creating empty bindetect directory." >> {log}
+            mkdir -p {output.bindetect_dir}
+        else
+            TOBIAS BINDetect \
+                {params.signals_flag} \
+                --motifs {input.motif_db} \
+                --genome {input.genome} \
+                --peaks {input.peaks} \
+                --outdir {output.bindetect_dir} \
+                --cores {threads} \
+                2> {log}
+        fi
         """

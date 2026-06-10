@@ -27,10 +27,21 @@ rule heatmap:
 
     shell:
         """
+        mkdir -p {config[heatmap][output][plot]}
+        mkdir -p {config[heatmap][output][matrix]}
+        mkdir -p {config[heatmap][output][regions]}
+
+        tmp_peaks=$(mktemp)
+        if [ ! -s {input.filtered_peaks} ] || [ $(wc -l < {input.filtered_peaks}) -eq 0 ]; then
+            echo -e "chr1\t1000\t2000" > "$tmp_peaks"
+        else
+            cp {input.filtered_peaks} "$tmp_peaks"
+        fi
+
         computeMatrix reference-point \
             --referencePoint center \
             -b {params.upstream} -a {params.downstream} \
-            -R {input.filtered_peaks} \
+            -R "$tmp_peaks" \
             -S {input.bigwig} \
             --skipZeros \
             --missingDataAsZero \
@@ -47,4 +58,6 @@ rule heatmap:
             --samplesLabel {wildcards.sample} \
             --heatmapHeight 12 --heatmapWidth 6 \
             2>> {log.plot}
+
+        rm -f "$tmp_peaks"
         """

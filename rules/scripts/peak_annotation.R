@@ -8,9 +8,25 @@ sink(log_file, type = "message")
 tryCatch({
   library(ChIPseeker)
   library(GenomicFeatures)
+  library(txdbmaker)
   
   peakfile <- snakemake@input[["filtered_peaks"]]
   gff_file <- snakemake@params[["gff"]]
+  
+  if (file.info(peakfile)$size == 0) {
+    message("Peak file is empty. Writing empty annotation and summary outputs.")
+    
+    # Write empty annotation table with header
+    anno_df <- data.frame(seqnames=character(), start=integer(), end=integer(), width=integer(), strand=character(), annotation=character(), geneId=character(), distanceToTSS=integer(), stringsAsFactors=FALSE)
+    write.table(anno_df, snakemake@output[["annotation"]], sep = "\t", row.names = FALSE, quote = FALSE)
+    
+    # Write empty summary table with header
+    feature_summary <- data.frame(Feature=character(), Peak_Count=integer(), stringsAsFactors=FALSE)
+    write.table(feature_summary, snakemake@output[["summary"]], sep = "\t", row.names = FALSE, quote = FALSE)
+    
+    message("Peak annotation completed successfully (empty file safeguard)!")
+    return(TRUE)
+  }
   
   message("Building TxDb database from GFF/GTF: ", gff_file)
   txdb <- makeTxDbFromGFF(gff_file, format = "gtf")

@@ -24,31 +24,22 @@ rule footprinting:
 
     shell:
         """
-        mkdir -p {params.tmp_dir}
-
-        # In a container rgt-data may not be pre-initialized.
-        # Attempt setup; if it fails (no network / read-only FS), fall back to
-        # --bias-correction which skips the genome registry entirely.
-        if rgt-data --setup 2>> {log}; then
-            BIAS_FLAG=""
+        if [ ! -s {input.peaks} ]; then
+            echo "Peak file {input.peaks} is empty. Creating empty footprints file." >> {log}
+            touch {output.footprints}
         else
-            echo "rgt-data setup failed; using --bias-correction to skip genome registry" >> {log}
-            BIAS_FLAG="--bias-correction"
+            mkdir -p {params.tmp_dir}
+            rgt-hint footprinting \
+                --atac-seq \
+                --paired-end \
+                --organism={params.organism} \
+                --output-location={params.tmp_dir} \
+                --output-prefix={wildcards.sample} \
+                {input.bam} \
+                {input.peaks} \
+                2>> {log}
+            mv {params.tmp_dir}/{wildcards.sample}.bed {output.footprints}
+            rm -rf {params.tmp_dir}
         fi
-
-        rgt-hint footprinting \
-            --atac-seq \
-            --paired-end \
-            --organism={params.organism} \
-            $BIAS_FLAG \
-            --output-location={params.tmp_dir} \
-            --output-prefix={wildcards.sample} \
-            {input.bam} \
-            {input.peaks} \
-            2>> {log}
-
-        mv {params.tmp_dir}/{wildcards.sample}.bed {output.footprints}
-        rm -rf {params.tmp_dir}
-
         echo "Footprinting complete for {wildcards.sample}" >> {log}
         """
