@@ -36,6 +36,10 @@ rule multiqc:
             --title "ATAC-seq Pipeline QC Report" \
             --comment "Comprehensive quality control metrics for ATAC-seq analysis" \
             2> {log}
+
+        if [ -f "{params.out_dir}/ATAC-seq-Pipeline-QC-Report_multiqc_report.html" ]; then
+            mv "{params.out_dir}/ATAC-seq-Pipeline-QC-Report_multiqc_report.html" "{output.report_html}"
+        fi
         """
 
 

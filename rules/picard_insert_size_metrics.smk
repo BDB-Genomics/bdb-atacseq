@@ -1,6 +1,6 @@
 rule picard_CollectInsertSizeMetrics:
     input:
-        markdup_bam=lambda wildcards: f"{config['picard']['insert_metrics']['input']['markdup_bam']}/{wildcards.sample}_noMT.sorted.dedup.bam"
+        markdup_bam=lambda wildcards: f"{config['picard']['insert_metrics']['input']['markdup_bam']}/{wildcards.sample}.sorted.dedup.bam"
         
     output:
         insert_metrics=f"{config['picard']['insert_metrics']['output']['metrics']}/{{sample}}.insert_metrics.txt",

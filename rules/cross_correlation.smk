@@ -30,9 +30,5 @@ rule cross_correlation:
             -rf \
             -p={params.num_threads} \
             -s=10:5:{params.max_range} \
-            2> {log} || {{
-                echo "[WARNING] phantompeakqualtools cross-correlation analysis failed. Creating fallback placeholder outputs." >> {log}
-                echo -e "{wildcards.sample}.filtered.bam\t500\t150\t0.5\t500\t100\t100\t1.1\t0" > {output.stats}
-                touch {output.plot}
-            }}
+            2> {log}
         """

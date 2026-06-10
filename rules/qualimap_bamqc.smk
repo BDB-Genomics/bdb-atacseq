@@ -1,6 +1,6 @@
 rule qualimap_bamqc:
     input:
-        markdup_bam=lambda wildcards: f"{config['qualimap_bamqc']['input']['markdup_bam']}/{wildcards.sample}_noMT.sorted.dedup.bam",
+        markdup_bam=lambda wildcards: f"{config['qualimap_bamqc']['input']['markdup_bam']}/{wildcards.sample}.sorted.dedup.bam",
         gtf=config['global']['references']['annotation_gtf']
         
     output:

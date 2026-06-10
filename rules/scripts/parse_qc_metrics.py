@@ -123,6 +123,7 @@ def main():
     parser.add_argument("--max-duplicate-rate", type=float, required=True)
     parser.add_argument("--log", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--json-output", required=True)
     
     args = parser.parse_args()
     
@@ -131,18 +132,18 @@ def main():
     tss = parse_tss(args.tss_file)
     stats = parse_samtools_stats(args.stats_file)
     
-    # Check for parsing failures
-    parse_errors = []
+    # Check for parsing failures and handle them gracefully by flagging as failed rather than halting the pipeline
+    parse_failed = False
     if frip is None: 
-        parse_errors.append("FRiP")
+        frip = 0.0
+        parse_failed = True
     if tss is None: 
-        parse_errors.append("TSS Enrichment")
-    if any(stats.get(k) is None for k in ("total_reads", "mapped_properly", "duplicates")):
-        parse_errors.append("Samtools Stats")
-    
-    if parse_errors:
-        print(f"{Colors.FAIL}[CRITICAL] Failed to parse: {', '.join(parse_errors)}{Colors.ENDC}", file=sys.stderr)
-        sys.exit(1)
+        tss = 0.0
+        parse_failed = True
+    for k in ("total_reads", "mapped_properly", "duplicates"):
+        if stats.get(k) is None:
+            stats[k] = 0
+            parse_failed = True
         
     # 2. Calculate Derived Metrics safely, checking for None values and avoiding Division-by-Zero
     if stats["total_reads"] is not None and stats["duplicates"] is not None and stats["total_reads"] > 0:
@@ -185,6 +186,9 @@ def main():
     report.append(check("duplicates", dup_rate, args.max_duplicate_rate, '<='))
     report.append("-------------------------------")
     
+    if parse_failed:
+        qc_data["overall"] = "FAILED"
+        
     result_color = Colors.OKGREEN if qc_data["overall"] == "PASSED" else Colors.FAIL
     report.append(f"OVERALL RESULT: {result_color}{qc_data['overall']}{Colors.ENDC}")
 
@@ -201,7 +205,7 @@ def main():
         f.write("\n".join(clean_report) + "\n")
 
     # JSON Data for MultiQC/Dashboard
-    with open(Path(args.output).with_suffix('.json'), 'w') as f:
+    with open(args.json_output, 'w') as f:
         json.dump(qc_data, f, indent=4)
 
     # Snakemake Trigger Output
@@ -212,7 +216,7 @@ def main():
     print("\n".join(report))
     
     if qc_data["overall"] == "FAILED":
-        sys.exit(1)
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()

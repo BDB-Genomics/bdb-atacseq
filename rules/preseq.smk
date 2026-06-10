@@ -1,6 +1,6 @@
 rule preseq:
     input:
-        bam=lambda wildcards: f"{config['preseq']['input']['sorted_bam_noMT_fixmate']}/{wildcards.sample}_noMT.sorted.fixmate.bam"
+        bam=lambda wildcards: f"{config['preseq']['input']['noMT_sorted_bam']}/{wildcards.sample}_noMT.sorted.bam"
          
     output:
         complexity=f"{config['preseq']['output']['predicted_complexity']}/{{sample}}.ccurve.txt"

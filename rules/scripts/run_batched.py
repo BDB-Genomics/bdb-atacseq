@@ -49,7 +49,7 @@ def run_batch(
                 f"{config['fastp']['output']}/{s}_R1_trimmed.fastq.gz",
                 f"{config['bowtie2']['output']}/{s}.bam",
                 f"{config['samtools_sort']['output']['sorted_bam']}/{s}.sorted.bam",
-                f"{config['samtools_markdup']['output']['markdup_bam']}/{s}_noMT.sorted.dedup.bam",
+                f"{config['samtools_markdup']['output']['markdup_bam']}/{s}.sorted.dedup.bam",
                 f"{config['tn5_shift']['output']['shifted_bam']}/{s}.filtered.shifted.bam",
                 f"{config['macs2']['output']['peaks']}/{s}_peaks.narrowPeak",
                 f"{config['blacklist_filter']['output']['filtered_peaks']}/{s}_filtered_peaks.bed",

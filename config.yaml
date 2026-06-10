@@ -125,7 +125,7 @@ mitoATAC_calculate:
 
 remove_mito_reads:
   input:
-    sorted_bam: "results/post_alignment/samtools_sort"
+    sorted_bam: "results/post_alignment/samtools_markdup"
   output: 
     noMT_sorted_bam: "results/post_alignment/remove_mito_reads"
   params: 
@@ -147,7 +147,7 @@ samtools_index:
 
 samtools_fixmate:
   input:
-    sorted_bam_noMT: "results/post_alignment/remove_mito_reads"
+    sorted_bam_noMT: "results/post_alignment/samtools_sort"
   output:
     sorted_bam_noMT_fixmate: "results/post_alignment/samtools_fixmate"
   threads: 2 
@@ -161,7 +161,7 @@ samtools_markdup:
   output:
     markdup_bam: "results/post_alignment/samtools_markdup"
   params:
-    remove_duplicates: true
+    remove_duplicates: false
   threads: 4
   resources:
     mem_mb: 8000
@@ -179,7 +179,7 @@ samtools_index_post_markdup:
 
 samtools_view:
   input:
-    markdup_bam: "results/post_alignment/samtools_markdup"
+    noMT_sorted_bam: "results/post_alignment/remove_mito_reads"
   output:
     filtered_bam: "results/post_alignment/samtools_view"
   params:
@@ -188,6 +188,17 @@ samtools_view:
   threads: 2
   resources:
     mem_mb: 2000
+    time: "00:30:00"
+
+remove_blacklist_reads:
+  input:
+    filtered_bam: "results/post_alignment/samtools_view"
+    blacklist: *BLACKLIST
+  output:
+    filtered_bam_clean: "results/post_alignment/samtools_view"
+  threads: 2
+  resources:
+    mem_mb: 4000
     time: "00:30:00"
 
 samtools_index_post_filter:
@@ -214,7 +225,7 @@ tn5_shift:
 
 samtools_stats:
   input:
-    filtered_bam: "results/post_alignment/samtools_view"
+    filtered_bam: "results/post_alignment/remove_mito_reads"
   output:
     stats: "results/post_alignment/samtools_stats"
   threads: 2
@@ -415,7 +426,7 @@ motif_analysis:
   output: "results/peak_calling/motif_analysis"
   params:
     motif_db: *MOTIF_DB
-    genome_assembly: "hg38"
+    genome_assembly: *GENOME_FA
   threads: 8
   resources:
     mem_mb: 16000
@@ -441,7 +452,7 @@ cross_correlation:
 # ------------------------------------------------------------------------------
 preseq:
   input: 
-    sorted_bam_noMT_fixmate: "results/post_alignment/samtools_fixmate"
+    noMT_sorted_bam: "results/post_alignment/remove_mito_reads"
   output:
     predicted_complexity: "results/reporting_qc/preseq"
   threads: 1

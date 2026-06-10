@@ -1,6 +1,6 @@
 rule samtools_stats:
     input:
-        filtered_bam=lambda wildcards: f"{config['samtools_stats']['input']['filtered_bam']}/{wildcards.sample}.filtered.bam"
+        filtered_bam=lambda wildcards: f"{config['samtools_stats']['input']['filtered_bam']}/{wildcards.sample}_noMT.sorted.bam"
         
     output:
         stats=f"{config['samtools_stats']['output']['stats']}/{{sample}}_postFiltering.stats.txt"

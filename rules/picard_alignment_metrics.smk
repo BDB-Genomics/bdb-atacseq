@@ -1,6 +1,6 @@
 rule picard_CollectAlignmentSummaryMetrics:
     input:
-        markdup_bam=lambda wildcards:f"{config['picard']['alignment_metrics']['input']['markdup_bam']}/{wildcards.sample}_noMT.sorted.dedup.bam"
+        markdup_bam=lambda wildcards:f"{config['picard']['alignment_metrics']['input']['markdup_bam']}/{wildcards.sample}.sorted.dedup.bam"
         
     output:
         alignment_metrics=f"{config['picard']['alignment_metrics']['output']['alignment_metrics']}/{{sample}}.alignment_metrics.txt"

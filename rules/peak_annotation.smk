@@ -28,6 +28,7 @@ rule peak_annotation:
         Rscript -e '
         library(ChIPseeker);
         library(GenomicFeatures);
+        library(txdbmaker);
 
         peakfile <- "{input.filtered_peaks}";
 

@@ -26,4 +26,4 @@ rule chromvar_analysis:
     message: "[chromVAR] Sample: {wildcards.sample} | BAM: {input.shifted_bam} | Peaks: {input.peaks} | Motifs: {input.motif_db}"
 
     script:
-        os.path.abspath("rules/scripts/chromvar_analysis.R")
+        "scripts/chromvar_analysis.R"
