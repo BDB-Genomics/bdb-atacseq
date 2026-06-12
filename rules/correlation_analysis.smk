@@ -1,4 +1,3 @@
-
 rule correlation_analysis: 
     input: 
         bigwig=expand("{path}/{sample}.bw", path=config['correlation_analysis']['input']['bigwig'], sample=SAMPLES)

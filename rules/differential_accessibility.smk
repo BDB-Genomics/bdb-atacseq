@@ -1,4 +1,3 @@
-import os
 rule differential_accessibility:
     input:
         counts=expand("{path}/{sample}_peak_counts.tsv", path=config['count_peaks']['output'], sample=SAMPLES),

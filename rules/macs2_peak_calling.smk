@@ -1,4 +1,3 @@
-import os
 rule macs2_peak_calling:
     input:
         shifted_bam=lambda wildcards: f"{config['macs2']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam"
@@ -11,7 +10,7 @@ rule macs2_peak_calling:
         qval=config['macs2']['params']['qvalue'],
         nomodel=config['macs2']['params']['nomodel'],
         format=config['macs2']['params']['format'],
-        dir=lambda wildcards, output: os.path.dirname(output.peaks)
+        dir=lambda wildcards, output: __import__('os').path.dirname(output.peaks)
 
     resources:
         mem_mb=lambda wildcards, input, attempt: max(config['macs2']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,

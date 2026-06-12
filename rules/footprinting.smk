@@ -1,4 +1,3 @@
-import os
 rule footprinting:
     input:
         bam=lambda wildcards: f"{config['footprinting']['input']['filtered_bam']}/{wildcards.sample}.filtered.bam",
@@ -9,7 +8,7 @@ rule footprinting:
 
     params:
         organism=config['footprinting']['params']['organism'],
-        tmp_dir=lambda wildcards, output: f"{os.path.dirname(output.footprints)}/tmp_{wildcards.sample}"
+        tmp_dir=lambda wildcards, output: f"{__import__('os').path.dirname(output.footprints)}/tmp_{wildcards.sample}"
 
     resources:
         mem_mb=lambda wildcards, input, attempt: max(config['footprinting']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,

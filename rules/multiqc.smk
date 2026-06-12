@@ -1,4 +1,3 @@
-import os
 rule multiqc:
     input:
         expand("{path}/{sample}_R1_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
@@ -27,7 +26,7 @@ rule multiqc:
         
     params:
         config=config['multiqc']['params']['config'],
-        out_dir=lambda wildcards, output: os.path.dirname(output.report_html)
+        out_dir=lambda wildcards, output: __import__('os').path.dirname(output.report_html)
         
     shell:
         """

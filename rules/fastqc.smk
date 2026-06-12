@@ -1,4 +1,3 @@
-import os
 rule fastqc:
     input: 
         R1_trimmed=lambda wildcards: f"{config['fastqc']['input']['R1']}/{wildcards.sample}_R1_trimmed.fastq.gz",
@@ -11,7 +10,7 @@ rule fastqc:
         R2_zip = f"{config['fastqc']['output']}/{{sample}}_R2_trimmed_fastqc.zip"
     
     params:
-        out_dir=lambda wildcards, output: os.path.dirname(output.R1_report)
+        out_dir=lambda wildcards, output: __import__('os').path.dirname(output.R1_report)
         
     resources:
         mem_mb=lambda wildcards, input, attempt: max(config['fastqc']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 

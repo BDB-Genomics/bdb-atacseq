@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-06-12T19:23:51.658836+00:00",
-  "commit": "65fcc5049a11e4446bf87e1c9db3f33ddec10a29",
+  "timestamp": "2026-06-12T21:33:30.812883+00:00",
+  "commit": "8f947b858c5ced8b7eed5c190f60c15b59925080",
   "files": {
     "README.md": {
       "hash": "cc5beda375b8863481562ae06b3998930c8ea6d1463f8a469ac2650791e0a039",
@@ -53,84 +53,84 @@
       "mtime": 1780836696.9889035
     },
     "rules/samtools_fixmate.smk": {
-      "hash": "86b0ce90413dfe1147d6126c791185d7a679ae3d23fa058cd65eb6d481ab4aae",
-      "size": 1142,
-      "mtime": 1780836628.6692476
+      "hash": "9b7a41fc56952438409b625dd7ed9f1f22dce2058bc306cbbdf963d664ba97a8",
+      "size": 1251,
+      "mtime": 1781299916.461862
     },
     "rules/archr.smk": {
-      "hash": "ad9ca3051e70031539b1fdcd7b440622f11688d722853728ae570b968a87e012",
-      "size": 2954,
-      "mtime": 1780823846.4359267
+      "hash": "71bf8d4dc8a00ee79b5aff3ae85d2ecc0074e381078335b1f880674e565e0fb2",
+      "size": 3293,
+      "mtime": 1781299916.4644237
     },
     "rules/normalize_coverage.smk": {
-      "hash": "89c6fec3220877dd0c0a3b9a193921d46c06430dc044cf9b2d708554c6b3f5bc",
-      "size": 1419,
-      "mtime": 1779025931.0812933
+      "hash": "70c21e6859e5e88a530075421fe897c30e4cd51706345dfc7845f065c9bf68af",
+      "size": 1528,
+      "mtime": 1781299916.4662235
     },
     "rules/footprinting.smk": {
-      "hash": "1775ed20c8d5e609217b14c613f95e3dac5ce48e9aba02ca3c60c237decbed49",
-      "size": 2389,
-      "mtime": 1781153072.1118984
+      "hash": "17b6ecef335ea6ce798b033aa20bcfafc6d2d2df98cf2a432866f7d5728f4991",
+      "size": 2502,
+      "mtime": 1781299916.467853
     },
     "rules/correlation_analysis.smk": {
-      "hash": "703136192d8b06daac72904f6b3c5be326b33a58d87ae5a58892c34c66e15d84",
-      "size": 1917,
-      "mtime": 1779044715.835513
+      "hash": "114c39b5debee342edeb17c67984962fd4135a61a7916709633f01b7ee7b6fb0",
+      "size": 2030,
+      "mtime": 1781299916.4706106
     },
     "rules/cicero.smk": {
-      "hash": "254084e7dde33651cd554dd6e9ffdebf1c8c57d545e8a274e031e0f0680764a4",
-      "size": 1307,
-      "mtime": 1780823822.8195672
+      "hash": "5ba87730d10307e3a688ab1b365f1b71757c7e979e09f2bcf6b4d4962cc4cb4f",
+      "size": 1420,
+      "mtime": 1781299916.472102
     },
     "rules/picard_insert_size_metrics.smk": {
-      "hash": "1d00b0e74f5adf3e26277e3a04af764e466f6261eab68ef1ee3c13a32466ffbd",
-      "size": 2138,
-      "mtime": 1780836782.1277277
+      "hash": "fba7dedb9a5679d22b2bb9a5416054198551220ca58deec659e9924189b632a5",
+      "size": 2251,
+      "mtime": 1781299916.4728532
     },
     "rules/template_tool.smk": {
-      "hash": "970dc7af9f824b83352c69145f94daa24d366e7df309db382ff4690f52aad7e8",
-      "size": 1621,
-      "mtime": 1779045176.9545126
+      "hash": "371ab3a58164cb9bcdab16d0d60cd5c7a43e2f96d31720fbddf0105d07b53e6c",
+      "size": 1734,
+      "mtime": 1781299916.4747174
     },
     "rules/tn5_shift.smk": {
-      "hash": "72bf4220c7e0128c6945d6bb2f0713cf5847d1f395aecd11d20a4dd2fab31283",
-      "size": 1820,
-      "mtime": 1779045093.4961462
+      "hash": "5d1bc45d0f9211dea61c6dd100bea1b27bc64690c594abaf91f4614bb35bab29",
+      "size": 1933,
+      "mtime": 1781299916.475796
     },
     "rules/heatmap.smk": {
-      "hash": "f4403c98ffdaf07268d80c9f291d7a2131bfb76970fb26303fabb41ca70afcf0",
-      "size": 3241,
-      "mtime": 1781248368.6133265
+      "hash": "4cc6d4d892f6a03de6d871fbb8f4f4ec881a302a111fbe78e633555be2d59094",
+      "size": 3354,
+      "mtime": 1781299916.4758532
     },
     "rules/chromap.smk": {
-      "hash": "9b7a4f3544448d93adbd4315eea3d0242b02dbbb6ee02aa78084c6296d4c3c14",
-      "size": 1609,
-      "mtime": 1779045674.326717
+      "hash": "beb7893116b8d35e57d22ad6c750b380e9c0b978cfb7d6e5f7ef6042fe634edb",
+      "size": 1722,
+      "mtime": 1781299916.4770823
     },
     "rules/chromvar_analysis.smk": {
-      "hash": "55c52cb8bfad5c616e33064616826836f25b803582f371bf5c8d84a8fa24b862",
-      "size": 1479,
-      "mtime": 1780823818.2993014
+      "hash": "c2e362a2f409d32a21c8950768f7c17be833ef0bd9cdba00bbe0fb9b39848822",
+      "size": 1592,
+      "mtime": 1781299916.4779313
     },
     "rules/bedtools_genomecov.smk": {
-      "hash": "9c9aa15f2857cc86ef266650236c261a69ae55fdd1ed262f95a6853f4f978484",
-      "size": 1228,
-      "mtime": 1779375371.5312943
+      "hash": "07d8797930fd7b4116c698978554be8dfd66f846f0d03088f60cfe8cd1adb43f",
+      "size": 1341,
+      "mtime": 1781299916.4786215
     },
     "rules/samtools_markdup.smk": {
-      "hash": "25d22505bdf287d722a8f530e1297243e76b99d2b8b1c790e0df02482bee6c3a",
-      "size": 1252,
-      "mtime": 1780836638.4143407
+      "hash": "f240abeeb81af8e16cbd85c93c0edbb9566ead19b009feac946f46df03928753",
+      "size": 1365,
+      "mtime": 1781299916.4791553
     },
     "rules/calculate_mito_reads.smk": {
-      "hash": "e0ce2ba52417d9eec212524cb942ccb1df47f36ac601e306dbf9031577b94739",
-      "size": 2164,
-      "mtime": 1779462431.3526688
+      "hash": "32348b0c6c3497c2c0078700299ae749fcd289abd7f91b662813fde15273a0ed",
+      "size": 2277,
+      "mtime": 1781299916.4798377
     },
     "rules/tss_enrichment.smk": {
-      "hash": "f8305fba55b98516b674cd2e6884213c50c2ef006a4f3f6a2e8c743ca0a0b54a",
-      "size": 1499,
-      "mtime": 1780823816.2731817
+      "hash": "2df1d7b2d120d6b4bd9d5ae716285cc6f1cb6d2c5b506b90b88037a7f5fc713a",
+      "size": 1612,
+      "mtime": 1781299916.4803507
     },
     "rules/benchmark_summary.smk": {
       "hash": "e05153e26e0af0fcde2a79f89436fba1c1a8b2e3018154ad2c433b66d056ba33",
@@ -138,154 +138,154 @@
       "mtime": 1779047605.7034209
     },
     "rules/consensus_peaks.smk": {
-      "hash": "5038c02c43001a975df5d94626f0927d93dc344d38e39e134469393fb6f13b9f",
-      "size": 2316,
-      "mtime": 1780819494.9137485
+      "hash": "6f9ff13e2ef33445ebf4cf50c50982fa78232e9d668857cd33e3db66f5ad3f8d",
+      "size": 2429,
+      "mtime": 1781299916.4811172
     },
     "rules/count_peaks.smk": {
-      "hash": "7147ae54e348491d304fae604ce432788226756af5017ee62bfd23117408e6c6",
-      "size": 1096,
-      "mtime": 1779035091.7582283
+      "hash": "5a8b9ab3fa4ccb5982c5cb6f3a8ab46abd15d442d41a94668f749d998a4eec71",
+      "size": 1209,
+      "mtime": 1781299916.4818113
     },
     "rules/samtools_index_post_filter.smk": {
-      "hash": "1a59d6e7fddff175c7bd67d3c7b5a71333942137405a876c80647d162d1f986b",
-      "size": 1148,
-      "mtime": 1778855389.6285677
+      "hash": "d2cec2b54b1ccc5123c7ab23063fd923f311d7edd906131e06dee830204b3acc",
+      "size": 1261,
+      "mtime": 1781299916.4823968
     },
     "rules/samtools_sort.smk": {
-      "hash": "5774a6f1afd8319e0a25e7e8170a36072b08a33fa51bb0562b6423c6f80eab82",
-      "size": 1040,
-      "mtime": 1779027186.8750675
+      "hash": "16c0494faeaee78db3d8dd2df5c28e425ef09d404976bbe2610f2e68d8019a08",
+      "size": 1153,
+      "mtime": 1781299916.4829814
     },
     "rules/differential_accessibility.smk": {
-      "hash": "486d2020f337a9b432d5e529b31ddbba0fd3a1da5b6c0a87ff8868dabb716d8b",
-      "size": 1610,
-      "mtime": 1780823783.881217
+      "hash": "eeadeb3bbbeceb8dfb616b8b1b8e57d18329fcf214a474414295ea19f4ad02cd",
+      "size": 1723,
+      "mtime": 1781299916.4835398
     },
     "rules/fragment_size_analysis.smk": {
-      "hash": "ade3b6e50e7fbfebf28a521d99b5d0cd2739b2bd73f581db58515000725ddb23",
-      "size": 3062,
-      "mtime": 1779045144.6593707
+      "hash": "1d47febfaf7ee74801da2faf2a0cd6c79f0bdce3b90e03f371f7674afb6f0bfa",
+      "size": 3175,
+      "mtime": 1781299916.4841702
     },
     "rules/idr.smk": {
-      "hash": "52c9a53c323a04d2774581d5935c971819775b2e19ce551bb1c383fde4c94939",
-      "size": 2108,
-      "mtime": 1780850225.6933498
+      "hash": "9721e52a27b788671c1014fc83cb8bdc650409be62b0150b827c0463c6e8764f",
+      "size": 2221,
+      "mtime": 1781299916.4847505
     },
     "rules/blacklist_filter.smk": {
-      "hash": "de32bacdd17e093b212b82dc56659c163f5a5c2be262cb37ae7c2e320fb6ce10",
-      "size": 1166,
-      "mtime": 1779027260.5703716
+      "hash": "1ebe2410f5023adf9af600c636dc8f2172a27602490d2fbbda314745c74be9f0",
+      "size": 1279,
+      "mtime": 1781299916.4852693
     },
     "rules/remove_blacklist_reads.smk": {
-      "hash": "8aa2f280ec115da510ec287239c7ab75baf3cfa0eb823688d98aab369433549a",
-      "size": 1072,
-      "mtime": 1780836618.6871521
+      "hash": "d8eeeee9c1a4bfb661981255da8d44c81c11317cf2dac5e560bf63dc64e0ec78",
+      "size": 1185,
+      "mtime": 1781299916.4857962
     },
     "rules/bowtie2.smk": {
-      "hash": "b68652c64e8268b191a150785f4a3ac3333fd0b0a98126dca32b4b7555230c80",
-      "size": 1463,
-      "mtime": 1779045161.4454443
+      "hash": "aa7f5b82252507a06598655e7eda072dd50d5dbdb36d5e4fa1484626a40f15a4",
+      "size": 1576,
+      "mtime": 1781299916.4863358
     },
     "rules/peak_annotation.smk": {
-      "hash": "44a90bf54752e2fed06fe5b7ae74ad34d7949d5d5c9f203b7e3f0c3b4e78943a",
-      "size": 3046,
-      "mtime": 1781131999.9526486
+      "hash": "6db2b71cfae5dcbeb6c44a7a801481300f479b3bfcd78672b2631ffba125d516",
+      "size": 3159,
+      "mtime": 1781299916.487034
     },
     "rules/remove_mito_reads.smk": {
-      "hash": "3fd0793f8651366507877aa916e8e46eaa8817e098f169bb2bbcf536aec9922f",
-      "size": 1681,
-      "mtime": 1780836648.1264338
+      "hash": "efb89ee3e81e7dbbb201983d2f93a620ecb55cee035afa0766a0d9cba008816c",
+      "size": 1794,
+      "mtime": 1781299916.487708
     },
     "rules/sorted_bedgraph.smk": {
-      "hash": "4abd6cf92b3c8b8e9706f92b12bc66ece1f4e712bc21ba7b16c9ccee909f018d",
-      "size": 1132,
-      "mtime": 1778855611.631308
+      "hash": "28ef199828309148489d28a03c9f6a7fe32200ed3ac60c3754e1dce96108622a",
+      "size": 1245,
+      "mtime": 1781299916.488265
     },
     "rules/samtools_index_after_markdup.smk": {
-      "hash": "b9dd0cdceaafcdba01e862e8ccec7a49cb4d43c59cb44e15ecca0df88af703c3",
-      "size": 1160,
-      "mtime": 1780836662.0525675
+      "hash": "a34f3fe6d5f05d33b23d58073f18e508cf934e832cc297cdaa6630df629c5f28",
+      "size": 1273,
+      "mtime": 1781299916.4890225
     },
     "rules/tobias.smk": {
-      "hash": "6b52af5aea3b87c125aa3b91ac368fff4618e5020611636cf44db0399d3ced20",
-      "size": 7098,
-      "mtime": 1781127568.6753502
+      "hash": "ca14485c5f00ab03e83ae63b814a6a358568c841d8c8719f00d78d4fd1a6ed5b",
+      "size": 7437,
+      "mtime": 1781299916.4901128
     },
     "rules/multiqc.smk": {
-      "hash": "3f3f3496dedc2bc47539026e151d5f95f536e0fd9c421f77bc1e7a688f3bacc0",
-      "size": 2376,
-      "mtime": 1781134291.4061286
+      "hash": "17f1f73dcac0b97940393654e7c7ed3ac4a750c1036fa5c0d41e637e794d33c2",
+      "size": 2489,
+      "mtime": 1781299916.4918654
     },
     "rules/preseq.smk": {
-      "hash": "28d1e1f719ba7fe496f4a44ea05ab1fdf260b74e64787885e475a3f6a097296b",
-      "size": 1237,
-      "mtime": 1780836676.3167045
+      "hash": "94d3d600a5fd97e87532d0c56586bc5521adc1f486f1f9a1769f70aebcf5469d",
+      "size": 1350,
+      "mtime": 1781299916.4928963
     },
     "rules/fastp.smk": {
-      "hash": "e4d4fcc641578af368cbb9baa2c2db9ccee968a8c7c12b7b0891d5628b6c2712",
-      "size": 1762,
-      "mtime": 1779375333.0451088
+      "hash": "8ead40b0324baf48eea75958aa82d331d5a443bf2ebee39e700b3f29aa3f8189",
+      "size": 1875,
+      "mtime": 1781299916.493515
     },
     "rules/samtools_stats.smk": {
-      "hash": "4de13adcf117582d90469b231a516cd7c781d63ee2bbe38162c4c14df9e633fe",
-      "size": 1023,
-      "mtime": 1780836670.0926447
+      "hash": "031563483768eff74e5bbd14ef027d4de0051482c58d7915366c2331b38c4207",
+      "size": 1136,
+      "mtime": 1781299916.493956
     },
     "rules/frip_calculation.smk": {
-      "hash": "7d09136bc5eddfcef5a62a95ce4d80e99cefb7897133d5d1b59d38a7387fd371",
-      "size": 1733,
-      "mtime": 1779044725.8255556
+      "hash": "bd73e5fe1903abb7e542ca3951c089c94f218620060aec6fe2db249cd759edb7",
+      "size": 1846,
+      "mtime": 1781299916.4943962
     },
     "rules/bigwig.smk": {
-      "hash": "216938b42914016a52b0c7888df6cb26b428c7828014f2026b8807d318867c3e",
-      "size": 1096,
-      "mtime": 1778854475.098445
+      "hash": "179be44626e54e2caf298be4ac07ac36de6e849caa19cc330d70b4140f27b779",
+      "size": 1209,
+      "mtime": 1781299916.495181
     },
     "rules/motif_analysis.smk": {
-      "hash": "60e02a92d6ccc5c41cd6b84ecb1550f482c859bf42d2ac29e8a2c52d5a884410",
-      "size": 1765,
-      "mtime": 1781131721.1885624
+      "hash": "c8a87139d8d05b70b0022ba18e8efd140e9a97ddaa4b5a3246abfaae7cfa4fe8",
+      "size": 1878,
+      "mtime": 1781299916.4962113
     },
     "rules/picard_alignment_metrics.smk": {
-      "hash": "f79c1484e9477bfc7d292f6803553181ae89f1c527b35cc6d32284b342233c50",
-      "size": 2138,
-      "mtime": 1780836776.8516765
+      "hash": "15d57880048fa4a4bf650f4a63865817ea70e30d5dc5220c5ab18271e29526c8",
+      "size": 2251,
+      "mtime": 1781299916.4972174
     },
     "rules/qc_gate.smk": {
-      "hash": "fae5d4cb63151fe2218ea63ad80cc8f1138cfcffe276266c72bff073c9b7587d",
-      "size": 1754,
-      "mtime": 1780823781.6510782
+      "hash": "f70daad0786e3514b6d119b935e3b7f6cb85b359474f18ec065b6c04125f9177",
+      "size": 1867,
+      "mtime": 1781299916.4982321
     },
     "rules/samtools_view.smk": {
-      "hash": "ce03c1db5daeefdc450064187b38d0b81fb02fd449b81c2d4b115e0cd764b890",
-      "size": 1346,
-      "mtime": 1780836656.1975112
+      "hash": "053c2baee70cebb94c14df69417cfedc1a597ef2f5084101d14f890142622472",
+      "size": 1447,
+      "mtime": 1781299916.4992948
     },
     "rules/qualimap_bamqc.smk": {
-      "hash": "cc5cc2da41eebe2584a1b43a6ea3469f28007d66c375532663497b18dc51ed48",
-      "size": 1308,
-      "mtime": 1780836771.856628
+      "hash": "2fdfb89020b9823db0f381c937f4bd4d29d0b34d6aef1960f66a340cc2637e19",
+      "size": 1476,
+      "mtime": 1781299950.2653959
     },
     "rules/macs2_peak_calling.smk": {
-      "hash": "72a8254c0542662ada62cbf202bc66f7c4ce9eb06bf538a971dccf5125bec5b1",
-      "size": 1543,
-      "mtime": 1780812191.7294364
+      "hash": "f3fc97c6f47f1d44ae89140dd2649fe5cddd098ae555cdf5eca1d5ae5fc0d856",
+      "size": 1656,
+      "mtime": 1781299916.5013046
     },
     "rules/samtools_index.smk": {
-      "hash": "79b07079fce936d03bc16950cb32bc652f9b87b089aa993f30fddeb4935c8965",
-      "size": 1034,
-      "mtime": 1778855412.0276847
+      "hash": "de5c44cee84d97c22a8fcd36e187607d4eb113daec4620dd893b282358179a0c",
+      "size": 1142,
+      "mtime": 1781299916.5022924
     },
     "rules/fastqc.smk": {
-      "hash": "05a3e642b3907967197abfd2e88c2d486942a4a1ed5d64bc67d5a5acb111a51c",
-      "size": 1512,
-      "mtime": 1780812191.7326238
+      "hash": "64f89f9d24ff84a86f729ae9a30192b7f96ad4a46b407d5490ba3903216f4c2f",
+      "size": 1625,
+      "mtime": 1781299916.503279
     },
     "rules/cross_correlation.smk": {
-      "hash": "0c0f23d602691ce5671c5fc4ae1dce1df53bee12323fba1f905f7b11ad06189c",
-      "size": 1371,
-      "mtime": 1780823776.8347766
+      "hash": "847627bd57b611a499d8a342fa9a3c64c34c60af38d7520ecc236607b0211b33",
+      "size": 1484,
+      "mtime": 1781299916.5042963
     },
     "rules/envs/02_alignment/chromap.yaml": {
       "hash": "ae1b6b838f43e072e765a6da7893d020c1231453080815247f645a48a6810478",

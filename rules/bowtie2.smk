@@ -1,4 +1,3 @@
-
 rule bowtie2_align: 
     input:
         R1_fastp=lambda wildcards: f"{config['bowtie2']['input']}/{wildcards.sample}_R1_trimmed.fastq.gz", 

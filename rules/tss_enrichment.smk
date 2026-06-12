@@ -1,4 +1,3 @@
-import os
 rule tss_enrichment:
     input: 
         shifted_bam=lambda wildcards: f"{config['tss_enrichment']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam", 
