@@ -13,5 +13,5 @@ restart-times: 0
 # these values will be ignored for that rule.
 default-resources:
   mem_mb: 4000
-  time: "01:00:00"
+  time: 60
   threads: 1

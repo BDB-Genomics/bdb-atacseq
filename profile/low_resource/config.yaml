@@ -192,5 +192,5 @@ set-resources:
 # Fallback for any rule not listed above
 default-resources:
   mem_mb: 2000
-  time: "02:00:00"
+  time: 120
   threads: 1

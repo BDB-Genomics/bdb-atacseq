@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-06-07T09:08:36.983851+00:00",
-  "commit": "90328e59745093afc0b5de2dd1f8ec7d1229fe0b",
+  "timestamp": "2026-06-12T07:19:30.986088+00:00",
+  "commit": "06f8e0a21bc2ce7d3d31bd24aaa540032cb649e0",
   "files": {
     "README.md": {
-      "hash": "109b8a2497043c7d72fe8861be594a97d77b0e2f8db8284f7778ba0c31fb8381",
-      "size": 13827,
-      "mtime": 1780776058.9934068
+      "hash": "9a48e3c3e94f99e1db7ede8b22c3d8dbc718b9bb76b05ab0d57339e262fce764",
+      "size": 14317,
+      "mtime": 1781125995.9617376
     },
     "CITATION.cff": {
       "hash": "65a2a47ad5584c5b8c55bf368fdc1c801979edca1c26ee93549b04169c5a0e9e",
@@ -33,9 +33,9 @@
       "mtime": 1779080804.986542
     },
     "config.yaml": {
-      "hash": "a76e00402ab3b8fbd35f0a871e849a5cad337837f4b6bd13bd54631c6b4b1cda",
-      "size": 20700,
-      "mtime": 1780778200.314039
+      "hash": "3b682e5de94cf4ed6bd6258ae2402283e29989c03af466a2b7f39dd8e76d3fe2",
+      "size": 20960,
+      "mtime": 1780851103.9167101
     },
     "CONTRIBUTING.md": {
       "hash": "84f743c254bef043b2bc78648ec371f3d5f0a7bd79e5627cf7194cf6e9816c28",
@@ -48,19 +48,19 @@
       "mtime": 1779037091.334425
     },
     "Snakefile": {
-      "hash": "cc599feb5b521a5dd817716de43d7c6b9549a5f5c4ad986e3236049669b9e0fd",
-      "size": 12735,
-      "mtime": 1780822867.406482
+      "hash": "c09316fe99d86e6105d13e41c114baa440162aea62cc4ce7e7271861b2419462",
+      "size": 12922,
+      "mtime": 1780836696.9889035
     },
     "rules/samtools_fixmate.smk": {
-      "hash": "3a05f5f1323301a316841fb41a9c55dc6793ad6a3774c69bae184cb5a8504075",
-      "size": 1152,
-      "mtime": 1779375334.9071174
+      "hash": "86b0ce90413dfe1147d6126c791185d7a679ae3d23fa058cd65eb6d481ab4aae",
+      "size": 1142,
+      "mtime": 1780836628.6692476
     },
     "rules/archr.smk": {
-      "hash": "829ce84ade403fcac24fd88dd2e4c7b64e630a088b92c4699aceb569dae7dee6",
-      "size": 3023,
-      "mtime": 1780812191.7210217
+      "hash": "ad9ca3051e70031539b1fdcd7b440622f11688d722853728ae570b968a87e012",
+      "size": 2954,
+      "mtime": 1780823846.4359267
     },
     "rules/normalize_coverage.smk": {
       "hash": "89c6fec3220877dd0c0a3b9a193921d46c06430dc044cf9b2d708554c6b3f5bc",
@@ -68,9 +68,9 @@
       "mtime": 1779025931.0812933
     },
     "rules/footprinting.smk": {
-      "hash": "af6b6fa74d431644ed584eb3b2a2416f0f54caae5b26feab1e59471a7e4b9984",
-      "size": 2092,
-      "mtime": 1780812191.7221193
+      "hash": "1775ed20c8d5e609217b14c613f95e3dac5ce48e9aba02ca3c60c237decbed49",
+      "size": 2389,
+      "mtime": 1781153072.1118984
     },
     "rules/correlation_analysis.smk": {
       "hash": "703136192d8b06daac72904f6b3c5be326b33a58d87ae5a58892c34c66e15d84",
@@ -78,14 +78,14 @@
       "mtime": 1779044715.835513
     },
     "rules/cicero.smk": {
-      "hash": "d8f4560e0d70c1131146f89539e3b94d87789ae7362dde7b60d7b010a4a91088",
-      "size": 1339,
-      "mtime": 1780812191.7228293
+      "hash": "254084e7dde33651cd554dd6e9ffdebf1c8c57d545e8a274e031e0f0680764a4",
+      "size": 1307,
+      "mtime": 1780823822.8195672
     },
     "rules/picard_insert_size_metrics.smk": {
-      "hash": "058f49e9bb7987957bfcbdbd7f071ff0516ddba4c430d6b7ddcbf3284fc43b4a",
-      "size": 2143,
-      "mtime": 1779022587.6717014
+      "hash": "1d00b0e74f5adf3e26277e3a04af764e466f6261eab68ef1ee3c13a32466ffbd",
+      "size": 2138,
+      "mtime": 1780836782.1277277
     },
     "rules/template_tool.smk": {
       "hash": "970dc7af9f824b83352c69145f94daa24d366e7df309db382ff4690f52aad7e8",
@@ -98,9 +98,9 @@
       "mtime": 1779045093.4961462
     },
     "rules/heatmap.smk": {
-      "hash": "c13a06c34c25d7a24be0acd91f086d14b506c4bb9d2bf27f76c1712c674043e3",
-      "size": 2182,
-      "mtime": 1779045084.2281055
+      "hash": "f4403c98ffdaf07268d80c9f291d7a2131bfb76970fb26303fabb41ca70afcf0",
+      "size": 3241,
+      "mtime": 1781248368.6133265
     },
     "rules/chromap.smk": {
       "hash": "9b7a4f3544448d93adbd4315eea3d0242b02dbbb6ee02aa78084c6296d4c3c14",
@@ -108,9 +108,9 @@
       "mtime": 1779045674.326717
     },
     "rules/chromvar_analysis.smk": {
-      "hash": "2d5abc78e0672bacf7beb572c39d796970abb513a2687b2edfbb56e85c5d9cbb",
-      "size": 1502,
-      "mtime": 1780812191.723732
+      "hash": "55c52cb8bfad5c616e33064616826836f25b803582f371bf5c8d84a8fa24b862",
+      "size": 1479,
+      "mtime": 1780823818.2993014
     },
     "rules/bedtools_genomecov.smk": {
       "hash": "9c9aa15f2857cc86ef266650236c261a69ae55fdd1ed262f95a6853f4f978484",
@@ -118,9 +118,9 @@
       "mtime": 1779375371.5312943
     },
     "rules/samtools_markdup.smk": {
-      "hash": "16b3ef2828baa18b4b89386b5737070dc98ce2fd939004cc7458a7aaa6d1e7e5",
-      "size": 1262,
-      "mtime": 1779045171.347488
+      "hash": "25d22505bdf287d722a8f530e1297243e76b99d2b8b1c790e0df02482bee6c3a",
+      "size": 1252,
+      "mtime": 1780836638.4143407
     },
     "rules/calculate_mito_reads.smk": {
       "hash": "e0ce2ba52417d9eec212524cb942ccb1df47f36ac601e306dbf9031577b94739",
@@ -128,9 +128,9 @@
       "mtime": 1779462431.3526688
     },
     "rules/tss_enrichment.smk": {
-      "hash": "d9a4f3f728986a3945c25ebc24ec6b53e38cfdfde46f176deeb5beef1225d095",
-      "size": 1524,
-      "mtime": 1780812191.724595
+      "hash": "f8305fba55b98516b674cd2e6884213c50c2ef006a4f3f6a2e8c743ca0a0b54a",
+      "size": 1499,
+      "mtime": 1780823816.2731817
     },
     "rules/benchmark_summary.smk": {
       "hash": "e05153e26e0af0fcde2a79f89436fba1c1a8b2e3018154ad2c433b66d056ba33",
@@ -158,9 +158,9 @@
       "mtime": 1779027186.8750675
     },
     "rules/differential_accessibility.smk": {
-      "hash": "a341120f9d57ab5fe152e53cc247f7f98235f2e4fc35a9ee146030c571b13f3a",
-      "size": 1633,
-      "mtime": 1780812191.7256756
+      "hash": "486d2020f337a9b432d5e529b31ddbba0fd3a1da5b6c0a87ff8868dabb716d8b",
+      "size": 1610,
+      "mtime": 1780823783.881217
     },
     "rules/fragment_size_analysis.smk": {
       "hash": "ade3b6e50e7fbfebf28a521d99b5d0cd2739b2bd73f581db58515000725ddb23",
@@ -168,14 +168,19 @@
       "mtime": 1779045144.6593707
     },
     "rules/idr.smk": {
-      "hash": "0123be93f84e040ea247af3aec19c6f2589e2cdbeac293764bca1f3100105082",
-      "size": 1960,
-      "mtime": 1780723597.921328
+      "hash": "52c9a53c323a04d2774581d5935c971819775b2e19ce551bb1c383fde4c94939",
+      "size": 2108,
+      "mtime": 1780850225.6933498
     },
     "rules/blacklist_filter.smk": {
       "hash": "de32bacdd17e093b212b82dc56659c163f5a5c2be262cb37ae7c2e320fb6ce10",
       "size": 1166,
       "mtime": 1779027260.5703716
+    },
+    "rules/remove_blacklist_reads.smk": {
+      "hash": "8aa2f280ec115da510ec287239c7ab75baf3cfa0eb823688d98aab369433549a",
+      "size": 1072,
+      "mtime": 1780836618.6871521
     },
     "rules/bowtie2.smk": {
       "hash": "b68652c64e8268b191a150785f4a3ac3333fd0b0a98126dca32b4b7555230c80",
@@ -183,14 +188,14 @@
       "mtime": 1779045161.4454443
     },
     "rules/peak_annotation.smk": {
-      "hash": "bc055b6b904668eb84b2c38e864bb7fce1dbe2c6f6474825fb080a09f9e17cbd",
-      "size": 1900,
-      "mtime": 1779027358.9028087
+      "hash": "44a90bf54752e2fed06fe5b7ae74ad34d7949d5d5c9f203b7e3f0c3b4e78943a",
+      "size": 3046,
+      "mtime": 1781131999.9526486
     },
     "rules/remove_mito_reads.smk": {
-      "hash": "01b9e2d1c8ab0bb0cef445334650ca9cc2dbb86d283e1823269ebb31cc451ae0",
-      "size": 1675,
-      "mtime": 1779022505.763264
+      "hash": "3fd0793f8651366507877aa916e8e46eaa8817e098f169bb2bbcf536aec9922f",
+      "size": 1681,
+      "mtime": 1780836648.1264338
     },
     "rules/sorted_bedgraph.smk": {
       "hash": "4abd6cf92b3c8b8e9706f92b12bc66ece1f4e712bc21ba7b16c9ccee909f018d",
@@ -198,24 +203,24 @@
       "mtime": 1778855611.631308
     },
     "rules/samtools_index_after_markdup.smk": {
-      "hash": "dcc9bfc0e443af748097718c2aceb384913235fe64bd171ab205cdb379ac49dc",
-      "size": 1170,
-      "mtime": 1778855351.5596383
+      "hash": "b9dd0cdceaafcdba01e862e8ccec7a49cb4d43c59cb44e15ecca0df88af703c3",
+      "size": 1160,
+      "mtime": 1780836662.0525675
     },
     "rules/tobias.smk": {
-      "hash": "8a0d322dba89306446041ab833b0b5d2d8323d2fd5f53343d558607c97d521b7",
-      "size": 5155,
-      "mtime": 1780695249.0721064
+      "hash": "6b52af5aea3b87c125aa3b91ac368fff4618e5020611636cf44db0399d3ced20",
+      "size": 7098,
+      "mtime": 1781127568.6753502
     },
     "rules/multiqc.smk": {
-      "hash": "facc699b9d699db291c15ebcc1c607657a7966f03c6fbb808b5a6fbfa940d45d",
-      "size": 2165,
-      "mtime": 1780812191.7285857
+      "hash": "3f3f3496dedc2bc47539026e151d5f95f536e0fd9c421f77bc1e7a688f3bacc0",
+      "size": 2376,
+      "mtime": 1781134291.4061286
     },
     "rules/preseq.smk": {
-      "hash": "df318914eea470155045e7b13a3736367af284a1ff4aafed46849241f81ae077",
-      "size": 1253,
-      "mtime": 1780819479.7225454
+      "hash": "28d1e1f719ba7fe496f4a44ea05ab1fdf260b74e64787885e475a3f6a097296b",
+      "size": 1237,
+      "mtime": 1780836676.3167045
     },
     "rules/fastp.smk": {
       "hash": "e4d4fcc641578af368cbb9baa2c2db9ccee968a8c7c12b7b0891d5628b6c2712",
@@ -223,9 +228,9 @@
       "mtime": 1779375333.0451088
     },
     "rules/samtools_stats.smk": {
-      "hash": "323117b1c7917f59707fd8cde29785b0815fde18924589e1f93bfcc4d9520142",
-      "size": 1020,
-      "mtime": 1778855522.098145
+      "hash": "4de13adcf117582d90469b231a516cd7c781d63ee2bbe38162c4c14df9e633fe",
+      "size": 1023,
+      "mtime": 1780836670.0926447
     },
     "rules/frip_calculation.smk": {
       "hash": "7d09136bc5eddfcef5a62a95ce4d80e99cefb7897133d5d1b59d38a7387fd371",
@@ -238,29 +243,29 @@
       "mtime": 1778854475.098445
     },
     "rules/motif_analysis.smk": {
-      "hash": "d825b2e38e2ce828aa4bc3e268afb256af67c7546acbb0f152e1093a2142b037",
-      "size": 1185,
-      "mtime": 1779035079.4549866
+      "hash": "60e02a92d6ccc5c41cd6b84ecb1550f482c859bf42d2ac29e8a2c52d5a884410",
+      "size": 1765,
+      "mtime": 1781131721.1885624
     },
     "rules/picard_alignment_metrics.smk": {
-      "hash": "cef107330eedb77c2f5b013325dcdff28969d2137e72f920f8c23ef7400fa078",
-      "size": 2143,
-      "mtime": 1779022579.6036525
+      "hash": "f79c1484e9477bfc7d292f6803553181ae89f1c527b35cc6d32284b342233c50",
+      "size": 2138,
+      "mtime": 1780836776.8516765
     },
     "rules/qc_gate.smk": {
-      "hash": "835a6457423e9468ebf352151a2026c7cb2974f1e079a28b813dd928017ae037",
-      "size": 1707,
-      "mtime": 1779025904.7048242
+      "hash": "fae5d4cb63151fe2218ea63ad80cc8f1138cfcffe276266c72bff073c9b7587d",
+      "size": 1754,
+      "mtime": 1780823781.6510782
     },
     "rules/samtools_view.smk": {
-      "hash": "8df20541ce714d780b2388057547bc982ae27dc3126a49d12e98c06fdbdf73d1",
-      "size": 1334,
-      "mtime": 1778855580.6995165
+      "hash": "ce03c1db5daeefdc450064187b38d0b81fb02fd449b81c2d4b115e0cd764b890",
+      "size": 1346,
+      "mtime": 1780836656.1975112
     },
     "rules/qualimap_bamqc.smk": {
-      "hash": "b280f0842ca5eb5746eb04f4630b778c3911f99ba617fd6318f4fda358bc1129",
-      "size": 1313,
-      "mtime": 1779035210.184478
+      "hash": "cc5cc2da41eebe2584a1b43a6ea3469f28007d66c375532663497b18dc51ed48",
+      "size": 1308,
+      "mtime": 1780836771.856628
     },
     "rules/macs2_peak_calling.smk": {
       "hash": "72a8254c0542662ada62cbf202bc66f7c4ce9eb06bf538a971dccf5125bec5b1",
@@ -278,9 +283,9 @@
       "mtime": 1780812191.7326238
     },
     "rules/cross_correlation.smk": {
-      "hash": "adebc9a89acb5e825fdbd8c355cddfc090bb4482040392243ca56a5fc15dbb42",
-      "size": 1678,
-      "mtime": 1780819473.931858
+      "hash": "0c0f23d602691ce5671c5fc4ae1dce1df53bee12323fba1f905f7b11ad06189c",
+      "size": 1371,
+      "mtime": 1780823776.8347766
     },
     "rules/envs/02_alignment/chromap.yaml": {
       "hash": "ae1b6b838f43e072e765a6da7893d020c1231453080815247f645a48a6810478",
@@ -313,14 +318,14 @@
       "mtime": 1778837561.1149144
     },
     "rules/envs/06_visualization/deeptools.yaml": {
-      "hash": "130425f00e8be067223a4720104c595c024fb90f33b9197958387a9205f1ecff",
-      "size": 107,
-      "mtime": 1778821916.4285185
+      "hash": "6b6b8e22f0b342f65ae97e10a11177913cca1c4483dbc66aa64ac8f624dc88f9",
+      "size": 139,
+      "mtime": 1780849608.304492
     },
     "rules/envs/03_post_alignment/bedtools.yaml": {
-      "hash": "eb33bb0190410415d6a126bf04525e7b85a77ee69e5916cb0ecb4bf31800ab10",
-      "size": 102,
-      "mtime": 1779027429.482141
+      "hash": "7a7cd6a2bb226174df52b2bf1d99c790e00ad1e1f9202a5205a535748de2f391",
+      "size": 121,
+      "mtime": 1781132248.3112118
     },
     "rules/envs/03_post_alignment/samtools.yaml": {
       "hash": "d1f6ab240a6272033c627ef7f3f24861b7997d88febcef57f7b7e4045f1fd12c",
@@ -338,9 +343,9 @@
       "mtime": 1779050638.1521518
     },
     "rules/envs/05_peak_calling/chipseeker.yaml": {
-      "hash": "19697197d15b1d95aaa5b239e4ffcc12502f92b366e73c3d20d995dd2efccf55",
-      "size": 105,
-      "mtime": 1778821913.662458
+      "hash": "359e4ec7a4c1bde5c95a64c6a0fbdb1d773764776b39deb6fde7ea2b690111ae",
+      "size": 132,
+      "mtime": 1780846212.738115
     },
     "rules/envs/05_peak_calling/homer.yaml": {
       "hash": "0dfcacbe00df465d4a06e262e3478b740fd76d7f0cf7198bb745ebb409ea0799",
@@ -348,14 +353,14 @@
       "mtime": 1778821909.613369
     },
     "rules/envs/05_peak_calling/macs2.yaml": {
-      "hash": "0bc8bc51390c4b6de2004bcff5a0991cfd910161e2fac8c849962088fb74fbf0",
-      "size": 109,
-      "mtime": 1780776578.4774299
+      "hash": "b29a3b498e0f80b638c2188b67e889a88dab801e0ff55f7eb9575477f4f80585",
+      "size": 129,
+      "mtime": 1780842439.1661026
     },
     "rules/envs/05_peak_calling/idr.yaml": {
-      "hash": "d3d77c3e73a24b7b0ea9d107c6381cab7892faebde5eb4d650443d4de57ebd11",
+      "hash": "6bb2ebf3ee4461eae6123853692b21c642c966250464af8998916150a01d2660",
       "size": 79,
-      "mtime": 1780775303.968902
+      "mtime": 1780840270.3365905
     },
     "rules/envs/05_peak_calling/motif_analysis.yaml": {
       "hash": "19b1c1de7a46b473eabbc41ee5925de255cfd9c8d3e5a0787caebd75ca180a62",
@@ -363,9 +368,9 @@
       "mtime": 1779027219.0201974
     },
     "rules/envs/05_peak_calling/chromvar.yaml": {
-      "hash": "8952142a943da07b30a95115d5d5d436011e5555649a91eca7a2a082cb115b67",
-      "size": 220,
-      "mtime": 1780776583.4037178
+      "hash": "580c0093275cf0795170569b94ebc595be30cbb32f988a62ed61d6ada8b9ce56",
+      "size": 257,
+      "mtime": 1781103642.729406
     },
     "rules/envs/05_peak_calling/diff_accessibility.yaml": {
       "hash": "db6d80776dd542097db9cb44086ef2111add6e424e1d3cf70c0f858993be55c3",
@@ -378,9 +383,9 @@
       "mtime": 1779028017.5918202
     },
     "rules/envs/05_peak_calling/footprinting.yaml": {
-      "hash": "9656a8c5f31b3e3e0f3b502f02c154f137f9ba3aeedbc901f57db0e8849b9744",
-      "size": 154,
-      "mtime": 1780776581.037059
+      "hash": "95280cb88784416b9037b2ae61c82bb6560ef76d7d3ab2b0dc7aa8b1d596965f",
+      "size": 232,
+      "mtime": 1780912597.6085856
     },
     "rules/envs/01_preprocessing/fastp.yaml": {
       "hash": "21761069cd762f4f69d839faf58e8b89e77d3bf5bcb1930a825c5181785761a8",
@@ -413,9 +418,9 @@
       "mtime": 1779022541.84844
     },
     "rules/envs/04_metrics_qc/tss_enrichment.yaml": {
-      "hash": "c6fbd0004706ac35c6b17783f3307e9b4a23941cf5ac1f7d8dc6a9eed77d5735",
-      "size": 307,
-      "mtime": 1780777055.780347
+      "hash": "5497d9ac3fe078f0c7c042c8c116a3d64ed170fa1c464d8f1be8816dc48a4466",
+      "size": 283,
+      "mtime": 1781103762.9333317
     },
     "rules/envs/04_metrics_qc/cross_correlation.yaml": {
       "hash": "63f64fe97ac6eaccdddd9f76b714a3c30378c5b232b64e4a2a09a4f23f4e24bf",
@@ -443,14 +448,14 @@
       "mtime": 1779029149.0880604
     },
     "rules/scripts/parse_qc_metrics.py": {
-      "hash": "86b4b1f9f95f41a59e0db9290500e7f6d591ee862cb3d8a88baca2d7221afeac",
-      "size": 8948,
-      "mtime": 1779019875.0665376
+      "hash": "7d3c258fcb79836667eba31e4feae9c7564f2f1f052fbb2eec9d1805bda914fc",
+      "size": 9000,
+      "mtime": 1780917158.9578106
     },
     "rules/scripts/run_batched.py": {
-      "hash": "01509c43b794ba3f7f2138b0b06498b06b814b2319b6be4f5477cd6a3c00957f",
-      "size": 6660,
-      "mtime": 1779046019.7952607
+      "hash": "a59440728fcb8dd5533bb2680a5a628d65d0fad86713d8ac070aec91bf903aa0",
+      "size": 7611,
+      "mtime": 1781245879.7164907
     },
     "rules/scripts/archr_doublets.R": {
       "hash": "00095bfbbf77cb730bee9a06c56458e4d364674a9039b9d89ceaea72b97a13cd",
@@ -468,9 +473,9 @@
       "mtime": 1779551516.4592996
     },
     "rules/scripts/tss_enrichment.R": {
-      "hash": "9751641ef870b32d9066938d8123a5e7c1ae4b141445810f5e092696157be656",
-      "size": 15613,
-      "mtime": 1780778206.4078252
+      "hash": "cebb3cf3423218a3521d37150f2d6b8c90033877e8af2513bf5c33cb551bfdc4",
+      "size": 16038,
+      "mtime": 1781153088.1001067
     },
     "rules/scripts/archr_clustering.R": {
       "hash": "0d6e022a761c75e516eefbee63f45459f893de44393594324cc099d7f6bf33ae",
@@ -478,9 +483,9 @@
       "mtime": 1779045793.596249
     },
     "rules/scripts/peak_annotation.R": {
-      "hash": "d348a42286b808dbbff98af36b10c3afb4167d50dd5ca04e4e2e77487d12c95c",
-      "size": 1652,
-      "mtime": 1779022756.1629765
+      "hash": "d098f70130cf3926d1ea2046d95a46cb9c7658aa96592a9d5b9a26a2345b7626",
+      "size": 2527,
+      "mtime": 1780917059.9507535
     },
     "rules/scripts/cicero_analysis.R": {
       "hash": "4f0b8cb50391123388dec7080f93870e66f18cfb514056038969abb48d778745",
@@ -488,9 +493,9 @@
       "mtime": 1779045844.5664768
     },
     "rules/scripts/diff_accessibility.R": {
-      "hash": "b847abb45ef46e2410c5932af41f12d1711c6da16e664d047631dfe4e2bfba3a",
-      "size": 5355,
-      "mtime": 1780723627.3054433
+      "hash": "ab2b751b8cabf4aa1a84da06ed7f2342cb61855d64c37a7627ed690edcc736dd",
+      "size": 7742,
+      "mtime": 1780917089.7930717
     },
     "rules/scripts/download_real_data.sh": {
       "hash": "d6c95b1f2cc3361ef51674a8bfcd16d40f6e723bc7a1e430c0d67e3d55c7571d",
@@ -498,14 +503,804 @@
       "mtime": 1779551528.3572135
     },
     "rules/scripts/generate_test_data.py": {
-      "hash": "7a541aa47cf16cbacf5b1b5fe677766e61bea9f5c4286581a3e2f3ec60e3011f",
+      "hash": "a16b6ee5be34e2cdfb2a3d0100e782960cd536d33a724f2eede96a801880fda8",
       "size": 14366,
-      "mtime": 1780777674.0204172
+      "mtime": 1781153104.0903149
     },
     "rules/scripts/chromvar_analysis.R": {
-      "hash": "3bc29b2fbbcfed1b3ae06cb4a45131111babf7305b31e599acde29595a8488c1",
-      "size": 3306,
-      "mtime": 1780777303.4809778
+      "hash": "b0616dd04c84b21fc06bd2d8449bfa71cd74b39346ef7671e6e401467c8bb9f7",
+      "size": 5956,
+      "mtime": 1781245350.3579009
+    },
+    "benchmarks/differential_accessibility/diff.txt": {
+      "hash": "b6bde86a96e75d37393c62684429e56154c3bb4e4e725fe570c6cc3d8b998088",
+      "size": 141,
+      "mtime": 1781133672.336826
+    },
+    "benchmarks/samtools_sort/sample2.txt": {
+      "hash": "ff529028dabba4797534aa0d562a1ed8de4ed90bc694dcba7c7305ec3975e85b",
+      "size": 134,
+      "mtime": 1781185898.2866416
+    },
+    "benchmarks/samtools_sort/sample4.txt": {
+      "hash": "ebb403ee76954f66edc03fd32991d0203f8c7f4c46eda8d2c617b399a9576d02",
+      "size": 135,
+      "mtime": 1781185907.0216522
+    },
+    "benchmarks/samtools_sort/sample1.txt": {
+      "hash": "d5bcc8469ba7d18f6f440b5a6633f1aa041fe05e1a5a294e13ce1568163642ce",
+      "size": 134,
+      "mtime": 1781185893.473636
+    },
+    "benchmarks/samtools_sort/sample3.txt": {
+      "hash": "28cba359404054fee8578bdc1a007fc942701147be407166567d78b49024d55e",
+      "size": 134,
+      "mtime": 1781185893.4140625
+    },
+    "benchmarks/heatmap/sample2.txt": {
+      "hash": "a8555aa371e3df069f01282a5c2a5b72f3023bc77110a2a2e45e85d246bca3ac",
+      "size": 134,
+      "mtime": 1781133965.0147204
+    },
+    "benchmarks/heatmap/sample4.txt": {
+      "hash": "467730947aba785fbd6091b392650dec20efe5f0f0d68ca3135431486dfbf2c2",
+      "size": 134,
+      "mtime": 1781133815.7907255
+    },
+    "benchmarks/heatmap/sample1.txt": {
+      "hash": "9c804a109c32045fb6cd1fa27c0d44f6da7d880bc9ad3d27e75963cf2ed7b457",
+      "size": 135,
+      "mtime": 1781134094.1464584
+    },
+    "benchmarks/heatmap/sample3.txt": {
+      "hash": "521bb92fd34dc50c606c106fe865c8a5199e563d2b599981fc61ffea30140908",
+      "size": 133,
+      "mtime": 1781133731.5716078
+    },
+    "benchmarks/bowtie2/sample2.txt": {
+      "hash": "4986bc11a600ab8facb7e2fdc7c74a33bff71b39fb35c0393884abcdf94ab4ec",
+      "size": 135,
+      "mtime": 1781185887.3966284
+    },
+    "benchmarks/bowtie2/sample4.txt": {
+      "hash": "87c6ad70a264cee18b8522f4f65333706e5b20cf111cca42869e5a94ad76e891",
+      "size": 135,
+      "mtime": 1781185878.018617
+    },
+    "benchmarks/bowtie2/sample1.txt": {
+      "hash": "f78eb1b99995cabe1d7cfa4590c23c74fab237029587d0a8242c2f8e26e329f4",
+      "size": 135,
+      "mtime": 1781185877.4946163
+    },
+    "benchmarks/bowtie2/sample3.txt": {
+      "hash": "09462888f11cbbc23c9f92744aee18e1b69b48ff5a6309bcb28138a277f6235d",
+      "size": 136,
+      "mtime": 1781185862.4095976
+    },
+    "benchmarks/mitoATAC_calculate/sample2.txt": {
+      "hash": "c23727ff49173d2a3522bd4020accfeb7f9b3a58ae498fd8ee5d5e1a59675682",
+      "size": 133,
+      "mtime": 1781130546.9918609
+    },
+    "benchmarks/mitoATAC_calculate/sample4.txt": {
+      "hash": "fd5eecdf3a9b9738334c3749e96b1d199d1e99be48f41e48b9111803059e090d",
+      "size": 133,
+      "mtime": 1781185921.62167
+    },
+    "benchmarks/mitoATAC_calculate/sample1.txt": {
+      "hash": "8bc9508d5138bb7888d5406b6ceb10dc73209839795a04b3391dbe442080446f",
+      "size": 134,
+      "mtime": 1781185911.770658
+    },
+    "benchmarks/mitoATAC_calculate/sample3.txt": {
+      "hash": "fe19c8e7fcac2e7214439d1f98074829d69306c8d9a0eb9242bb6637472cd60d",
+      "size": 133,
+      "mtime": 1781130537.0407274
+    },
+    "benchmarks/preseq/sample2.txt": {
+      "hash": "28281ab593968d2d6954735f6f30a93103f4a81b4c68319c78ef252eb1d805a3",
+      "size": 133,
+      "mtime": 1781130809.8001199
+    },
+    "benchmarks/preseq/sample4.txt": {
+      "hash": "bb4b83e018e83d8c4b942a9071cd7bdf93d1c81a05826cb00310a024a7ae3532",
+      "size": 133,
+      "mtime": 1781130860.9360857
+    },
+    "benchmarks/preseq/sample1.txt": {
+      "hash": "f267d546ab5815301cc9cfbb5d51cbd306f3ee4ec8fa165d63a21b555c22cf7e",
+      "size": 133,
+      "mtime": 1781130830.0066683
+    },
+    "benchmarks/preseq/sample3.txt": {
+      "hash": "270bdd976b351948a54aba2aa30d30b54a6e1e8bf6e77577ec6c318afea4c6cb",
+      "size": 133,
+      "mtime": 1781130739.243445
+    },
+    "benchmarks/samtools_fixmate/sample2.txt": {
+      "hash": "1011b952e29c6f4daf253f38f3df99d1a1725a8c0ed9fd51b3006b71afbd2a97",
+      "size": 135,
+      "mtime": 1781185918.8696666
+    },
+    "benchmarks/samtools_fixmate/sample4.txt": {
+      "hash": "0c119eb31233035093b8b9fdfdef66231a0e0999325a3ac3cc711f297a4f081c",
+      "size": 134,
+      "mtime": 1781130730.1023216
+    },
+    "benchmarks/samtools_fixmate/sample1.txt": {
+      "hash": "663099a198bff0a6b62ffd0d3a72b0219d5fb019d758bee7edbe14a2f64f9de3",
+      "size": 135,
+      "mtime": 1781185908.1726537
+    },
+    "benchmarks/samtools_fixmate/sample3.txt": {
+      "hash": "3def10ede2f7ae4f53c2918cc04824718654a6ba39a42c21be41bd2a23c91dee",
+      "size": 135,
+      "mtime": 1781185910.978657
+    },
+    "benchmarks/fastp/sample2.txt": {
+      "hash": "9301db3f24dc3f38e9bceafb6e45509e511028106cded55eea84fd8a60084ffc",
+      "size": 141,
+      "mtime": 1781216113.7252362
+    },
+    "benchmarks/fastp/sample4.txt": {
+      "hash": "a967494bb78eab5c8020a44aa266b0d1b2df21c98354b37750ea34f2188b5abe",
+      "size": 141,
+      "mtime": 1781216109.7101848
+    },
+    "benchmarks/fastp/sample1.txt": {
+      "hash": "83bd1258f57e054159fde155de85cb99ac95acf0d9e43f77e6d4894f9f7bebc1",
+      "size": 141,
+      "mtime": 1781216110.11819
+    },
+    "benchmarks/fastp/sample3.txt": {
+      "hash": "77b0163bef538ab73b30c4dc37d3ab194b9e2df01e012ffaff391c99a728e1f3",
+      "size": 138,
+      "mtime": 1781216116.214268
+    },
+    "benchmarks/macs2/sample2.txt": {
+      "hash": "84161dd6ebe00798c38d65f9e866b5cacf664a56dd6cc743939756feec0c7954",
+      "size": 134,
+      "mtime": 1781132603.4552357
+    },
+    "benchmarks/macs2/sample4.txt": {
+      "hash": "e795d437dd15822690978175a1160d93c1768146e8bbf4a091a0657d32e72650",
+      "size": 135,
+      "mtime": 1781132973.0724165
+    },
+    "benchmarks/macs2/sample1.txt": {
+      "hash": "38375c7ec002a727607d44b1e7a9cdbb9cdf0d3856a0d0338ad30dfd3d214bd7",
+      "size": 134,
+      "mtime": 1781132637.035708
+    },
+    "benchmarks/macs2/sample3.txt": {
+      "hash": "31c489ef792e633e16a614f3c6df9a7519bbd5640b8e6d53f2a5f74e5cb26b83",
+      "size": 134,
+      "mtime": 1781132612.3083603
+    },
+    "benchmarks/samtools_index/sample2.txt": {
+      "hash": "6cc70d56761d8639abe4e9320eccbcfe1065ce088229e7cd069653302c6ef14f",
+      "size": 133,
+      "mtime": 1781130810.0543993
+    },
+    "benchmarks/samtools_index/sample4.txt": {
+      "hash": "53748dda60aa5fbf4fc476a3b5dc1c59963f63644792bd2c6ae507e390b06df8",
+      "size": 133,
+      "mtime": 1781130877.1043038
+    },
+    "benchmarks/samtools_index/sample1.txt": {
+      "hash": "2d3bf5cb3523a45d8c9ac7e5386991d2287870ec882613cf3742e54349c5b78e",
+      "size": 133,
+      "mtime": 1781130836.5157561
+    },
+    "benchmarks/samtools_index/sample3.txt": {
+      "hash": "b72d7ef34ddfea2317e09c132519f11a6e78e5c942cd0eb40123a3727956edf0",
+      "size": 133,
+      "mtime": 1781130732.0673482
+    },
+    "benchmarks/samtools_index/post_markdup/sample2.txt": {
+      "hash": "07151462761dddff5dedd727f34f565c3abdfbc8f6374dfd8e11ef3e5fa94f97",
+      "size": 134,
+      "mtime": 1781130694.5968437
+    },
+    "benchmarks/samtools_index/post_markdup/sample4.txt": {
+      "hash": "421bbe50a4b4dc53c807400ad66b029192b67f7fab8d104199098e00bf6f6f1a",
+      "size": 133,
+      "mtime": 1781130766.507812
+    },
+    "benchmarks/samtools_index/post_markdup/sample1.txt": {
+      "hash": "2c30e4e60d94d32aac6e1434db14f2a0af3e6d39d5436659cdf4da578e3ec0c7",
+      "size": 133,
+      "mtime": 1781130713.6561003
+    },
+    "benchmarks/samtools_index/post_markdup/sample3.txt": {
+      "hash": "1b11184fd60f7e7598293af5875d3399878e0016a9b0ea1c619a33b71e7acdb1",
+      "size": 134,
+      "mtime": 1781130639.969109
+    },
+    "benchmarks/chromvar/sample2.txt": {
+      "hash": "c9bc2bff11231be28ef5eff7eb79e8d803516c27f2cce840a2c576127b4a9c36",
+      "size": 141,
+      "mtime": 1781133306.3350666
+    },
+    "benchmarks/chromvar/sample4.txt": {
+      "hash": "957495ead19ea26b1963f8270c85660ba82018f33be24d38e0cc7c7c1da75b46",
+      "size": 140,
+      "mtime": 1781133350.1876578
+    },
+    "benchmarks/chromvar/sample1.txt": {
+      "hash": "ce080ee9b9bb08d4c225d9e81ccc27cc05b9bea304a6b86d416ae40b718a53f2",
+      "size": 140,
+      "mtime": 1781133597.5898452
+    },
+    "benchmarks/chromvar/sample3.txt": {
+      "hash": "d93fff8c9e95d823b1d5a2664ec85475abbbdf3fd82fd15ad8b9415bad215514",
+      "size": 140,
+      "mtime": 1781133652.4525645
+    },
+    "benchmarks/tn5_shift/sample2.txt": {
+      "hash": "a6e6d415d96c775b7b9bf89b3e93308812a961cd01280d1d228589f6edb5a2ba",
+      "size": 136,
+      "mtime": 1781132579.9439049
+    },
+    "benchmarks/tn5_shift/sample4.txt": {
+      "hash": "dbec8d055dd5429f678b22cfad28e7400a78f5cf4936fdfb4a9eb00d5cc21c5a",
+      "size": 134,
+      "mtime": 1781132593.8891013
+    },
+    "benchmarks/tn5_shift/sample1.txt": {
+      "hash": "714d9a9c49920e2598ab4935511adb11c774ac64efa627e1b02c19aefa684abd",
+      "size": 136,
+      "mtime": 1781132584.913975
+    },
+    "benchmarks/tn5_shift/sample3.txt": {
+      "hash": "633c8abddaa9e6f5b0033b6d571ecd83f8959f5ecf564d9ba0575a759fa40637",
+      "size": 136,
+      "mtime": 1781132586.9650037
+    },
+    "benchmarks/consensus_peaks/consensus.txt": {
+      "hash": "7b760c3515d089dc33362316429e9edf5c63fce5dc5735c94b415b3063373e52",
+      "size": 134,
+      "mtime": 1781133242.664179
+    },
+    "benchmarks/motif_analysis/sample2.txt": {
+      "hash": "bc8cdb740109d3b35d34654329e6590e2e31af55db73f7f572ea7b21fd1b98a9",
+      "size": 142,
+      "mtime": 1781135120.110408
+    },
+    "benchmarks/motif_analysis/sample4.txt": {
+      "hash": "54522c6bcb8f3f93bc56fad49cd1ef4cacc19c7ae115c32acd526daf56aef946",
+      "size": 134,
+      "mtime": 1781133318.359412
+    },
+    "benchmarks/motif_analysis/sample1.txt": {
+      "hash": "7cea926451e776b2b18806718af3546646227738836dccfd947309515883e9c0",
+      "size": 134,
+      "mtime": 1781133227.2789645
+    },
+    "benchmarks/motif_analysis/sample3.txt": {
+      "hash": "f0a976dcddf823d62b32457cfae3560444edbb135e86c8a5d83f4c2d6e257b66",
+      "size": 133,
+      "mtime": 1781133058.270823
+    },
+    "benchmarks/cross_correlation/sample2.txt": {
+      "hash": "e17f1662daf128f89983caa8c8b6252d2e684fd6014666e12b191e8f79dbb5ae",
+      "size": 134,
+      "mtime": 1781132546.3944325
+    },
+    "benchmarks/cross_correlation/sample4.txt": {
+      "hash": "008f5bc5d2dfd042fbc349002eccf886e1c1df287df004b159804820dd27caa8",
+      "size": 134,
+      "mtime": 1781132546.7484376
+    },
+    "benchmarks/cross_correlation/sample1.txt": {
+      "hash": "52786d38c55a3d7974303b22446ced0e43fb7d803c79071c209b9342e338f438",
+      "size": 134,
+      "mtime": 1781132550.9244964
+    },
+    "benchmarks/cross_correlation/sample3.txt": {
+      "hash": "9cbded2fc1dd3cc632ae686397ff0f9ce9031d67e5c63c0f1909ed87f041c815",
+      "size": 134,
+      "mtime": 1781132548.0194554
+    },
+    "benchmarks/fastqc/sample2.txt": {
+      "hash": "5b24388bee04701e05d92cecc17b2bfcbdfded69915663e3e60e3c16744df9b9",
+      "size": 136,
+      "mtime": 1781185897.726641
+    },
+    "benchmarks/fastqc/sample4.txt": {
+      "hash": "0d2a0874d040d36779abeadda1d1e9378f2ab58bad4fa84657666103059f3d71",
+      "size": 140,
+      "mtime": 1781216169.1549454
+    },
+    "benchmarks/fastqc/sample1.txt": {
+      "hash": "4c70e126571af7e12903f92b75e6dc1bc12394ec5627c885941ba99a494e7e5d",
+      "size": 140,
+      "mtime": 1781216170.2619596
+    },
+    "benchmarks/fastqc/sample3.txt": {
+      "hash": "674b1570c0771bca1aabb56dcbd4b9d3dc9d24354cdd724f62da8ecddd2e50a1",
+      "size": 138,
+      "mtime": 1781216168.2129333
+    },
+    "benchmarks/tobias/sample1_score.txt": {
+      "hash": "80f9a1a898ad33a3d185c9e502d8e0b0c1178d147f6b0e3baa89ed083db21061",
+      "size": 134,
+      "mtime": 1781133102.6892266
+    },
+    "benchmarks/tobias/sample2_atacorrect.txt": {
+      "hash": "01563a7c6673dc99b4cde262319309daa683b5ef4da79d8434e7efd958f022f9",
+      "size": 140,
+      "mtime": 1781133197.5775504
+    },
+    "benchmarks/tobias/bindetect.txt": {
+      "hash": "891b33488df2512fe438e0106782c8febc1bcf8b4263b941eef5dd7446ea7b7f",
+      "size": 134,
+      "mtime": 1781133393.931581
+    },
+    "benchmarks/tobias/sample4_atacorrect.txt": {
+      "hash": "1279933a2ae79dfdb784c286c1e4114a9d4e5e6a9dd49b5abfa50ce6da6b78f8",
+      "size": 134,
+      "mtime": 1781133047.2494526
+    },
+    "benchmarks/tobias/sample4_score.txt": {
+      "hash": "2bc1b69d5f5816184d1ccf45174ed3c2fdb433dd6c198d66b050599ba9879223",
+      "size": 134,
+      "mtime": 1781133260.224424
+    },
+    "benchmarks/tobias/sample1_atacorrect.txt": {
+      "hash": "0563a709a68e66e788f009def316e35658a63a55479c0956c9fd1a307abd0aad",
+      "size": 134,
+      "mtime": 1781133020.842084
+    },
+    "benchmarks/tobias/sample3_score.txt": {
+      "hash": "152541cb5219a4425578a69da920b24d16e0b5752b86badbeeae63cbf35149ed",
+      "size": 134,
+      "mtime": 1781133028.3891892
+    },
+    "benchmarks/tobias/sample3_atacorrect.txt": {
+      "hash": "13816d1732e9ef600272f66c1d72e61a64898596fe80def5304b52f7c2552aa4",
+      "size": 134,
+      "mtime": 1781132975.4204493
+    },
+    "benchmarks/tobias/sample2_score.txt": {
+      "hash": "fd0a8238f1ac7469ce4a33de3c910be00e48fc6db39820cd6c0a4d109346da3c",
+      "size": 133,
+      "mtime": 1781133441.1458173
+    },
+    "benchmarks/fragment_size_analysis/sample2.txt": {
+      "hash": "24867958c8b25b2c186bfd5c4af966a80699704ef909194712184372b8ed57d8",
+      "size": 136,
+      "mtime": 1781131114.9075189
+    },
+    "benchmarks/fragment_size_analysis/sample4.txt": {
+      "hash": "c2b896b6f13e615b89b05c8c0ce40ccfde2ecedae9b4420cae86615d1236a972",
+      "size": 135,
+      "mtime": 1781131092.3752139
+    },
+    "benchmarks/fragment_size_analysis/sample1.txt": {
+      "hash": "1d5d2c6935aafa682edfa5b06ad26df4c984d1f02569837811d8403b3f17d5d2",
+      "size": 135,
+      "mtime": 1781131102.4363499
+    },
+    "benchmarks/fragment_size_analysis/sample3.txt": {
+      "hash": "8467947c297f117e7044779c64a059d5440c0775e4d40fab478d30d6739789f2",
+      "size": 137,
+      "mtime": 1781131093.1542244
+    },
+    "benchmarks/qualimap/sample2.txt": {
+      "hash": "20f662e81877b557e79a2edc7b504d9483a45b8a09ca1c50b9c92ffa1b414531",
+      "size": 139,
+      "mtime": 1781186015.0365546
+    },
+    "benchmarks/qualimap/sample4.txt": {
+      "hash": "5de846d7648b296f94c252be70af5f13d2a02ed0e268244ff161a43252e30413",
+      "size": 139,
+      "mtime": 1781130794.2076702
+    },
+    "benchmarks/qualimap/sample1.txt": {
+      "hash": "9c8e62a951756887620f4fedc5d5440ffa52674bed9e7468fd00742fd216f54c",
+      "size": 139,
+      "mtime": 1781186006.2287703
+    },
+    "benchmarks/qualimap/sample3.txt": {
+      "hash": "f6c761bf4305ae36439e85423450e48fd6407d9cc2f14bb6e547279b9aa4a158",
+      "size": 139,
+      "mtime": 1781130626.7289312
+    },
+    "benchmarks/samtools_stats/sample2.txt": {
+      "hash": "93b19328ea73ada117557cc185506f97425261c032a210391610ef0deb625fe7",
+      "size": 133,
+      "mtime": 1781130803.1653063
+    },
+    "benchmarks/samtools_stats/sample4.txt": {
+      "hash": "7371bbdc3e2c7c5c8143cfdfd49bcdfc7193a15894c82bd3af623cad3d6cbc6c",
+      "size": 133,
+      "mtime": 1781130881.7423666
+    },
+    "benchmarks/samtools_stats/sample1.txt": {
+      "hash": "ab98ee15b1cd56186148a940e251316567db3ae2234e51125c9fcda5b5f2401b",
+      "size": 133,
+      "mtime": 1781130836.4217548
+    },
+    "benchmarks/samtools_stats/sample3.txt": {
+      "hash": "398a069e7117816115d95ed69779cd7595fff5f7ada7083772254aad176d8c06",
+      "size": 133,
+      "mtime": 1781130792.9711688
+    },
+    "benchmarks/remove_mito_reads/sample3_noMT_sorted_bam.txt": {
+      "hash": "9661a097a9f222de8a6d8fdfcba6763d8ac0f96c6563df7c4d713718675cea2b",
+      "size": 135,
+      "mtime": 1781130587.482404
+    },
+    "benchmarks/remove_mito_reads/sample1_noMT_sorted_bam.txt": {
+      "hash": "f0aebb45d4944269bb47977802f91da03daa4f3ed66e5a5245704e823d5b5681",
+      "size": 134,
+      "mtime": 1781130720.8111966
+    },
+    "benchmarks/remove_mito_reads/sample4_noMT_sorted_bam.txt": {
+      "hash": "df6e3cfa764146ed6ad9be86fa0098c19ab7defaea0becca9e28c1f79b45d7e9",
+      "size": 133,
+      "mtime": 1781130758.3777025
+    },
+    "benchmarks/remove_mito_reads/sample2_noMT_sorted_bam.txt": {
+      "hash": "ab9963eac1bc8b992db5a8073671596ab1df0d6c2d45b27735712e585c1c2a95",
+      "size": 134,
+      "mtime": 1781130637.951082
+    },
+    "benchmarks/correlation_analysis/correlation_analysis.txt": {
+      "hash": "d3585e09733080ea21fc3701db1d2af9cf7e127ccd1f8698c7d19216e65c5441",
+      "size": 137,
+      "mtime": 1781134151.7782369
+    },
+    "benchmarks/footprinting/sample2.txt": {
+      "hash": "b4788666a38091d10639067df5695b0e746b02d70e31400aa773fead0ef7b083",
+      "size": 138,
+      "mtime": 1781133012.1509624
+    },
+    "benchmarks/footprinting/sample4.txt": {
+      "hash": "8115ff90db2734c80dc463714f5e67b7dc963446aa85c20a6bd369228c1bc66f",
+      "size": 134,
+      "mtime": 1781133071.0237846
+    },
+    "benchmarks/footprinting/sample1.txt": {
+      "hash": "65f07ff6f098ab897055081008e6c8fc8a61d5e269e7f7d58ed5a5fadd5d46f3",
+      "size": 134,
+      "mtime": 1781133333.4674444
+    },
+    "benchmarks/footprinting/sample3.txt": {
+      "hash": "da19b87a27eba0d63bfd341d1f8a9c6c45c56a59099a3c7bc5dfc5cb9071490f",
+      "size": 134,
+      "mtime": 1781133086.7250037
+    },
+    "benchmarks/bedtools_genomecov/sample2.txt": {
+      "hash": "53fd8f341ade3024b156b5bfee1685f388d56d79da5922e1dbcc113b22cd38a2",
+      "size": 134,
+      "mtime": 1781133894.08977
+    },
+    "benchmarks/bedtools_genomecov/sample4.txt": {
+      "hash": "179bba30b37ca66278212d627c6b9fcab38b5bbc44a2bae95d4c2ce6e0accde3",
+      "size": 134,
+      "mtime": 1781133747.59782
+    },
+    "benchmarks/bedtools_genomecov/sample1.txt": {
+      "hash": "798fe4aae8589554da3d2a6aa2a8767e26ea8034b4bcfbd570f4328a9c5964d4",
+      "size": 134,
+      "mtime": 1781134015.731402
+    },
+    "benchmarks/bedtools_genomecov/sample3.txt": {
+      "hash": "d5037c3592bc9d4159ebf0c2238f48ec8f371f7d0369a7e457e1aee944d4025d",
+      "size": 134,
+      "mtime": 1781133628.817254
+    },
+    "benchmarks/normalized_coverage/sample2.txt": {
+      "hash": "cf51ed4758d5e671dbbda3b9020ab0efdb54f97823b3d4ae19f28049f9752737",
+      "size": 134,
+      "mtime": 1781133855.3302524
+    },
+    "benchmarks/normalized_coverage/sample4.txt": {
+      "hash": "e3f89afa7866a175178c6b659d463a3510e23679cc10fea0810de6d2530e3bc3",
+      "size": 136,
+      "mtime": 1781133719.5664492
+    },
+    "benchmarks/normalized_coverage/sample1.txt": {
+      "hash": "0546038ea32b106ccbea1a84d92534ecb26aade11c547095b936f4cc81846ee5",
+      "size": 136,
+      "mtime": 1781134001.8992157
+    },
+    "benchmarks/normalized_coverage/sample3.txt": {
+      "hash": "bdb89814d329a3ace9f7b6dcec44ec3cb1a7b8d15e7c79015de826baf4ffdccb",
+      "size": 137,
+      "mtime": 1781133687.5580266
+    },
+    "benchmarks/picard/CollectInsertSizeMetrics/sample2.txt": {
+      "hash": "55eb2236c99dd82faec967cceaa19592aeffcc4bc951759a826c832d69f97d26",
+      "size": 136,
+      "mtime": 1781130715.274122
+    },
+    "benchmarks/picard/CollectInsertSizeMetrics/sample4.txt": {
+      "hash": "f6b7a75d7df3a7247b72699517351751ec990ffb2c6da7d93c65a5126093441d",
+      "size": 138,
+      "mtime": 1781130803.0483048
+    },
+    "benchmarks/picard/CollectInsertSizeMetrics/sample1.txt": {
+      "hash": "6c6c638533dcd552775a1f6232f7c5ba08880bd5de437af4de80fb686b7fcacb",
+      "size": 140,
+      "mtime": 1781186010.2097747
+    },
+    "benchmarks/picard/CollectInsertSizeMetrics/sample3.txt": {
+      "hash": "3b04aeffb8387dcb7794bdd05fa08eb06e33b01e0cfbe465e8b20d9207b3fb65",
+      "size": 138,
+      "mtime": 1781130680.869659
+    },
+    "benchmarks/picard/CollectAlignmentSummaryMetrics/sample2.txt": {
+      "hash": "875a58f6b09923a739979330f4d188405979ec0c10cd2c086c28d8a1fde9fd5b",
+      "size": 136,
+      "mtime": 1781130714.5521123
+    },
+    "benchmarks/picard/CollectAlignmentSummaryMetrics/sample4.txt": {
+      "hash": "842503dee12c1a737e1f6c5bcf1a31cb275c255c300f4fc882d15229f1464450",
+      "size": 139,
+      "mtime": 1781130825.754611
+    },
+    "benchmarks/picard/CollectAlignmentSummaryMetrics/sample1.txt": {
+      "hash": "185c4ae06b456274d8cb04394ce39f419863c94e8673c3821e128ba6b3eb8167",
+      "size": 139,
+      "mtime": 1781186007.059771
+    },
+    "benchmarks/picard/CollectAlignmentSummaryMetrics/sample3.txt": {
+      "hash": "17911a697054d73c1716d50cb9c660146115a4b8f80868e31a8f64a44b534242",
+      "size": 136,
+      "mtime": 1781130703.9999702
+    },
+    "benchmarks/frip/sample2.txt": {
+      "hash": "ecc29aa2daf5361e5fc06694dd2662d563277197da9880359c2f474a4067a0a9",
+      "size": 133,
+      "mtime": 1781132982.1795437
+    },
+    "benchmarks/frip/sample4.txt": {
+      "hash": "6ec7fc2f50134ed609ce4c8842834d1c017ae966df87673dddec97b6deb87a8e",
+      "size": 134,
+      "mtime": 1781133213.1257672
+    },
+    "benchmarks/frip/sample1.txt": {
+      "hash": "6602ce3d9c68d2c61843e6ba602464f715c3757810998f9eb4fedb24d9d1711a",
+      "size": 134,
+      "mtime": 1781133004.9378617
+    },
+    "benchmarks/frip/sample3.txt": {
+      "hash": "e9b5ea327dd2ba34cfa8018309ad970d79d7b7ca4949757b4ef919abc25ead75",
+      "size": 134,
+      "mtime": 1781133274.6746252
+    },
+    "benchmarks/peak_annotation/sample2.txt": {
+      "hash": "fd90a5c0e67f5293ad7a9fd3cbc87465c3009e764612f85cb6e3aae0de9794fd",
+      "size": 143,
+      "mtime": 1781134153.854265
+    },
+    "benchmarks/peak_annotation/sample4.txt": {
+      "hash": "253bee9e4128b00bc6d062e2b6b5fd4048529bb96a0a8fbf63de2a40d59ad2c6",
+      "size": 140,
+      "mtime": 1781133979.7889187
+    },
+    "benchmarks/peak_annotation/sample1.txt": {
+      "hash": "b3431e2a2f2d73eb94410b857b68eed68227c516d6e7e22d24281303b6178d83",
+      "size": 140,
+      "mtime": 1781134208.465004
+    },
+    "benchmarks/peak_annotation/sample3.txt": {
+      "hash": "929935ce10f47f857beec162fa774cc8394a218414b2f974ed87efc25e512abd",
+      "size": 140,
+      "mtime": 1781133880.7965925
+    },
+    "benchmarks/samtools_view/sample2.txt": {
+      "hash": "e455b7f5bffa19c16a04f621d1b9f61a0aec4c029522e7276550ae0144f6640b",
+      "size": 133,
+      "mtime": 1781130811.6114202
+    },
+    "benchmarks/samtools_view/sample4.txt": {
+      "hash": "39f25807c5d598e7e5f2c04e5d6d1f8217beebea662dcf38a11e9b3678687b24",
+      "size": 133,
+      "mtime": 1781130866.4691603
+    },
+    "benchmarks/samtools_view/sample1.txt": {
+      "hash": "b26418464d59e293615bbe9e5b9d06e7fd9c0f89ebbea96cbb729b3ae7b923cc",
+      "size": 133,
+      "mtime": 1781130833.0487094
+    },
+    "benchmarks/samtools_view/sample3.txt": {
+      "hash": "f637e28504264f9af09fa2d9133b8c30280e12bef699ccc89d4ee0b3fd1de13f",
+      "size": 133,
+      "mtime": 1781130784.7080574
+    },
+    "benchmarks/remove_blacklist_reads/sample2.txt": {
+      "hash": "d889a8ef32cc3d0dd0d9fbe5363c343bfdb72f090218c64db87546f286fab9f5",
+      "size": 134,
+      "mtime": 1781132463.2782602
+    },
+    "benchmarks/remove_blacklist_reads/sample4.txt": {
+      "hash": "ec9cf5faa02d9e2d2137ba40df30d68748950f58eae1c1f6e52e2ba7bbdae714",
+      "size": 134,
+      "mtime": 1781132463.755267
+    },
+    "benchmarks/remove_blacklist_reads/sample1.txt": {
+      "hash": "dee1869a67906be17fa53c97b74b736d81728b472c75c8091f1b06a137ed8a8f",
+      "size": 134,
+      "mtime": 1781132460.3912194
+    },
+    "benchmarks/remove_blacklist_reads/sample3.txt": {
+      "hash": "b5946e5c409f9103f84fb93eee76a8d52522f2c80f32a324b26b9a3ad4058a19",
+      "size": 134,
+      "mtime": 1781132462.4632487
+    },
+    "benchmarks/count_peaks/sample2.txt": {
+      "hash": "f2c79936a2295183d4277e3e1c98fbc5c0cb7efa78f90f85742416ab3d64e76b",
+      "size": 134,
+      "mtime": 1781133485.9673944
+    },
+    "benchmarks/count_peaks/sample4.txt": {
+      "hash": "a512ea6547748dcb74d99f75ccaa5f550a8bab70118b5a751767575ec5594912",
+      "size": 134,
+      "mtime": 1781133470.8801997
+    },
+    "benchmarks/count_peaks/sample1.txt": {
+      "hash": "10f1deb56bb33ff105f3f11e5a9ea925ee753ac36fa4cda909a502b20eb5f700",
+      "size": 134,
+      "mtime": 1781133456.6970172
+    },
+    "benchmarks/count_peaks/sample3.txt": {
+      "hash": "731fafe62d0d91f857d8c594b66d82e06d8882b4fa39de56a59c3cc69a3dd26e",
+      "size": 134,
+      "mtime": 1781133497.626545
+    },
+    "benchmarks/qc_gate/sample2.txt": {
+      "hash": "e8f885b56c7b2657edde011f14dc27b01c3d2ed4f879009511cc466341543d89",
+      "size": 134,
+      "mtime": 1781133829.6049094
+    },
+    "benchmarks/qc_gate/sample4.txt": {
+      "hash": "3c81fef9456f86a252d4257fefd7978f5b75e7603a72a6436de2758619de7efa",
+      "size": 134,
+      "mtime": 1781133702.5702245
+    },
+    "benchmarks/qc_gate/sample1.txt": {
+      "hash": "4d26a6712aa61f3eba8c1277bb1c593f1c1781c9d6b59bd7050ce1ed34ee9d81",
+      "size": 134,
+      "mtime": 1781133980.2349248
+    },
+    "benchmarks/qc_gate/sample3.txt": {
+      "hash": "4c257fab113bace408aac63a4de7afd2680d518bd4e5d35b2ae7678df3ec250e",
+      "size": 134,
+      "mtime": 1781133611.5390277
+    },
+    "benchmarks/tss_enrichment/sample2.txt": {
+      "hash": "30bbb5b6bb3711a3a42c849c3e1b23dac7f08dcdfe3ac46b974cfd1a0ba79625",
+      "size": 144,
+      "mtime": 1781132954.093151
+    },
+    "benchmarks/tss_enrichment/sample4.txt": {
+      "hash": "2f7425bf9fe91b01bf2d13d8d13bf1f3de94c892bdfb0bc01aa2e82ce49dd2f0",
+      "size": 143,
+      "mtime": 1781132960.3642387
+    },
+    "benchmarks/tss_enrichment/sample1.txt": {
+      "hash": "125384711610733371f7afae6316d9a7954684450db397b38edf6baf85134bb1",
+      "size": 143,
+      "mtime": 1781132987.5846193
+    },
+    "benchmarks/tss_enrichment/sample3.txt": {
+      "hash": "2970c0846a31da8c4fd564a303928a57b13a6cedb7549222cc668946371183b6",
+      "size": 143,
+      "mtime": 1781132959.7752306
+    },
+    "benchmarks/samtools_index_post_filter/sample2.txt": {
+      "hash": "6e52476e6cf8881751bd81fe02e5ed037ab92ad3229ce273526ba5f33e6b36e5",
+      "size": 133,
+      "mtime": 1781132557.3095863
+    },
+    "benchmarks/samtools_index_post_filter/sample4.txt": {
+      "hash": "a0bbad09092b8bda62e90c91b3ae119118ceb459205fdb25c7fc4f3c8b2b67bb",
+      "size": 134,
+      "mtime": 1781132567.3577278
+    },
+    "benchmarks/samtools_index_post_filter/sample1.txt": {
+      "hash": "ec31f80e950112ab54e1aee874816ff4db773a8976bdfc3038233946ba65f37c",
+      "size": 134,
+      "mtime": 1781132562.2296555
+    },
+    "benchmarks/samtools_index_post_filter/sample3.txt": {
+      "hash": "e7bc795ea6fbe0af27217bf2c99978893a4a8b26ceb8b6a15e1b013255eafd76",
+      "size": 134,
+      "mtime": 1781132562.5266597
+    },
+    "benchmarks/samtools_markdup/sample2.txt": {
+      "hash": "54278ec8b4a9316e926ec908a62e99f4d26629f69cc005fd44a8be2e59b7483b",
+      "size": 134,
+      "mtime": 1781185930.6006808
+    },
+    "benchmarks/samtools_markdup/sample4.txt": {
+      "hash": "c1f143f29097b021f623d37d5825eda152895c7d36576d70f548253e1741cbf7",
+      "size": 133,
+      "mtime": 1781130737.930427
+    },
+    "benchmarks/samtools_markdup/sample1.txt": {
+      "hash": "7751fabce673f7bd9e1d12cd169640bab355180107d58414e2541578c9e823ca",
+      "size": 134,
+      "mtime": 1781185919.2396672
+    },
+    "benchmarks/samtools_markdup/sample3.txt": {
+      "hash": "b813641f1131a14854cf726ceaa4ce1e96c0e6f22259b83beef9590561c3d92c",
+      "size": 134,
+      "mtime": 1781185923.230672
+    },
+    "benchmarks/idr/treated_rep1_rep2.txt": {
+      "hash": "c453cb8db1c4ac1c9f46a5fb85bbd50529323fb6cd287ff3ae4d931b4b1d9afb",
+      "size": 135,
+      "mtime": 1781133378.6160185
+    },
+    "benchmarks/idr/control_rep1_rep2.txt": {
+      "hash": "c3482686b3d1ae89f713f90d2446372c831c715d34ab659e44324eef540b8cd8",
+      "size": 134,
+      "mtime": 1781132667.4621356
+    },
+    "benchmarks/sorted_bedgraph/sample2.txt": {
+      "hash": "c75846aeaf1c0b1d4ad9223c63a8e6350cfb2c953b52ce01024b60c458a741dc",
+      "size": 134,
+      "mtime": 1781133909.7969804
+    },
+    "benchmarks/sorted_bedgraph/sample4.txt": {
+      "hash": "7a4e230729af5fa0a5c5309956f7b9ad23e8679b1a6663e0c0b4b562e1a89417",
+      "size": 134,
+      "mtime": 1781133757.9889576
+    },
+    "benchmarks/sorted_bedgraph/sample1.txt": {
+      "hash": "5841b853aa3535b02997aac9bdd1c98622b5d465061b2681e18c570f2e9d698b",
+      "size": 133,
+      "mtime": 1781134025.0085266
+    },
+    "benchmarks/sorted_bedgraph/sample3.txt": {
+      "hash": "286750e188a07d2fc07633e9a2d0fa9ce26e41d0e8a2261d0960001419dbfa22",
+      "size": 134,
+      "mtime": 1781133667.779766
+    },
+    "benchmarks/blacklist_region_filter/sample2.txt": {
+      "hash": "c0edcd0ca73f4ea1154a0cc095f3f36d9d33f1273002e18f63b575dc8e82da48",
+      "size": 133,
+      "mtime": 1781132970.0483742
+    },
+    "benchmarks/blacklist_region_filter/sample4.txt": {
+      "hash": "a6590d38d0e65d0c63699214589ae4d48246a5341fdf19579529dce6b937c381",
+      "size": 133,
+      "mtime": 1781132984.203572
+    },
+    "benchmarks/blacklist_region_filter/sample1.txt": {
+      "hash": "4f39c63c860b3ea6f44f17a259c3e1d9dcff9fc7977b6eeb6b6ea488301e91e6",
+      "size": 133,
+      "mtime": 1781132993.1336968
+    },
+    "benchmarks/blacklist_region_filter/sample3.txt": {
+      "hash": "b7eec81888a40aec4ef0b272c86d4a097fdfd313c214a50766829ca3a1fbd03c",
+      "size": 133,
+      "mtime": 1781132964.0712907
+    },
+    "benchmarks/bigwig/sample2.txt": {
+      "hash": "df51a64f59d833cacc00d33e415c04749d4e39740801a59f36537e20b5756e26",
+      "size": 133,
+      "mtime": 1781133919.858115
+    },
+    "benchmarks/bigwig/sample4.txt": {
+      "hash": "d4514485b53489b996f0a516c29ea4858d1ef44e8cf64fe22188e43660fac458",
+      "size": 134,
+      "mtime": 1781133768.790101
+    },
+    "benchmarks/bigwig/sample1.txt": {
+      "hash": "8f97b2d7e30563315aa213cfdb677c1b94eee883379607201f066914fcb75348",
+      "size": 134,
+      "mtime": 1781134037.300692
+    },
+    "benchmarks/bigwig/sample3.txt": {
+      "hash": "7c97a40395203ed9757ff5222173186ad47029cfa9b3c9b0c121e98409bacdad",
+      "size": 134,
+      "mtime": 1781133684.0489802
     },
     "envs/main.yaml": {
       "hash": "97bbaa3a572b487d1ee770d47ebcbd61dab19b331feaf6282415351835b7db84",
@@ -593,9 +1388,9 @@
       "mtime": 1779046723.0199907
     },
     "envs/05_peak_calling/chromvar.yaml": {
-      "hash": "a7a92f48407c8c6371aa3703d96141284e589fa8186d314014117f2ac6471c70",
-      "size": 265,
-      "mtime": 1779046723.0213897
+      "hash": "d19fe17f923749e551a8ad542117bc59ec6ca59a2314500213439ee38d27ab41",
+      "size": 302,
+      "mtime": 1780910167.135231
     },
     "envs/05_peak_calling/diff_accessibility.yaml": {
       "hash": "db6d80776dd542097db9cb44086ef2111add6e424e1d3cf70c0f858993be55c3",
@@ -683,9 +1478,9 @@
       "mtime": 1780780257.0498412
     },
     "profile/test/config.yaml": {
-      "hash": "816c523a435062a4f387ed6e68f63ae36decab998baa3972d8ce4b62da613124",
-      "size": 301,
-      "mtime": 1780812205.8396306
+      "hash": "19eee18b77b9c506697ac483d2bbd892941fa732cbfd06679f342c56f0019dff",
+      "size": 346,
+      "mtime": 1781130031.4440186
     },
     "profile/slurm/config.yaml": {
       "hash": "3d5d9011bed85acb5d73b23ddb34cbfd435bb5b63d94d4df2d034715d5ab55d5",

@@ -14,7 +14,7 @@ latency-wait: 60
 
 default-resources:
   mem_mb: 4000
-  time: "01:00:00"
+  time: 60
   threads: 1
   slurm_partition: "standard"
   slurm_account: "bdb_genomics"

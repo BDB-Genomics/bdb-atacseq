@@ -13,5 +13,5 @@ configfile: "profile/test/config_test.yaml"
 
 default-resources:
   mem_mb: 2000
-  time: "00:30:00"
+  time: 30
   threads: 2
