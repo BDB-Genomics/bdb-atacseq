@@ -226,8 +226,10 @@ def validate_scalar_config_values(config: dict[str, Any], errors: list[str]) -> 
     for suffix in non_empty_string_suffixes:
         for path_keys in iter_matching_paths(config, suffix):
             value = get_config_value(config, path_keys)
+            if suffix == "time" and isinstance(value, (int, float)) and value > 0:
+                continue
             if not isinstance(value, str) or not value.strip():
-                errors.append(f"Config value '{'.'.join(path_keys)}' must be a non-empty string.")
+                errors.append(f"Config value '{'.'.join(path_keys)}' must be a non-empty string or a positive number.")
 
 
 def iter_matching_paths(config: dict[str, Any], leaf_key: str) -> list[tuple[str, ...]]:
