@@ -6,8 +6,8 @@ rule sorted_bedgraph:
         sorted_bedgraph=f"{config['sorted_bedgraph']['output']['sorted_bedgraph']}/{{sample}}.sorted.bedGraph"
         
     resources:
-        mem_mb=config['sorted_bedgraph']['resources']['mem_mb'],
-        time=config['sorted_bedgraph']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['sorted_bedgraph']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['sorted_bedgraph']['resources']['time'] * attempt,
     
     log: "logs/sorted_bedgraph/{sample}.err"
     benchmark: "benchmarks/sorted_bedgraph/{sample}.txt"

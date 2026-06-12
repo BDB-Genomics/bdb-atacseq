@@ -16,8 +16,8 @@ rule multiqc:
         report_html=f"{config['multiqc']['output']}/multiqc_report.html"
         
     resources:
-        mem_mb=config['multiqc']['resources']['mem_mb'], 
-        time=config['multiqc']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['multiqc']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['multiqc']['resources']['time'] * attempt,
 
     log: "logs/multiqc/multiqc.err"
     conda: "envs/01_preprocessing/multiqc.yaml"

@@ -14,8 +14,8 @@ rule fragment_size_analysis:
         sample=lambda wildcards: wildcards.sample
         
     resources:
-        mem_mb=config['fragment_size_analysis']['resources']['mem_mb'], 
-        time=config['fragment_size_analysis']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['fragment_size_analysis']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['fragment_size_analysis']['resources']['time'] * attempt,
 
     log: "logs/fragment_size_analysis/{sample}.err"
     benchmark: "benchmarks/fragment_size_analysis/{sample}.txt"

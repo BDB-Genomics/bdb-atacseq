@@ -14,8 +14,8 @@ rule fastqc:
         out_dir=lambda wildcards, output: os.path.dirname(output.R1_report)
         
     resources:
-        mem_mb=config['fastqc']['resources']['mem_mb'], 
-        time=config['fastqc']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['fastqc']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['fastqc']['resources']['time'] * attempt,
                             
     log: "logs/fastqc/{sample}.err"
     benchmark: "benchmarks/fastqc/{sample}.txt"

@@ -9,8 +9,8 @@ rule samtools_markdup:
         dup_flag="-r" if config['samtools_markdup']['params']['remove_duplicates'] else ""
     
     resources:
-        mem_mb=config['samtools_markdup']['resources']['mem_mb'], 
-        time=config['samtools_markdup']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['samtools_markdup']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['samtools_markdup']['resources']['time'] * attempt,
         
     log: "logs/samtools_markdup/{sample}.err"
     benchmark: "benchmarks/samtools_markdup/{sample}.txt"

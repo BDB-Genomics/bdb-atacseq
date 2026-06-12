@@ -15,8 +15,8 @@ rule fastp_trim :
       length_required = config["fastp"]["params"]["length_required"]
       
     resources:
-        mem_mb=config['fastp']['resources']['mem_mb'], 
-        time=config['fastp']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['fastp']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['fastp']['resources']['time'] * attempt,
           
     benchmark: "benchmarks/fastp/{sample}.txt"
     log: "logs/fastp/{sample}.err"

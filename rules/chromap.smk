@@ -15,8 +15,8 @@ rule chromap_align:
         genome_fa=config['global']['references']['genome_fa']
 
     resources:
-        mem_mb=config['chromap']['resources']['mem_mb'],
-        time=config['chromap']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['chromap']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['chromap']['resources']['time'] * attempt,
 
     log: "logs/chromap/{sample}.err"
     benchmark: "benchmarks/chromap/{sample}.txt"

@@ -17,8 +17,8 @@ rule differential_accessibility:
         n_counts=lambda wildcards, input: len(input.counts)
 
     resources:
-        mem_mb=config['differential_accessibility']['resources']['mem_mb'],
-        time=config['differential_accessibility']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['differential_accessibility']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['differential_accessibility']['resources']['time'] * attempt,
 
     log: "logs/differential_accessibility/diff.err"
     benchmark: "benchmarks/differential_accessibility/diff.txt"

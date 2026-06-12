@@ -17,8 +17,8 @@ rule cicero_coaccessibility:
         distance_cutoff=config['cicero']['params']['distance_cutoff']
 
     resources:
-        mem_mb=config['cicero']['resources']['mem_mb'],
-        time=config['cicero']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['cicero']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['cicero']['resources']['time'] * attempt,
 
     log: "logs/cicero/coaccessibility.err"
     benchmark: "benchmarks/cicero/coaccessibility.txt"

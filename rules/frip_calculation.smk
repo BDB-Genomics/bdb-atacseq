@@ -7,8 +7,8 @@ rule frip_calculation:
         frip=f"{config['frip_calculation']['output']}/{{sample}}_frip.txt"
 
     resources:
-        mem_mb=config['frip_calculation']['resources']['mem_mb'], 
-        time=config['frip_calculation']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['frip_calculation']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['frip_calculation']['resources']['time'] * attempt,
 
     log: "logs/frip/{sample}.err"
     benchmark: "benchmarks/frip/{sample}.txt"

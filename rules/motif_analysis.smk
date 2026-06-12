@@ -10,8 +10,8 @@ rule motif_analysis:
         genome_assembly=config['motif_analysis']['params']['genome_assembly']
 
     resources:
-        mem_mb=config['motif_analysis']['resources']['mem_mb'],
-        time=config['motif_analysis']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['motif_analysis']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['motif_analysis']['resources']['time'] * attempt,
 
     log: "logs/motif_analysis/{sample}.log"
     benchmark: "benchmarks/motif_analysis/{sample}.txt"

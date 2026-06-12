@@ -15,8 +15,8 @@ rule chromvar_analysis:
         genome_sizes=config['chromvar_analysis']['params']['genome_sizes']
 
     resources:
-        mem_mb=config['chromvar_analysis']['resources']['mem_mb'],
-        time=config['chromvar_analysis']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['chromvar_analysis']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['chromvar_analysis']['resources']['time'] * attempt,
 
     log: "logs/chromvar/{sample}.err"
     benchmark: "benchmarks/chromvar/{sample}.txt"

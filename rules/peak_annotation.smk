@@ -13,8 +13,8 @@ rule peak_annotation:
         feature_types=config['peak_annotation']['params'].get('feature_types', "gene,exon,CDS")
 
     resources:
-        mem_mb=config['peak_annotation']['resources']['mem_mb'],
-        time=config['peak_annotation']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['peak_annotation']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['peak_annotation']['resources']['time'] * attempt,
 
     log: "logs/peak_annotation/{sample}.err"
     benchmark: "benchmarks/peak_annotation/{sample}.txt"

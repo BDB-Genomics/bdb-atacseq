@@ -10,8 +10,8 @@ rule normalize_coverage:
         method=config['normalized_coverage']['params']['method']
 
     resources:
-        mem_mb=config['normalized_coverage']['resources']['mem_mb'],
-        time=config['normalized_coverage']['resources']['time']    
+        mem_mb=lambda wildcards, input, attempt: max(config['normalized_coverage']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['normalized_coverage']['resources']['time'] * attempt,
        
     log: "logs/normalized_coverage/{sample}.err"
     benchmark: "benchmarks/normalized_coverage/{sample}.txt"

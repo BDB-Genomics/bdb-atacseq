@@ -6,8 +6,8 @@ rule samtools_fixmate:
         sorted_bam_noMT_fixmate = f"{config['samtools_fixmate']['output']['sorted_bam_noMT_fixmate']}/{{sample}}.sorted.fixmate.bam"
 
     resources:
-        mem_mb = config["samtools_fixmate"]['resources']['mem_mb'], 
-        time = config["samtools_fixmate"]['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config["samtools_fixmate"]['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config["samtools_fixmate"]['resources']['time'] * attempt,
 
     log: "logs/samtools_fixmate/{sample}.err"
     benchmark: "benchmarks/samtools_fixmate/{sample}.txt"

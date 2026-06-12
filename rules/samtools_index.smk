@@ -6,8 +6,8 @@ rule samtools_index:
         indexed_bam=f"{config['samtools_index']['output']['index']}/{{sample}}_noMT.sorted.bam.bai"
 
     resources:
-        mem_mb=config['samtools_index']['resources']['mem_mb'], 
-        time=config['samtools_index']['resources']['time']     
+        mem_mb=lambda wildcards, input, attempt: max(config['samtools_index']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['samtools_index']['resources']['time'] * attempt,
         
     log: "logs/samtools_index/{sample}.err"
     benchmark: "benchmarks/samtools_index/{sample}.txt"

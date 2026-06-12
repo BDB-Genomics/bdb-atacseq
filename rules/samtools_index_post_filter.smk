@@ -6,8 +6,8 @@ rule samtools_index_post_filter:
         filtered_bam_indexed=f"{config['samtools_index_post_filter']['output']['filtered_bam_indexed']}/{{sample}}.filtered.bam.bai"
     
     resources:
-        mem_mb=config['samtools_index_post_filter']['resources']['mem_mb'], 
-        time=config['samtools_index_post_filter']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['samtools_index_post_filter']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['samtools_index_post_filter']['resources']['time'] * attempt,
 
     log: "logs/samtools_index_post_filter/{sample}.out"
     benchmark: "benchmarks/samtools_index_post_filter/{sample}.txt"

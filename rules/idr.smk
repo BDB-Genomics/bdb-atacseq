@@ -13,8 +13,8 @@ rule idr_analysis:
         rank=config['idr']['params']['rank_column']
 
     resources:
-        mem_mb=config['idr']['resources']['mem_mb'],
-        time=config['idr']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['idr']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['idr']['resources']['time'] * attempt,
 
     log: "logs/idr/{condition}_rep{rep1}_rep{rep2}.err"
     benchmark: "benchmarks/idr/{condition}_rep{rep1}_rep{rep2}.txt"

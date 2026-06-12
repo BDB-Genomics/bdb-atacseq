@@ -7,8 +7,8 @@ rule count_peaks:
         counts=f"{config['count_peaks']['output']}/{{sample}}_peak_counts.tsv"
 
     resources:
-        mem_mb=config['count_peaks']['resources']['mem_mb'],
-        time=config['count_peaks']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['count_peaks']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['count_peaks']['resources']['time'] * attempt,
 
     log: "logs/count_peaks/{sample}.err"
     benchmark: "benchmarks/count_peaks/{sample}.txt"

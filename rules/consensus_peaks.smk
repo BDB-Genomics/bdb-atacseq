@@ -12,8 +12,8 @@ rule consensus_peaks:
         n_peaks=lambda wildcards, input: len(input.peaks)
 
     resources:
-        mem_mb=config['consensus_peaks']['resources']['mem_mb'],
-        time=config['consensus_peaks']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['consensus_peaks']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['consensus_peaks']['resources']['time'] * attempt,
 
     log: "logs/consensus_peaks/consensus.err"
     benchmark: "benchmarks/consensus_peaks/consensus.txt"

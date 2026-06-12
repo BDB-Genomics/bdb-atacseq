@@ -12,8 +12,8 @@ rule footprinting:
         tmp_dir=lambda wildcards, output: f"{os.path.dirname(output.footprints)}/tmp_{wildcards.sample}"
 
     resources:
-        mem_mb=config['footprinting']['resources']['mem_mb'],
-        time=config['footprinting']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['footprinting']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['footprinting']['resources']['time'] * attempt,
 
     log: "logs/footprinting/{sample}.err"
     benchmark: "benchmarks/footprinting/{sample}.txt"

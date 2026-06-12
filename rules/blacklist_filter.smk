@@ -9,8 +9,8 @@ rule blacklist_region_filter:
         blacklist=config['blacklist_filter']['params']['blacklist']
 
     resources:
-        mem_mb=config['blacklist_filter']['resources']['mem_mb'],
-        time=config['blacklist_filter']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['blacklist_filter']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['blacklist_filter']['resources']['time'] * attempt,
 
     log: "logs/blacklist_region_filter/{sample}.err"
     benchmark: "benchmarks/blacklist_region_filter/{sample}.txt"

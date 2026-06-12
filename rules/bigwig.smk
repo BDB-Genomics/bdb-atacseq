@@ -9,8 +9,8 @@ rule bigwig_conversion:
         genome=config['bigwig']['params']['genome']
         
     resources:
-        mem_mb=config['bigwig']['resources']['mem_mb'], 
-        time=config['bigwig']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['bigwig']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['bigwig']['resources']['time'] * attempt,
             
     log: "logs/bigwig/{sample}.err"
     benchmark: "benchmarks/bigwig/{sample}.txt"

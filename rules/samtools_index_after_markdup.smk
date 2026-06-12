@@ -6,8 +6,8 @@ rule samtools_index_postmarkdup:
         indexed_markdup_bam=f"{config['samtools_index_post_markdup']['output']['index']}/{{sample}}.sorted.dedup.bam.bai"
 
     resources:
-        mem_mb=config['samtools_index_post_markdup']['resources']['mem_mb'], 
-        time=config['samtools_index_post_markdup']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['samtools_index_post_markdup']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['samtools_index_post_markdup']['resources']['time'] * attempt,
              
     log: "logs/samtools_index/post_markdup/{sample}.err"
     benchmark: "benchmarks/samtools_index/post_markdup/{sample}.txt"

@@ -10,8 +10,8 @@ rule samtools_view:
         filter_flags=config['samtools_view']['params']['flags']
     
     resources:
-        mem_mb=config['samtools_view']['resources']['mem_mb'], 
-        time=config['samtools_view']['resources']['time']            
+        mem_mb=lambda wildcards, input, attempt: max(config['samtools_view']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['samtools_view']['resources']['time'] * attempt,
 
     log: "logs/samtools_view/{sample}.out"
     benchmark: "benchmarks/samtools_view/{sample}.txt"

@@ -6,8 +6,8 @@ rule samtools_stats:
         stats=f"{config['samtools_stats']['output']['stats']}/{{sample}}_postFiltering.stats.txt"
     
     resources:
-        mem_mb=config['samtools_stats']['resources']['mem_mb'], 
-        time=config['samtools_stats']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['samtools_stats']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['samtools_stats']['resources']['time'] * attempt,
                     
     log: "logs/samtools_stats/{sample}.err"
     benchmark: "benchmarks/samtools_stats/{sample}.txt"

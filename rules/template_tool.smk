@@ -14,8 +14,8 @@ rule template_tool:
     
     # [TEMPLATE] Link threads and resources to ensure the scheduler allocates properly.
     resources:
-        mem_mb=config['template_category']['template_tool']['resources']['mem_mb'],
-        time=config['template_category']['template_tool']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['template_category']['template_tool']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['template_category']['template_tool']['resources']['time'] * attempt,
     
 
     log: "logs/template_category/template_tool/{sample}.log"

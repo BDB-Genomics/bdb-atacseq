@@ -8,8 +8,8 @@ rule tn5_shift:
         shifted_filtered_bam_index=f"{config['tn5_shift']['output']['shifted_bam_index']}/{{sample}}.filtered.shifted.bam.bai"
         
     resources:
-        mem_mb=config['tn5_shift']['resources']['mem_mb'], 
-        time=config['tn5_shift']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['tn5_shift']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['tn5_shift']['resources']['time'] * attempt,
 
     log: "logs/tn5_shift/{sample}.err"
     benchmark: "benchmarks/tn5_shift/{sample}.txt"

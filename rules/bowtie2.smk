@@ -12,8 +12,8 @@ rule bowtie2_align:
         sensitive = config['bowtie2']['params']['sensitive'],
             
     resources:
-        mem_mb=config['bowtie2']['resources']['mem_mb'], 
-        time=config['bowtie2']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['bowtie2']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['bowtie2']['resources']['time'] * attempt,
         
 
     log: "logs/bowtie2/{sample}.err"

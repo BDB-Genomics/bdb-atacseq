@@ -17,8 +17,8 @@ rule tobias_atacorrect:
         out_dir=lambda wildcards, output: os.path.dirname(output.corrected_bw)
 
     resources:
-        mem_mb=config['tobias']['resources']['mem_mb'],
-        time=config['tobias']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['tobias']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['tobias']['resources']['time'] * attempt,
 
     log: "logs/tobias/{sample}_atacorrect.err"
     benchmark: "benchmarks/tobias/{sample}_atacorrect.txt"
@@ -86,8 +86,8 @@ rule tobias_score_bigwig:
         genome_sizes=config['global']['references']['genome_sizes']
 
     resources:
-        mem_mb=config['tobias']['resources']['mem_mb'],
-        time=config['tobias']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['tobias']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['tobias']['resources']['time'] * attempt,
 
     log: "logs/tobias/{sample}_score.err"
     benchmark: "benchmarks/tobias/{sample}_score.txt"
@@ -142,8 +142,8 @@ rule tobias_bindetect:
         signals_flag=lambda wildcards, input: " ".join([f"--signals {bw}" for bw in input.corrected_bw])
 
     resources:
-        mem_mb=config['tobias']['resources']['mem_mb'],
-        time=config['tobias']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['tobias']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['tobias']['resources']['time'] * attempt,
 
     log: "logs/tobias/bindetect.err"
     benchmark: "benchmarks/tobias/bindetect.txt"

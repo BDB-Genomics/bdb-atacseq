@@ -15,8 +15,8 @@ rule heatmap:
         colormap=config['heatmap']['params'].get("color", "coolwarm")
 
     resources:
-        mem_mb=config['heatmap']['resources']['mem_mb'],
-        time=config['heatmap']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['heatmap']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['heatmap']['resources']['time'] * attempt,
 
     log: matrix="logs/heatmap/matrix/{sample}.err", plot="logs/heatmap/plot/{sample}.err"
     benchmark: "benchmarks/heatmap/{sample}.txt"

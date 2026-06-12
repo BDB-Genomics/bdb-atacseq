@@ -14,8 +14,8 @@ rule archr_pseudobulk:
         tsse_method=config['archr']['params']['tsse_method']
 
     resources:
-        mem_mb=config['archr']['resources']['mem_mb'],
-        time=config['archr']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['archr']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['archr']['resources']['time'] * attempt,
 
     log: "logs/archr/pseudobulk.err"
     benchmark: "benchmarks/archr/pseudobulk.txt"
@@ -39,8 +39,8 @@ rule archr_doublet_detection:
         doublet_threshold=config['archr']['params']['doublet_threshold']
 
     resources:
-        mem_mb=config['archr']['resources']['mem_mb'],
-        time=config['archr']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['archr']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['archr']['resources']['time'] * attempt,
 
     log: "logs/archr/doublets.err"
     benchmark: "benchmarks/archr/doublets.txt"
@@ -68,8 +68,8 @@ rule archr_clustering:
         force_dim_reduction=config['archr']['params']['force_dim_reduction']
 
     resources:
-        mem_mb=config['archr']['resources']['mem_mb'],
-        time=config['archr']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['archr']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['archr']['resources']['time'] * attempt,
 
     log: "logs/archr/clustering.err"
     benchmark: "benchmarks/archr/clustering.txt"

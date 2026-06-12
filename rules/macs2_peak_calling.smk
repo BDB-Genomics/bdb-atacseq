@@ -14,8 +14,8 @@ rule macs2_peak_calling:
         dir=lambda wildcards, output: os.path.dirname(output.peaks)
 
     resources:
-        mem_mb=config['macs2']['resources']['mem_mb'],
-        time=config['macs2']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['macs2']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['macs2']['resources']['time'] * attempt,
 
     log: "logs/macs2/{sample}.err"
     benchmark: "benchmarks/macs2/{sample}.txt"

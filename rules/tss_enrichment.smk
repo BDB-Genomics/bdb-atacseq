@@ -14,8 +14,8 @@ rule tss_enrichment:
         downstream=config['tss_enrichment']['params']['downstream']
         
     resources:
-        mem_mb=config['tss_enrichment']['resources']['mem_mb'], 
-        time=config['tss_enrichment']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['tss_enrichment']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['tss_enrichment']['resources']['time'] * attempt,
   
     log: "logs/tss_enrichment/{sample}.err"
     benchmark: "benchmarks/tss_enrichment/{sample}.txt"

@@ -10,8 +10,8 @@ rule picard_CollectAlignmentSummaryMetrics:
         validation_stringency=config['picard']['alignment_metrics']['params']['validation_stringency']
                 
     resources:
-        mem_mb=config['picard']['alignment_metrics']['resources']['mem_mb'], 
-        time=config['picard']['alignment_metrics']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['picard']['alignment_metrics']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['picard']['alignment_metrics']['resources']['time'] * attempt,
 
     log: "logs/picard/CollectAlignmentSummaryMetrics/{sample}.err"
     benchmark: "benchmarks/picard/CollectAlignmentSummaryMetrics/{sample}.txt"

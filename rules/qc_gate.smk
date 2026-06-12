@@ -15,8 +15,8 @@ rule qc_gate:
         max_dup_pt=config['qc_gate']['params']['max_duplicate_rate']
         
     resources:
-        mem_mb=config['qc_gate']['resources']['mem_mb'],
-        time=config['qc_gate']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['qc_gate']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['qc_gate']['resources']['time'] * attempt,
         
     log: "logs/qc_gate/{sample}.log"
     benchmark: "benchmarks/qc_gate/{sample}.txt"

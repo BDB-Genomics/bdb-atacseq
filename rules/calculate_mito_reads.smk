@@ -9,8 +9,8 @@ rule calculate_mito_reads:
         mito_chr=config['mitoATAC_calculate']['params']['mito_chr']
     
     resources:
-        mem_mb=config['mitoATAC_calculate']['resources']['mem_mb'],
-        time=config['mitoATAC_calculate']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['mitoATAC_calculate']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['mitoATAC_calculate']['resources']['time'] * attempt,
             
 
     log: "logs/mitoATAC_calculate/{sample}.err"

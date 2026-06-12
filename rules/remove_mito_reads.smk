@@ -9,8 +9,8 @@ rule remove_mito_reads:
         mito_chr=config['remove_mito_reads']['params']['mito_chr']
         
     resources:
-        mem_mb=config['remove_mito_reads']['resources']['mem_mb'], 
-        time=config['remove_mito_reads']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['remove_mito_reads']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['remove_mito_reads']['resources']['time'] * attempt,
         
     log: "logs/remove_mito_reads/{sample}_noMT_sorted_bam.err"
     benchmark: "benchmarks/remove_mito_reads/{sample}_noMT_sorted_bam.txt"

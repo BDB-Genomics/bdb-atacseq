@@ -10,8 +10,8 @@ rule bedtools_genomecov:
         extra=config['bedtools_genomecov']['params']['extra']
 
     resources:
-        mem_mb=config['bedtools_genomecov']['resources']['mem_mb'],
-        time=config['bedtools_genomecov']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['bedtools_genomecov']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['bedtools_genomecov']['resources']['time'] * attempt,
 
     log: "logs/bedtools_genomecov/{sample}.err"
     benchmark: "benchmarks/bedtools_genomecov/{sample}.txt"

@@ -13,8 +13,8 @@ rule correlation_analysis:
         bin_size=config['correlation_analysis']['params']['bin_size']
         
     resources:
-        mem_mb=config['correlation_analysis']['resources']['mem_mb'], 
-        time=config['correlation_analysis']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['correlation_analysis']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['correlation_analysis']['resources']['time'] * attempt,
 
     log: "logs/correlation_analysis/correlation_analysis.err"
     benchmark: "benchmarks/correlation_analysis/correlation_analysis.txt"

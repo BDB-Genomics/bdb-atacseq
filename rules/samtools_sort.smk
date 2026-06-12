@@ -6,8 +6,8 @@ rule samtools_sort:
         bam_sorted=f"{config['samtools_sort']['output']['sorted_bam']}/{{sample}}.sorted.bam"
     
     resources:
-        mem_mb=config['samtools_sort']['resources']['mem_mb'], 
-        time=config['samtools_sort']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['samtools_sort']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['samtools_sort']['resources']['time'] * attempt,
             
     log: "logs/samtools_sort/{sample}.err"
     benchmark: "benchmarks/samtools_sort/{sample}.txt"

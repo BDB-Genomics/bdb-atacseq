@@ -9,8 +9,8 @@ rule preseq:
         extra="lc_extrap",  #"lc_extrap" to predict library complexity
 
     resources:
-        mem_mb=config['preseq']['resources']['mem_mb'], 
-        time=config['preseq']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['preseq']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['preseq']['resources']['time'] * attempt,
         
     log: "logs/preseq/{sample}.err"
     benchmark: "benchmarks/preseq/{sample}.txt"

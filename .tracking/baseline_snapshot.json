@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-06-12T07:19:30.986088+00:00",
-  "commit": "06f8e0a21bc2ce7d3d31bd24aaa540032cb649e0",
+  "timestamp": "2026-06-12T19:23:51.658836+00:00",
+  "commit": "65fcc5049a11e4446bf87e1c9db3f33ddec10a29",
   "files": {
     "README.md": {
-      "hash": "9a48e3c3e94f99e1db7ede8b22c3d8dbc718b9bb76b05ab0d57339e262fce764",
-      "size": 14317,
-      "mtime": 1781125995.9617376
+      "hash": "cc5beda375b8863481562ae06b3998930c8ea6d1463f8a469ac2650791e0a039",
+      "size": 4844,
+      "mtime": 1781277035.1492953
     },
     "CITATION.cff": {
       "hash": "65a2a47ad5584c5b8c55bf368fdc1c801979edca1c26ee93549b04169c5a0e9e",
@@ -33,9 +33,9 @@
       "mtime": 1779080804.986542
     },
     "config.yaml": {
-      "hash": "3b682e5de94cf4ed6bd6258ae2402283e29989c03af466a2b7f39dd8e76d3fe2",
-      "size": 20960,
-      "mtime": 1780851103.9167101
+      "hash": "9d391295c62dcb1e24108e7de4a749792ddf3f451457991212e0f75cf17f656f",
+      "size": 20611,
+      "mtime": 1781250619.7924833
     },
     "CONTRIBUTING.md": {
       "hash": "84f743c254bef043b2bc78648ec371f3d5f0a7bd79e5627cf7194cf6e9816c28",
@@ -468,9 +468,9 @@
       "mtime": 1779045769.7921429
     },
     "rules/scripts/validate_config.py": {
-      "hash": "61e1cb227ac965fe951d2f4217e2cc8a410771200d57e246009e77f1371873fb",
-      "size": 21291,
-      "mtime": 1779551516.4592996
+      "hash": "bbb34df4cc85276546690be5928077f259d0c8fc25e19e68a2df4135cb189793",
+      "size": 21469,
+      "mtime": 1781291964.7507415
     },
     "rules/scripts/tss_enrichment.R": {
       "hash": "cebb3cf3423218a3521d37150f2d6b8c90033877e8af2513bf5c33cb551bfdc4",
@@ -1463,14 +1463,14 @@
       "mtime": 1779046723.0170066
     },
     "profile/local/config.yaml": {
-      "hash": "3fc7859990f166dbe13ac0a5205888318d443a30cf18da32a19a0cc9492932d2",
-      "size": 385,
-      "mtime": 1779051534.2942963
+      "hash": "aa80bb54f5d08d9ad86a30a9cb243e11c40c187108e5371da7e410d377fd3dbb",
+      "size": 377,
+      "mtime": 1781250619.8094835
     },
     "profile/low_resource/config.yaml": {
-      "hash": "04fa206a8643a40ba5e46649006251fa015877079448c75ed02f3b3466173616",
-      "size": 2804,
-      "mtime": 1779093317.728055
+      "hash": "2b64205875516d8a1a673c44814960039516e0febb7e5fc0b6503f9ebb000b9e",
+      "size": 2797,
+      "mtime": 1781250619.8184836
     },
     "profile/test/config_test.yaml": {
       "hash": "bc5e2118fa7ed4b6cbe5ea4c59437b22e205d62cb5595bbde3b51840fe442cfc",
@@ -1478,14 +1478,14 @@
       "mtime": 1780780257.0498412
     },
     "profile/test/config.yaml": {
-      "hash": "19eee18b77b9c506697ac483d2bbd892941fa732cbfd06679f342c56f0019dff",
-      "size": 346,
-      "mtime": 1781130031.4440186
+      "hash": "d9838327f18a4c02d2f910bccaf8458b817bd1e89c3e1f7e7a138ae2b11eb516",
+      "size": 338,
+      "mtime": 1781250619.8024836
     },
     "profile/slurm/config.yaml": {
-      "hash": "3d5d9011bed85acb5d73b23ddb34cbfd435bb5b63d94d4df2d034715d5ab55d5",
-      "size": 360,
-      "mtime": 1779051882.539181
+      "hash": "f0f8b8bdd083f87238e47b891ba6abef1e8a115af0db1eb21700620a8ecf7b13",
+      "size": 352,
+      "mtime": 1781250619.8212228
     },
     "assets/readme_animation.svg": {
       "hash": "d0e0194a390bdb909e62683a87fec9d12ddc4dc16dad5982d2da9b0b0db87c4c",

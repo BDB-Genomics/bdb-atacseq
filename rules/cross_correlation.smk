@@ -11,8 +11,8 @@ rule cross_correlation:
         max_range=config['cross_correlation']['params']['max_range']
 
     resources:
-        mem_mb=config['cross_correlation']['resources']['mem_mb'],
-        time=config['cross_correlation']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['cross_correlation']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,
+        time=lambda wildcards, attempt: config['cross_correlation']['resources']['time'] * attempt,
 
     log: "logs/cross_correlation/{sample}.err"
     benchmark: "benchmarks/cross_correlation/{sample}.txt"

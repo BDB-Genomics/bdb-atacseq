@@ -11,8 +11,8 @@ rule picard_CollectInsertSizeMetrics:
         validation_stringency=config['picard']['insert_metrics']['params']['validation_stringency']
         
     resources:
-        mem_mb=config['picard']['insert_metrics']['resources']['mem_mb'], 
-        time=config['picard']['insert_metrics']['resources']['time']
+        mem_mb=lambda wildcards, input, attempt: max(config['picard']['insert_metrics']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
+        time=lambda wildcards, attempt: config['picard']['insert_metrics']['resources']['time'] * attempt,
 
     log: "logs/picard/CollectInsertSizeMetrics/{sample}.err"
     benchmark: "benchmarks/picard/CollectInsertSizeMetrics/{sample}.txt"
