@@ -444,9 +444,16 @@ def validate_path_checks(
             if isinstance(value, dict):
                 walk(next_prefix, value)
             elif isinstance(value, str) and value.strip():
-                # Dynamically validate any config key that implies a path
-                if key.endswith(("_fa", "_bed", "_gtf", "_index", "_sizes", "_db")) or key in ("blacklist", "script", "config"):
-                    if key.endswith("_index"):
+                # Dynamically validate static reference file paths (under global)
+                # or pipeline tool resources (script/config)
+                is_global_ref = (next_prefix[0] == "global" and (
+                    key.endswith(("_fa", "_bed", "_gtf", "_index", "_sizes", "_db")) or
+                    key == "blacklist"
+                ))
+                is_tool_resource = (key in ("script", "config"))
+
+                if is_global_ref or is_tool_resource:
+                    if key == "bowtie2_index":
                         if not bowtie2_index_exists(value, bases):
                             errors.append(f"Index prefix not found for config key '{'.'.join(next_prefix)}': {value}")
                     else:
