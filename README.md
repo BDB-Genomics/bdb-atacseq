@@ -105,6 +105,22 @@ params:
     gsize=sum(int(line.strip().split()[1]) for line in open(config['global']['references']['genome_sizes']))
 ```
 
+### Dynamic Configuration Overrides
+
+You can override specific parameters on the fly without modifying the main `config.yaml`. By passing a secondary configuration file, the pipeline merges your overrides *on top* of the base configuration in memory. The main `config.yaml` remains safe and frozen.
+
+```yaml
+# custom_override.yaml
+qc_gate:
+  params:
+    min_frip: 0.0  # Turn off FRiP requirement
+```
+
+```bash
+# Snakemake merges the files natively from left to right
+snakemake --configfile config.yaml custom_override.yaml --cores 8
+```
+
 ---
 
 ## Running the Pipeline
