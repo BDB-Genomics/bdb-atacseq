@@ -17,17 +17,7 @@ SAMPLE_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
 CONFIG_ACCESS_PATTERN = re.compile(r"config((?:\[['\"][^'\"]+['\"]\])+)")
 CONFIG_KEY_PATTERN = re.compile(r"\[['\"]([^'\"]+)['\"]\]")
 SAMPLES_LIST_USAGE_PATTERN = re.compile(r"sample\s*=\s*config\[['\"]samples['\"]\]")
-PATH_CHECKS = (
-    (("global", "references", "bowtie2_index"), "bowtie2_index"),
-    (("global", "references", "chromap_index"), "file"),
-    (("global", "references", "genome_fa"), "file"),
-    (("global", "references", "genome_sizes"), "file"),
-    (("global", "references", "blacklist"), "file"),
-    (("global", "references", "annotation_gtf"), "file"),
-    (("global", "references", "motif_db"), "file"),
-    (("multiqc", "params", "config"), "file"),
-    (("tss_enrichment", "script"), "file"),
-)
+
 
 
 # ANSI Color codes
@@ -445,26 +435,28 @@ def validate_path_checks(
     config: dict[str, Any], config_path: Path, root: Path, errors: list[str]
 ) -> None:
     bases = [config_path.parent, root, Path.cwd()]
-    for path_keys, check_kind in PATH_CHECKS:
-        value = get_config_value(config, path_keys)
-        if not isinstance(value, str) or not value.strip():
-            continue
+    
+    def walk(prefix: tuple[str, ...], node: Any) -> None:
+        if not isinstance(node, dict):
+            return
+        for key, value in node.items():
+            next_prefix = prefix + (key,)
+            if isinstance(value, dict):
+                walk(next_prefix, value)
+            elif isinstance(value, str) and value.strip():
+                # Dynamically validate any config key that implies a path
+                if key.endswith(("_fa", "_bed", "_gtf", "_index", "_sizes", "_db")) or key in ("blacklist", "script", "config"):
+                    if key.endswith("_index"):
+                        if not bowtie2_index_exists(value, bases):
+                            errors.append(f"Index prefix not found for config key '{'.'.join(next_prefix)}': {value}")
+                    else:
+                        resolved = resolve_existing_path(value, bases)
+                        if resolved is None:
+                            errors.append(f"Configured path not found for '{'.'.join(next_prefix)}': {value}")
+                        elif not resolved.is_file():
+                            errors.append(f"Configured path for '{'.'.join(next_prefix)}' must be a file: {resolved}")
 
-        if check_kind == "bowtie2_index":
-            if not bowtie2_index_exists(value, bases):
-                errors.append(
-                    "Bowtie2 index prefix not found for config key "
-                    f"'{'.'.join(path_keys)}': {value}"
-                )
-            continue
-
-        path_bases = [root / "rules", *bases] if check_kind == "workflow_file" else bases
-        resolved = resolve_existing_path(value, path_bases)
-        if resolved is None:
-            errors.append(f"Configured path not found for '{'.'.join(path_keys)}': {value}")
-            continue
-        if check_kind in {"file", "workflow_file"} and not resolved.is_file():
-            errors.append(f"Configured path for '{'.'.join(path_keys)}' must be a file: {resolved}")
+    walk((), config)
 
 
 def bowtie2_index_exists(index_prefix: str, bases: list[Path]) -> bool:
