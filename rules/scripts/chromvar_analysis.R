@@ -1,4 +1,6 @@
 suppressPackageStartupMessages({
+    library(GenomicRanges)
+    library(IRanges)
     library(chromVAR)
     library(motifmatchr)
     library(TFBSTools)

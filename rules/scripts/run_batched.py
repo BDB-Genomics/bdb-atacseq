@@ -39,6 +39,7 @@ def run_batch(
     memory: int,
     config: dict,
     mode: str,
+    conda_frontend: str,
     extra_args: list[str],
 ) -> int:
     """Run snakemake for a single batch of samples."""
@@ -66,7 +67,7 @@ def run_batch(
     cmd = [
         "snakemake",
         "--use-conda",
-        "--conda-frontend", "mamba",
+        "--conda-frontend", conda_frontend,
         "--cores", str(cores),
         "--resources", f"mem_mb={memory}",
         "--profile", "profile/low_resource",
@@ -97,6 +98,8 @@ def main():
                         help="Pipeline mode: bulk or scatac (default: read from config.yaml)")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to config.yaml")
     parser.add_argument("--sample-sheet", type=str, default="data/fastp/samples.tsv", help="Path to sample sheet")
+    parser.add_argument("--conda-frontend", type=str, default="mamba", choices=["conda", "mamba"],
+                        help="Conda frontend: conda or mamba (default: mamba)")
     parser.add_argument("--dry-run", action="store_true", help="Show batches without running")
     parser.add_argument("extra_args", nargs=argparse.REMAINDER, help="Extra arguments passed to snakemake")
     args = parser.parse_args()
@@ -113,8 +116,25 @@ def main():
         print(f"ERROR: Sample sheet not found: {sample_sheet}", file=sys.stderr)
         sys.exit(1)
 
-    with config_path.open() as f:
-        config = yaml.safe_load(f)
+    # Load default config first to ensure all default parameters are present
+    default_config_path = root / "config.yaml"
+    if default_config_path.exists():
+        with default_config_path.open() as f:
+            config = yaml.safe_load(f) or {}
+    else:
+        config = {}
+
+    # Merge with custom config overrides if specified
+    if config_path != default_config_path and config_path.exists():
+        with config_path.open() as f:
+            custom_config = yaml.safe_load(f) or {}
+        def merge_dicts(d1, d2):
+            for k, v in d2.items():
+                if k in d1 and isinstance(d1[k], dict) and isinstance(v, dict):
+                    merge_dicts(d1[k], v)
+                else:
+                    d1[k] = v
+        merge_dicts(config, custom_config)
 
     mode = args.mode or os.getenv("ATAC_MODE") or config.get("global", {}).get("mode", "bulk")
     if mode not in ("bulk", "scatac"):
@@ -145,7 +165,7 @@ def main():
     # Run batches sequentially
     failed_batches = []
     for i, batch in enumerate(batches, 1):
-        ret = run_batch(batch, i, args.cores, args.memory, config, mode, args.extra_args)
+        ret = run_batch(batch, i, args.cores, args.memory, config, mode, args.conda_frontend, args.extra_args)
         if ret != 0:
             failed_batches.append((i, batch))
             print(f"WARNING: Batch {i} had errors (exit code {ret})")
@@ -168,7 +188,7 @@ def main():
     final_cmd = [
         "snakemake",
         "--use-conda",
-        "--conda-frontend", "mamba",
+        "--conda-frontend", args.conda_frontend,
         "--cores", "1",
         "--profile", "profile/low_resource",
         f"{config['multiqc']['output']}/multiqc_report.html",

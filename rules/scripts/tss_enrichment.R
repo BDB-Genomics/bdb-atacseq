@@ -220,11 +220,16 @@ par(mar=c(5, 5, 4, 2))
 cat("Panel 1: Computing TSS enrichment profile...\n")
 tryCatch({
     reads <- coverage(gal)
-    n_sample <- min(length(tss_regions), 10000)
-    tss_sample <- tss_regions
-    if (length(tss_regions) > n_sample) {
+    # Ensure tss_regions only contains chromosomes that actually have coverage in reads
+    coverage_chroms <- names(reads)
+    tss_regions_cov <- tss_regions[as.character(seqnames(tss_regions)) %in% coverage_chroms]
+    tss_regions_cov <- keepSeqlevels(tss_regions_cov, intersect(seqlevels(tss_regions_cov), coverage_chroms), pruning.mode="coarse")
+    
+    n_sample <- min(length(tss_regions_cov), 10000)
+    tss_sample <- tss_regions_cov
+    if (length(tss_regions_cov) > n_sample) {
         set.seed(42)
-        tss_sample <- tss_regions[sample(length(tss_regions), n_sample)]
+        tss_sample <- tss_regions_cov[sample(length(tss_regions_cov), n_sample)]
         cat("  Sampling", n_sample, "TSS regions for visualization\n")
     }
     sigs <- featureAlignedSignal(

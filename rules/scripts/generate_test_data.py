@@ -36,8 +36,8 @@ GENOME = {
 # ---------------------------------------------------------------------------
 # Annotation parameters
 # ---------------------------------------------------------------------------
-GENES_CHR1 = 35          # genes on chr1
-GENES_CHR2 = 20          # genes on chr2
+GENES_CHR1 = 50          # genes on chr1
+GENES_CHR2 = 30          # genes on chr2
 GENE_LENGTH = 3000        # bp per gene body
 GENE_SPACING_CHR1 = 12_000
 GENE_SPACING_CHR2 = 10_000
@@ -46,11 +46,11 @@ GENE_START_OFFSET = 10_000  # first gene starts here
 # ---------------------------------------------------------------------------
 # FASTQ parameters
 # ---------------------------------------------------------------------------
-READS_PER_SAMPLE = 5000
+READS_PER_SAMPLE = 7500
 READ_LENGTH = 75
 FRAGMENT_MEAN = 200
 FRAGMENT_SD = 30
-TSS_TARGETED_FRACTION = 0.60   # fraction of reads placed near TSSes
+TSS_TARGETED_FRACTION = 0.75   # fraction of reads placed near TSSes
 TSS_WINDOW = 2000              # how far from TSS we scatter targeted reads
 SAMPLES = ["sample1", "sample2", "sample3", "sample4"]
 
