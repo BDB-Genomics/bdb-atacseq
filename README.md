@@ -1,12 +1,10 @@
 # BDB-Genomics ATAC-seq Pipeline
 
-A production-grade Snakemake framework for end-to-end ATAC-seq analysis. Supports both bulk and single-cell modalities from a single codebase, with built-in quality control gating that prevents low-quality samples from consuming downstream compute.
+A production-grade Snakemake framework for end-to-end ATAC-seq analysis. Supports both bulk and single-cell modalities from a single codebase, with built-in quality control gating that blocks low-quality samples before they consume downstream compute.
 
 [![CI](https://github.com/BDB-Genomics/atacseq-pipeline/actions/workflows/lint.yml/badge.svg)](https://github.com/BDB-Genomics/atacseq-pipeline/actions/workflows/lint.yml)
 [![Snakemake](https://img.shields.io/badge/Snakemake-%E2%89%A58.0-blue.svg)](https://snakemake.github.io)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-![Pipeline Architecture](pipeline_architecture.png)
 
 ---
 
@@ -18,7 +16,7 @@ A production-grade Snakemake framework for end-to-end ATAC-seq analysis. Support
 4. [Running the Pipeline](#running-the-pipeline)
 5. [Execution Profiles](#execution-profiles)
 6. [Bulk and Single-Cell Modes](#bulk-and-single-cell-modes)
-7. [Pipeline Stages and Outputs](#pipeline-stages-and-outputs)
+7. [Pipeline Stages](#pipeline-stages)
 8. [Quality Control Gate](#quality-control-gate)
 9. [Low-Resource Execution](#low-resource-execution)
 10. [Continuous Integration](#continuous-integration)
@@ -30,39 +28,36 @@ A production-grade Snakemake framework for end-to-end ATAC-seq analysis. Support
 
 ## Design Principles
 
-The framework is built on four architectural decisions that distinguish it from typical bioinformatics pipelines:
+**Pre-flight validation.** Before Snakemake builds the DAG, `validate_config.py` parses `config.yaml` and the sample sheet. It verifies that every referenced file path exists on disk, that sample names match the pattern `[A-Za-z0-9._-]+`, and that every rule block contains the required `input`, `output`, `params`, `threads`, and `resources` keys. Errors are categorized (Reference Files, Sample Sheet, Schema/Keys, Parameters) and printed with filesystem hints. The pipeline exits before any job is scheduled.
 
-**Pre-flight validation.** Before Snakemake builds the DAG, a validation script (`rules/scripts/validate_config.py`) parses `config.yaml` and the sample sheet. It checks that every referenced file exists, that sample names contain only safe characters, and that every rule block has the required keys. If validation fails, the pipeline exits immediately with a categorized error report. No compute is wasted.
+**Quality control gating.** After alignment metrics are collected, `parse_qc_metrics.py` evaluates each sample against four thresholds: FRiP, TSS enrichment, mapping rate, and duplication rate. Samples that fail any threshold produce a `FAILED` status in their `_qc_pass.txt` file and are blocked from peak calling, footprinting, and differential analysis. The pipeline does not stop; it continues processing passing samples and produces a complete MultiQC report that flags failures.
 
-**Quality control gating.** After alignment metrics are collected, a QC gate evaluates each sample against user-defined thresholds (FRiP, TSS enrichment, mapping rate, duplication rate). Samples that fail are blocked from expensive downstream steps like peak calling, footprinting, and differential analysis.
+**Config-driven architecture.** Every tool parameter, file path, resource limit, and biological threshold is declared in `config.yaml`. The 47 Snakemake rule files are stateless wrappers that read from this config at runtime. YAML anchors (`&GENOME_FA` / `*GENOME_FA`) ensure that a reference path defined once propagates to every rule that needs it. Changing from hg38 to mm10 means editing one line.
 
-**Config-driven architecture.** Every tool parameter, file path, resource limit, and biological threshold lives in `config.yaml`. The Snakemake rules are stateless wrappers that read from this file at runtime. Changing a reference genome or adjusting memory limits requires editing one file. The change propagates to all 47 rules automatically.
+**Resilient fallbacks.** Rules that operate on peak files (ChIPseeker, HOMER, TOBIAS, deepTools heatmaps, chromVAR, HINT-ATAC) check whether the input peak file is empty before executing the main tool. If it is, they write structurally valid placeholder outputs (empty DataFrames with correct headers, dummy BigWig files with valid chromosome headers, placeholder PDFs) and exit cleanly. The DAG never crashes from a zero-peak sample.
 
-**Resilient fallbacks.** Downstream scripts (DESeq2, chromVAR, ChIPseeker, TOBIAS, deepTools) catch statistical failures from low-coverage or zero-peak samples. Instead of crashing the DAG, they write placeholder outputs with valid headers and exit cleanly. The pipeline completes, and the MultiQC report flags which samples produced placeholder results.
+**Containerization.** Every rule declares both a `conda:` environment file and a `container:` URL pointing to a Galaxy Project Singularity image. Running with `--use-singularity` produces bit-identical results across operating systems without relying on Conda dependency resolution.
 
 ---
 
 ## Installation
 
-The pipeline requires Snakemake 8.0 or later and Conda (or Mamba) for per-rule environment isolation.
-
 ```bash
-# Create the runner environment
 conda create -n atacseq snakemake>=8.0 -c conda-forge -c bioconda
 conda activate atacseq
 ```
 
-Each rule declares its own Conda environment under `rules/envs/`. Snakemake creates these automatically on first run. No manual installation of individual tools is needed.
+Per-rule Conda environments are defined under `rules/envs/` and created automatically on first run. No manual tool installation is needed.
 
 ---
 
 ## Configuration
 
-Two files control the pipeline. Everything else is derived from them.
+Two files control the pipeline:
 
-### 1. Sample sheet (`data/fastp/samples.tsv`)
+### Sample sheet (`data/fastp/samples.tsv`)
 
-A tab-separated file with one row per sample:
+Tab-separated, one row per sample:
 
 ```
 sample    fastq_r1                              fastq_r2                              replicate    condition
@@ -72,106 +67,100 @@ ctrl1     data/fastq/ctrl1_R1.fastq.gz          data/fastq/ctrl1_R2.fastq.gz    
 ctrl2     data/fastq/ctrl2_R1.fastq.gz          data/fastq/ctrl2_R2.fastq.gz          2            control
 ```
 
-The `replicate` and `condition` columns drive IDR analysis (replicate concordance) and DESeq2 (differential accessibility between conditions).
+The `condition` column drives DESeq2 differential analysis and TOBIAS BINDetect differential binding. The `replicate` column drives IDR analysis -- the pipeline automatically generates all pairwise replicate comparisons per condition using `itertools.combinations`.
 
-### 2. Pipeline configuration (`config.yaml`)
+### Pipeline configuration (`config.yaml`)
 
-The file is organized into a global block and per-tool blocks. Here is a representative excerpt:
+Every tool block follows a uniform schema:
 
 ```yaml
-# --- Global references (YAML anchors propagate these to all tools) ---
 global:
-  mode: "bulk"                                      # "bulk" or "scatac"
+  mode: "bulk"                                         # "bulk" or "scatac"
   samples: "data/fastp/samples.tsv"
   references:
     genome_fa: &GENOME_FA "data/reference/genome.fa"
+    genome_sizes: &GENOME_SIZES "data/reference/genome.chrom.sizes"
     bowtie2_index: &BOWTIE2_INDEX "data/reference/index/genome"
     blacklist: &BLACKLIST "data/reference/ENCODE_blacklist.bed"
     annotation_gtf: &ANNOTATION_GTF "data/reference/annotation.gtf"
     motif_db: &MOTIF_DB "data/motifs/jaspar_vertebrates.meme"
 
-# --- Per-tool block (every tool follows this schema) ---
 bowtie2:
   input: "results/preprocessing/fastp"
   output: "results/alignment/bowtie2"
   params:
-    index: *BOWTIE2_INDEX               # resolved from the anchor above
+    index: *BOWTIE2_INDEX
     sensitive: "--very-sensitive"
   threads: 8
   resources:
     mem_mb: 16000
-    time: 240                           # minutes
-
-# --- QC gate thresholds ---
-qc_gate:
-  params:
-    min_frip: 0.2
-    min_tss_enr: 7.0
-    min_mapping_rate: 80.0
-    max_duplicate_rate: 20.0
+    time: 240                          # integer minutes (Snakemake 8 requirement)
 ```
 
-YAML anchors (`&GENOME_FA`, `*GENOME_FA`) ensure that a reference path defined once propagates everywhere. If you switch from hg38 to mm10, change the path in the `global.references` block and every downstream tool inherits it.
+The MACS2 rule dynamically computes genome size by summing the `genome.chrom.sizes` file at parse time, so no hardcoded genome size string is needed:
+
+```python
+# From rules/macs2_peak_calling.smk
+params:
+    gsize=sum(int(line.strip().split()[1]) for line in open(config['global']['references']['genome_sizes']))
+```
 
 ---
 
 ## Running the Pipeline
 
-### Standard execution
-
 ```bash
+# Full bulk ATAC-seq run
 snakemake --use-conda --cores 8
-```
 
-This runs the full bulk ATAC-seq workflow: preprocessing, alignment, post-alignment filtering, QC metrics, QC gating, peak calling, footprinting, differential analysis, and reporting.
-
-### Dry run (validate without executing)
-
-```bash
+# Dry run (print the DAG without executing)
 snakemake -n --use-conda --cores 8
-```
 
-Prints the full DAG of jobs without running them. Useful for verifying that configuration changes produce the expected execution plan.
-
-### Resume after failure
-
-```bash
+# Resume after a failure (skip completed outputs)
 snakemake --use-conda --cores 8 --rerun-incomplete
+
+# Reproducible run with Singularity containers
+snakemake --use-singularity --cores 8
 ```
 
-Snakemake tracks completed outputs. Only incomplete or failed rules re-execute.
+On startup, the Snakefile prints the detected mode and sample count:
+
+```
+[START] BDB-Genomics ATAC-seq Framework
+Mode: BULK
+Samples: 3 samples detected
+```
 
 ---
 
 ## Execution Profiles
 
-Profiles bundle runtime flags into reusable configurations. Each profile is a directory under `profile/` containing a `config.yaml`.
+| Profile | Target hardware | Parallel jobs | Command |
+| :--- | :--- | ---: | :--- |
+| `local` | Workstation (16+ GB, 8+ cores) | 8 | `snakemake --profile profile/local` |
+| `low_resource` | Laptop (4-8 GB, 2-4 cores) | 2 | `snakemake --profile profile/low_resource` |
+| `slurm` | HPC cluster (SLURM scheduler) | 100 | `snakemake --profile profile/slurm` |
+| `test` | GitHub Actions CI runner | 4 | `snakemake --profile profile/test` |
 
-| Profile | Use case | Parallel jobs | Default memory | Command |
-| :--- | :--- | ---: | ---: | :--- |
-| `local` | Workstation (16 GB RAM, 8+ cores) | 8 | 4 GB | `snakemake --profile profile/local` |
-| `low_resource` | Laptop (4-8 GB RAM, 2-4 cores) | 2 | 2 GB | `snakemake --profile profile/low_resource` |
-| `slurm` | HPC cluster | 100 | 4 GB | `snakemake --profile profile/slurm` |
-| `test` | CI/CD validation | 4 | 2 GB | `snakemake --profile profile/test` |
+Each profile is a directory under `profile/` containing a Snakemake `config.yaml` with bundled flags. Example for SLURM:
 
-Example: running on a SLURM cluster after editing the partition and account:
-
-```bash
-# 1. Edit profile/slurm/config.yaml:
-#    slurm_partition: "your_partition"
-#    slurm_account: "your_billing_account"
-
-# 2. Submit
-snakemake --profile profile/slurm
+```yaml
+# profile/slurm/config.yaml
+executor: slurm
+use-conda: true
+jobs: 100
+restart-times: 1
+latency-wait: 60
+default-resources:
+  mem_mb: 4000
+  time: 60
+  slurm_partition: "standard"
+  slurm_account: "bdb_genomics"
 ```
-
-The `low_resource` profile caps every rule individually. For instance, Bowtie2 alignment is limited to 4 GB and 2 threads, MACS2 peak calling to 4 GB and 2 threads, and indexing steps to 1 GB and 1 thread. The full per-rule breakdown is in `profile/low_resource/config.yaml`.
 
 ---
 
 ## Bulk and Single-Cell Modes
-
-The pipeline supports two ATAC-seq modalities from a single codebase. The mode is set either through `config.yaml` or an environment variable:
 
 ```bash
 # Bulk ATAC-seq (default)
@@ -179,277 +168,243 @@ snakemake --use-conda --cores 8
 
 # Single-cell ATAC-seq
 ATAC_MODE=scatac snakemake --use-conda --cores 8
-
-# Or set permanently in config.yaml:
-# global:
-#   mode: "scatac"
 ```
 
-The mode switch changes which rule files are loaded. Everything downstream of alignment diverges:
+The mode switch controls which rule files the Snakefile loads via `include:` directives:
 
 | Stage | Bulk mode | Single-cell mode |
 | :--- | :--- | :--- |
-| Alignment | Bowtie2 (`--very-sensitive`) | Chromap (`--preset atac`) |
-| Post-alignment | Samtools sort, fixmate, markdup, MAPQ/flag filter, Tn5 shift | ArchR Arrow files, doublet filtering |
-| Peak calling | MACS2 (narrowPeak) + IDR replicate concordance | ArchR iterative clustering + marker peaks |
-| Co-accessibility | -- | Cicero (CCANs, co-accessibility networks) |
-| Differential | DESeq2 (condition-level) | ArchR per-cluster marker genes |
-| Footprinting | HINT-ATAC + TOBIAS BINDetect | chromVAR motif accessibility deviations |
-| QC thresholds | TSS enrichment, FRiP, mapping rate, duplication | TSS enrichment, fragments/cell, doublet rate |
+| Alignment | Bowtie2 (`--very-sensitive`, piped to `samtools view -Sb`) | Chromap (`--preset atac`) |
+| Post-alignment | Samtools sort, fixmate, markdup, MAPQ filter (q30, -F 3844, -f 2), blacklist removal (bedtools intersect -v), Tn5 shift (deepTools `alignmentSieve --ATACshift`) | ArchR: Arrow file creation, doublet detection (threshold 0.2), iterative LSI clustering (resolution 0.8, dims 1:30) |
+| Peak calling | MACS2 (`callpeak -f BAMPE --nomodel -q 0.01`), IDR replicate concordance (threshold 0.05) | ArchR marker peak identification |
+| Co-accessibility | -- | Cicero (window 500 bp, distance cutoff 250 kb) |
+| Differential | DESeq2 (FDR 0.05, log2FC 1.0) with volcano, MA, PCA, and heatmap plots | ArchR per-cluster markers |
+| Footprinting | HINT-ATAC (`rgt-hint footprinting --atac-seq --paired-end`) + TOBIAS (ATACorrect, FootprintScores, BINDetect) | chromVAR motif accessibility deviations |
 
 ---
 
-## Pipeline Stages and Outputs
+## Pipeline Stages
 
-The bulk mode DAG contains 119 jobs (for 3 samples). All outputs are written under `results/`.
+The bulk mode DAG is organized into eight sequential stages. For a 3-sample experiment, this produces 119 jobs.
 
-### Stage 1: Preprocessing
+### 1. Preprocessing
 
-| Tool | Output | Purpose |
-| :--- | :--- | :--- |
-| fastp | `results/preprocessing/fastp/{sample}_R1_trimmed.fastq.gz` | Adapter trimming, quality filtering |
-| FastQC | `results/preprocessing/fastqc/{sample}_R1_trimmed_fastqc.html` | Per-base quality visualization |
+fastp trims adapters (auto-detected for PE), clips 5 bp from both read fronts, and enforces a minimum read length of 30 bp. FastQC generates per-base quality reports on the trimmed reads.
 
-### Stage 2: Alignment
+### 2. Alignment
 
-| Tool | Output | Purpose |
-| :--- | :--- | :--- |
-| Bowtie2 | `results/alignment/bowtie2/{sample}.bam` | Paired-end alignment to reference genome |
+Bowtie2 aligns trimmed paired-end reads in `--very-sensitive` mode. Output is piped directly through `samtools view -Sb` to produce a BAM file without an intermediate SAM.
 
-### Stage 3: Post-alignment filtering
+### 3. Post-alignment filtering
 
-Applied sequentially per sample:
+Seven sequential operations clean each BAM:
 
-1. **Samtools sort** -- coordinate-sort the BAM
-2. **Mitochondrial read quantification** -- count reads mapping to chrM/chrMT
-3. **Samtools fixmate + markdup** -- flag and mark PCR duplicates
-4. **Mitochondrial read removal** -- exclude chrM reads from downstream analysis
-5. **MAPQ and flag filtering** -- remove unmapped, secondary, and low-quality alignments (MAPQ < 30)
-6. **Blacklist removal** -- exclude ENCODE-defined problematic regions
-7. **Tn5 shift** -- apply +4/-5 bp offset to correct for Tn5 transposase insertion bias
+1. **Coordinate sort** (samtools sort)
+2. **Mitochondrial read quantification** (count reads on chrM/chrMT)
+3. **Mate pair correction** (samtools fixmate)
+4. **Duplicate marking** (samtools markdup)
+5. **Quality and flag filtering** (samtools view: MAPQ >= 30, exclude flags 3844, require proper pairs with -f 2)
+6. **Blacklist removal** (bedtools intersect -v against ENCODE blacklist BED)
+7. **Tn5 transposase shift** (deepTools alignmentSieve --ATACshift: +4/-5 bp offset)
 
-### Stage 4: Quality metrics
+### 4. Quality metrics
+
+Nine tools collect ENCODE-compliant metrics per sample:
 
 | Tool | Metric |
 | :--- | :--- |
 | Samtools stats | Post-filtering alignment statistics |
 | Picard CollectAlignmentSummaryMetrics | Mapping rate, mismatch rate |
 | Picard CollectInsertSizeMetrics | Fragment size distribution |
-| Preseq | Library complexity extrapolation |
-| Qualimap BamQC | Genome coverage, GC bias |
-| TSS enrichment (R script) | Signal-to-noise at transcription start sites |
-| Cross-correlation (phantompeakqualtools) | NSC and RSC scores (ENCODE standard) |
+| Fragment size analysis (R) | Nucleosomal periodicity assessment |
+| TSS enrichment (R, ATACseqQC) | Signal-to-noise at transcription start sites (2 kb window) |
+| Phantompeakqualtools (run_spp.R) | NSC and RSC cross-correlation scores |
+| Preseq | Library complexity extrapolation curve |
+| Qualimap BamQC | Genome coverage distribution, GC bias |
+| FRiP (bedtools + samtools) | Fraction of read-1 fragments overlapping peaks |
 
-### Stage 5: QC gate
+### 5. QC gate
 
-Each sample is evaluated against four thresholds. Samples that fail are excluded from peak calling and all downstream analysis. See [Quality Control Gate](#quality-control-gate).
+See [Quality Control Gate](#quality-control-gate).
 
-### Stage 6: Peak calling and downstream analysis
+### 6. Peak calling and downstream analysis
+
+| Tool | What it produces |
+| :--- | :--- |
+| MACS2 | Per-sample narrowPeak files (BAMPE mode, no model, q-value 0.01) |
+| Blacklist filter | Peaks with ENCODE blacklist regions removed |
+| IDR | Replicate-concordant peaks per condition (threshold 0.05, ranked by score) |
+| Consensus peaks | Merged peak set: `bedtools merge -d 100`, retained if present in >= 2 samples |
+| Peak count matrix | Per-sample read counts in consensus peak regions (for DESeq2 input) |
+| ChIPseeker (R) | Genomic feature annotation (promoter, exon, intron, intergenic) using `makeTxDbFromGFF` |
+| HOMER | De novo and known motif enrichment (`findMotifsGenome.pl`, motif lengths 8/10/12, window 200 bp) |
+| DESeq2 (R) | Differentially accessible regions, volcano plot, MA plot, PCA, heatmap |
+| HINT-ATAC (RGT) | Per-base TF footprint positions from paired-end ATAC-seq signal |
+| TOBIAS ATACorrect | Tn5 bias-corrected signal BigWig tracks |
+| TOBIAS FootprintScores | Footprint score BigWig tracks |
+| TOBIAS BINDetect | Differential TF binding between conditions using motif database |
+| chromVAR (R) | Bias-corrected motif accessibility deviation scores per sample |
+
+### 7. Visualization
 
 | Tool | Output |
 | :--- | :--- |
-| MACS2 | Per-sample narrowPeak files |
-| Blacklist filter | Filtered peak BED files |
-| FRiP calculation | Fraction of reads in peaks per sample |
-| IDR | Replicate-concordant peaks per condition |
-| Consensus peaks | Merged peak set (peaks present in >= 2 samples) |
-| ChIPseeker (R) | Genomic feature annotation of peaks |
-| HOMER | De novo and known motif enrichment |
-| DESeq2 (R) | Differentially accessible regions, volcano/MA/PCA plots |
-| HINT-ATAC (RGT) | Per-base transcription factor footprint positions |
-| TOBIAS | Bias-corrected footprint scores + BINDetect differential binding |
-| chromVAR (R) | Bias-corrected motif accessibility deviation scores |
+| bedtools genomecov + bedGraphToBigWig | Signal BigWig tracks for genome browsers |
+| deepTools bamCoverage | CPM-normalized coverage BigWig tracks |
+| deepTools computeMatrix + plotHeatmap | Signal heatmaps centered on peak summits (3 kb upstream/downstream) |
+| deepTools multiBigwigSummary + plotCorrelation | Pearson correlation heatmap across all samples (1 kb bins) |
 
-### Stage 7: Visualization
+### 8. Reporting
 
-| Output | Description |
-| :--- | :--- |
-| BigWig tracks | Genome browser signal tracks |
-| CPM-normalized coverage | Cross-sample comparable signal |
-| TSS heatmaps | Signal enrichment around transcription start sites |
-| Correlation matrix | Sample-to-sample Pearson correlation heatmap |
-
-### Stage 8: Reporting
-
-| Output | Description |
-| :--- | :--- |
-| MultiQC HTML report | Aggregates all QC metrics into a single interactive report |
-| Benchmark summary TSV | Runtime, peak memory, and CPU usage for every rule execution |
+MultiQC aggregates outputs from FastQC, fastp, samtools stats, Picard, Preseq, Qualimap, and the QC gate JSON files into a single interactive HTML report. A benchmark summary TSV records runtime (seconds), peak memory (MB), and CPU usage for every rule execution.
 
 ---
 
 ## Quality Control Gate
 
-The QC gate sits between metric collection (Stage 4) and peak calling (Stage 6). It evaluates four metrics per sample:
+The gate evaluates four metrics per sample using `parse_qc_metrics.py`:
 
-| Metric | Default threshold | Interpretation |
-| :--- | :--- | :--- |
-| FRiP (Fraction of Reads in Peaks) | >= 0.2 | Measures biological signal enrichment |
-| TSS enrichment score | >= 7.0 | Signal-to-noise at promoter regions |
-| Genome mapping rate | >= 80.0% | Alignment quality |
-| Duplicate rate | <= 20.0% | Library complexity |
+| Metric | Default | Source file |
+| :--- | ---: | :--- |
+| FRiP score | >= 0.2 | `{sample}_frip.txt` |
+| TSS enrichment | >= 7.0 | `{sample}_tss_enrichment.txt` |
+| Mapping rate | >= 80.0% | `{sample}_postFiltering.stats.txt` |
+| Duplicate rate | <= 20.0% | `{sample}_postFiltering.stats.txt` |
 
-A sample that fails any threshold is written to `results/qc_gate/{sample}_qc_pass.txt` with a `FAILED` status. The pipeline continues to run for all remaining samples, but failed samples do not enter peak calling, footprinting, or differential analysis.
+Outputs per sample: `{sample}_qc_pass.txt` (human-readable) and `{sample}_qc_pass.json` (machine-readable, consumed by MultiQC).
 
-To adjust thresholds for your experiment:
+To adjust thresholds:
 
 ```yaml
-# In config.yaml
 qc_gate:
   params:
-    min_frip: 0.15           # relax for low-depth pilot experiments
+    min_frip: 0.15           # relax for low-depth pilot data
     min_tss_enr: 5.0         # relax for non-standard organisms
     min_mapping_rate: 70.0
     max_duplicate_rate: 30.0
 ```
 
-For CI/CD testing with synthetic data, the test profile (`profile/test/config_test.yaml`) overrides all thresholds to fully permissive values so the pipeline can validate execution logic on minimal inputs:
-
-```yaml
-# profile/test/config_test.yaml
-qc_gate:
-  params:
-    min_frip: 0.0
-    min_tss_enr: 0.0
-    min_mapping_rate: 0.0
-    max_duplicate_rate: 100.0
-```
+The test profile (`profile/test/config_test.yaml`) overrides all thresholds to fully permissive values (0.0 / 0.0 / 0.0 / 100.0) so that synthetic CI data passes the gate unconditionally.
 
 ---
 
 ## Low-Resource Execution
 
-### Using the low-resource profile
+### Low-resource profile
 
-The `low_resource` profile caps memory and thread allocations for every rule. It runs a maximum of 2 parallel jobs:
+The `low_resource` profile caps every rule individually. It runs a maximum of 2 parallel jobs:
 
 ```bash
 snakemake --profile profile/low_resource
 ```
 
-Representative per-rule caps:
+Per-rule memory caps (excerpt from `profile/low_resource/config.yaml`):
 
-| Rule | Memory cap | Threads |
+| Rule | Memory | Threads |
 | :--- | ---: | ---: |
-| Bowtie2 alignment | 4 GB | 2 |
-| Samtools markdup | 4 GB | 2 |
-| MACS2 peak calling | 4 GB | 2 |
-| TOBIAS ATACorrect | 4 GB | 2 |
-| DESeq2 | 4 GB | 2 |
-| Samtools index | 1 GB | 1 |
-| MultiQC | 2 GB | 1 |
+| `bowtie2_align` | 4 GB | 2 |
+| `samtools_markdup` | 4 GB | 2 |
+| `macs2_peak_calling` | 4 GB | 2 |
+| `tobias_atacorrect` | 4 GB | 2 |
+| `differential_accessibility` | 4 GB | 2 |
+| `samtools_index` | 1 GB | 1 |
+| `multiqc` | 2 GB | 1 |
 
-### Sequential batching for very limited hardware
+All 40+ rules have explicit caps. The default fallback for unlisted rules is 2 GB / 1 thread.
 
-For machines with less than 4 GB of RAM, the batched runner processes samples one at a time:
+### Sequential batching
+
+For machines with less than 4 GB RAM, `run_batched.py` processes samples one at a time:
 
 ```bash
 python3 rules/scripts/run_batched.py --batch-size 1 --cores 2 --memory 4000
 ```
 
-The script reads the sample sheet, partitions samples into batches of the given size, and runs Snakemake once per batch. Because all batches write to the same `results/` directory, Snakemake automatically skips completed outputs. After all batches finish, a final Snakemake invocation runs MultiQC to aggregate results.
+The script reads the sample sheet, partitions samples into batches, and invokes Snakemake once per batch. All batches write to the same `results/` directory, so Snakemake skips completed outputs automatically. After all per-sample batches finish, a final invocation runs MultiQC aggregation.
 
 ```bash
-# Process 2 samples per batch (for machines with ~6-8 GB RAM)
-python3 rules/scripts/run_batched.py --batch-size 2 --cores 4 --memory 8000
-
-# Preview batch assignments without running
+# Preview batch assignments without executing
 python3 rules/scripts/run_batched.py --batch-size 1 --dry-run
 
-# Pass additional Snakemake flags after --
-python3 rules/scripts/run_batched.py --batch-size 1 --cores 2 --memory 4000 -- --keep-going
-```
-
-### Skipping expensive rules
-
-To run only a subset of the pipeline:
-
-```bash
-# Skip visualization-heavy rules
-snakemake --profile profile/low_resource \
-  --omit-from heatmap correlation_analysis
-
-# Run only up to peak calling (stop before differential analysis)
-snakemake --profile profile/low_resource \
-  results/peak_calling/filtered_peaks/patient1_filtered_peaks.bed
+# Process 2 samples per batch with extra Snakemake flags
+python3 rules/scripts/run_batched.py --batch-size 2 --cores 4 --memory 8000 -- --keep-going
 ```
 
 ---
 
 ## Continuous Integration
 
-The GitHub Actions workflow (`.github/workflows/lint.yml`) runs on every push to `main` and on pull requests. It executes two jobs:
+The GitHub Actions workflow (`.github/workflows/lint.yml`) triggers on pushes to `main` and on pull requests. It runs two jobs:
 
-**Lint job.** Generates synthetic test data, validates the DAG with `snakemake --lint`, and performs a dry run against the test profile.
+**lint:** Generates synthetic test data (`generate_test_data.py`), runs `snakemake --lint`, and validates the DAG with a dry run against the test profile.
 
-**Test job.** Runs the full pipeline end-to-end on synthetic data (4 samples, ~100 reads each) using the test profile. The test profile loads `profile/test/config_test.yaml`, which relaxes QC thresholds to permissive values so that minimal synthetic data passes the gate. Conda environments are cached across runs.
+**test:** Executes the full 119-job pipeline end-to-end on synthetic data using the test profile. Conda environments are cached by hashing `rules/envs/**/*.yaml`. The test profile loads `config_test.yaml` to relax QC thresholds. Results and logs are uploaded as artifacts with 7-day retention.
 
-Both jobs must pass before a pull request can be merged.
+Both jobs must pass before merging.
 
 ---
 
 ## Extending the Pipeline
 
-To add a new tool:
+### Step 1: Create a rule file
 
-**Step 1.** Create a rule file. Use `rules/template_tool.smk` as a starting point:
+Copy `rules/template_tool.smk` and adapt it:
 
 ```python
-# rules/my_tool.smk
-rule my_tool:
+# rules/my_new_tool.smk
+rule my_new_tool:
     input:
-        bam=lambda wc: f"{config['samtools_view']['output']['filtered_bam']}/{wc.sample}.filtered.bam"
+        bam=lambda wc: f"{config['my_new_tool']['input']}/{wc.sample}.filtered.shifted.bam"
     output:
-        result=f"{config['my_tool']['output']}/{{sample}}_result.txt"
-    conda:
-        "envs/05_peak_calling/my_tool.yaml"
-    threads:
-        config["my_tool"]["threads"]
+        result=f"{config['my_new_tool']['output']}/{{sample}}_result.txt"
+    params:
+        extra=config['my_new_tool']['params']['extra']
+    conda: "envs/05_peak_calling/my_new_tool.yaml"
+    container: "https://depot.galaxyproject.org/singularity/my_new_tool:1.0--0"
+    threads: config['my_new_tool']['threads']
     resources:
-        mem_mb=config["my_tool"]["resources"]["mem_mb"],
-        time=config["my_tool"]["resources"]["time"]
-    benchmark:
-        "benchmarks/my_tool/{sample}.txt"
-    log:
-        stdout="logs/my_tool/{sample}.out",
-        stderr="logs/my_tool/{sample}.err"
+        mem_mb=config['my_new_tool']['resources']['mem_mb'],
+        time=config['my_new_tool']['resources']['time']
+    log: "logs/my_new_tool/{sample}.err"
+    benchmark: "benchmarks/my_new_tool/{sample}.txt"
     shell:
-        "my_tool --input {input.bam} --output {output.result} 2> {log.stderr}"
+        "my_new_tool --input {input.bam} --output {output.result} {params.extra} 2> {log}"
 ```
 
-**Step 2.** Create a Conda environment file at `rules/envs/05_peak_calling/my_tool.yaml`:
+### Step 2: Create a Conda environment
 
 ```yaml
+# rules/envs/05_peak_calling/my_new_tool.yaml
 channels:
   - conda-forge
   - bioconda
 dependencies:
-  - my_tool=1.2.3
+  - my_new_tool=1.0
 ```
 
-**Step 3.** Add the configuration block to `config.yaml`:
+### Step 3: Add a config block
 
 ```yaml
-my_tool:
-  output: "results/peak_calling/my_tool"
+# In config.yaml
+my_new_tool:
+  input: "results/post_alignment/tn5_shift"
+  output: "results/peak_calling/my_new_tool"
+  params:
+    extra: "--verbose"
   threads: 4
   resources:
     mem_mb: 8000
     time: 120
 ```
 
-**Step 4.** Register the rule in `Snakefile`:
+### Step 4: Register in Snakefile
 
 ```python
-include: "rules/my_tool.smk"
-```
+include: "rules/my_new_tool.smk"
 
-**Step 5.** Add the target output to the appropriate target list in `Snakefile`:
-
-```python
 PEAK_TARGETS = [
     # ... existing targets ...
-    expand("{path}/{sample}_result.txt", path=config['my_tool']['output'], sample=SAMPLES),
+    expand("{path}/{sample}_result.txt", path=config['my_new_tool']['output'], sample=SAMPLES),
 ]
 ```
 
@@ -459,41 +414,65 @@ PEAK_TARGETS = [
 
 ```
 .
-├── Snakefile                          # DAG definition and target assembly
-├── config.yaml                        # Single source of truth for all parameters
+├── Snakefile                          # DAG definition, mode switching, target assembly
+├── config.yaml                        # All parameters, paths, thresholds, resources
 ├── profile/
-│   ├── local/config.yaml              # Workstation profile (8 parallel jobs)
-│   ├── low_resource/config.yaml       # Laptop profile (2 jobs, per-rule memory caps)
-│   ├── slurm/config.yaml              # HPC profile (100 jobs, SLURM executor)
+│   ├── local/config.yaml              # 8 parallel jobs, 4 GB default
+│   ├── low_resource/config.yaml       # 2 jobs, per-rule memory caps for 40+ rules
+│   ├── slurm/config.yaml              # 100 jobs, SLURM executor, latency-wait 60
 │   └── test/
-│       ├── config.yaml                # CI profile (4 jobs)
-│       └── config_test.yaml           # Permissive QC overrides for synthetic data
+│       ├── config.yaml                # 4 jobs, loads config_test.yaml
+│       └── config_test.yaml           # QC gate thresholds set to 0 for synthetic data
 ├── rules/
-│   ├── *.smk                          # 47 modular Snakemake rule files
-│   ├── envs/                          # Per-rule Conda environment definitions
+│   ├── fastp.smk                      # Adapter trimming (fastp)
+│   ├── fastqc.smk                     # Read quality (FastQC)
+│   ├── bowtie2.smk                    # Alignment (Bowtie2 --very-sensitive)
+│   ├── samtools_sort.smk              # Coordinate sorting
+│   ├── samtools_fixmate.smk           # Mate pair correction
+│   ├── samtools_markdup.smk           # Duplicate marking
+│   ├── samtools_view.smk              # MAPQ/flag filtering (q30, -F 3844, -f 2)
+│   ├── remove_blacklist_reads.smk     # ENCODE blacklist removal (bedtools)
+│   ├── tn5_shift.smk                  # Tn5 offset (alignmentSieve --ATACshift)
+│   ├── macs2_peak_calling.smk         # Peak calling (BAMPE, --nomodel)
+│   ├── idr.smk                        # Replicate concordance (IDR 0.05)
+│   ├── consensus_peaks.smk            # Merged peaks (bedtools merge -d 100)
+│   ├── differential_accessibility.smk # DESeq2 differential analysis
+│   ├── footprinting.smk               # HINT-ATAC (rgt-hint)
+│   ├── tobias.smk                     # TOBIAS ATACorrect + BINDetect
+│   ├── chromvar_analysis.smk          # chromVAR motif deviations
+│   ├── peak_annotation.smk            # ChIPseeker genomic annotation
+│   ├── motif_analysis.smk             # HOMER motif enrichment
+│   ├── heatmap.smk                    # deepTools heatmaps
+│   ├── correlation_analysis.smk       # deepTools sample correlation
+│   ├── multiqc.smk                    # Aggregated QC report
+│   ├── benchmark_summary.smk          # Runtime/memory aggregation
+│   ├── template_tool.smk              # Boilerplate for new rules
+│   ├── chromap.smk                    # scATAC alignment (Chromap)
+│   ├── archr.smk                      # scATAC analysis (ArchR)
+│   ├── cicero.smk                     # Co-accessibility (Cicero)
+│   ├── envs/                          # Conda environments (8 categories)
 │   │   ├── 01_preprocessing/
 │   │   ├── 02_alignment/
 │   │   ├── 03_post_alignment/
 │   │   ├── 04_metrics_qc/
 │   │   ├── 05_peak_calling/
 │   │   ├── 06_visualization/
+│   │   ├── misc/
 │   │   └── scatac/
-│   ├── scripts/                       # Custom R and Python analysis scripts
-│   │   ├── validate_config.py         # Pre-flight configuration validator
-│   │   ├── run_batched.py             # Sequential sample batching wrapper
-│   │   ├── generate_test_data.py      # Synthetic FASTQ generator for CI
-│   │   ├── tss_enrichment.R
-│   │   ├── chromvar_analysis.R
-│   │   ├── differential_accessibility.R
-│   │   └── ...
-│   └── config/
-│       └── multiqc_config.yaml        # MultiQC report customization
+│   └── scripts/
+│       ├── validate_config.py         # Pre-flight config + sample sheet validator
+│       ├── run_batched.py             # Sequential sample batching for low-RAM machines
+│       ├── generate_test_data.py      # Synthetic FASTQ/reference generator for CI
+│       ├── parse_qc_metrics.py        # QC gate metric evaluation
+│       ├── tss_enrichment.R           # TSS enrichment scoring
+│       ├── chromvar_analysis.R        # chromVAR deviation computation
+│       └── diff_accessibility.R       # DESeq2 differential analysis + plots
 ├── data/
 │   ├── fastp/samples.tsv              # Sample sheet
-│   ├── fastq/                         # Raw FASTQ files (user-provided)
-│   ├── reference/                     # Genome, index, blacklist, annotation
-│   └── motifs/                        # Motif database (JASPAR)
-├── .github/workflows/lint.yml         # CI/CD: lint + full pipeline test
+│   ├── fastq/                         # Raw FASTQ files
+│   ├── reference/                     # Genome, Bowtie2 index, blacklist, GTF
+│   └── motifs/                        # JASPAR motif database (MEME format)
+├── .github/workflows/lint.yml         # CI: lint + dry-run + full pipeline test
 ├── CHANGELOG.md
 ├── CITATION.cff
 ├── CONTRIBUTING.md
@@ -505,8 +484,8 @@ PEAK_TARGETS = [
 ## Citation
 
 ```
-Bhandary, H. (2026). BDB-Genomics ATAC-seq Framework.
-GitHub Repository: https://github.com/BDB-Genomics/atacseq-pipeline
+Bhandary, H. (2026). BDB-Genomics ATAC-seq Framework (Version 3.0.0).
+https://github.com/BDB-Genomics/atacseq-pipeline
 ```
 
 See `CITATION.cff` for a machine-readable citation format.
