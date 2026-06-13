@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-06-12T21:33:30.812883+00:00",
-  "commit": "8f947b858c5ced8b7eed5c190f60c15b59925080",
+  "timestamp": "2026-06-12T22:03:04.214384+00:00",
+  "commit": "df3c23436657778bee49f1e1831302fd40edd855",
   "files": {
     "README.md": {
       "hash": "cc5beda375b8863481562ae06b3998930c8ea6d1463f8a469ac2650791e0a039",
@@ -58,9 +58,9 @@
       "mtime": 1781299916.461862
     },
     "rules/archr.smk": {
-      "hash": "71bf8d4dc8a00ee79b5aff3ae85d2ecc0074e381078335b1f880674e565e0fb2",
-      "size": 3293,
-      "mtime": 1781299916.4644237
+      "hash": "8e2b62c1b4da0ec62012e4dcc3a3058378f18c381af2f966aa6743a59aef02c6",
+      "size": 3283,
+      "mtime": 1781301680.3572617
     },
     "rules/normalize_coverage.smk": {
       "hash": "70c21e6859e5e88a530075421fe897c30e4cd51706345dfc7845f065c9bf68af",
@@ -68,19 +68,19 @@
       "mtime": 1781299916.4662235
     },
     "rules/footprinting.smk": {
-      "hash": "17b6ecef335ea6ce798b033aa20bcfafc6d2d2df98cf2a432866f7d5728f4991",
-      "size": 2502,
-      "mtime": 1781299916.467853
+      "hash": "b853c9eb5cd5149c023a911a579dd1a3d592ce7448ceaf6d602f08c45dfffb0b",
+      "size": 2506,
+      "mtime": 1781301680.3599424
     },
     "rules/correlation_analysis.smk": {
-      "hash": "114c39b5debee342edeb17c67984962fd4135a61a7916709633f01b7ee7b6fb0",
-      "size": 2030,
-      "mtime": 1781299916.4706106
+      "hash": "0536f3822e1ed2741e419caf4f75cf0f8a9394e9d86642ccf2679b8222fd3a76",
+      "size": 2029,
+      "mtime": 1781301680.360754
     },
     "rules/cicero.smk": {
-      "hash": "5ba87730d10307e3a688ab1b365f1b71757c7e979e09f2bcf6b4d4962cc4cb4f",
-      "size": 1420,
-      "mtime": 1781299916.472102
+      "hash": "cc4d80a79e80561ddd99b7dd64192cc265d922b05dccea8345384c0cf7caa393",
+      "size": 1410,
+      "mtime": 1781301680.3614168
     },
     "rules/picard_insert_size_metrics.smk": {
       "hash": "fba7dedb9a5679d22b2bb9a5416054198551220ca58deec659e9924189b632a5",
@@ -98,9 +98,9 @@
       "mtime": 1781299916.475796
     },
     "rules/heatmap.smk": {
-      "hash": "4cc6d4d892f6a03de6d871fbb8f4f4ec881a302a111fbe78e633555be2d59094",
-      "size": 3354,
-      "mtime": 1781299916.4758532
+      "hash": "c290d295ed661536c5120c57f24f2704440e51b4cde1d3ef3c83d56b62d0f254",
+      "size": 1574,
+      "mtime": 1781301705.656614
     },
     "rules/chromap.smk": {
       "hash": "beb7893116b8d35e57d22ad6c750b380e9c0b978cfb7d6e5f7ef6042fe634edb",
@@ -108,9 +108,9 @@
       "mtime": 1781299916.4770823
     },
     "rules/chromvar_analysis.smk": {
-      "hash": "c2e362a2f409d32a21c8950768f7c17be833ef0bd9cdba00bbe0fb9b39848822",
-      "size": 1592,
-      "mtime": 1781299916.4779313
+      "hash": "13bd8a67ab2d6c732b27eee49845c89f9288d7a37a218db0f4b17c84ff6f6bbb",
+      "size": 1582,
+      "mtime": 1781301680.3662617
     },
     "rules/bedtools_genomecov.smk": {
       "hash": "07d8797930fd7b4116c698978554be8dfd66f846f0d03088f60cfe8cd1adb43f",
@@ -128,9 +128,9 @@
       "mtime": 1781299916.4798377
     },
     "rules/tss_enrichment.smk": {
-      "hash": "2df1d7b2d120d6b4bd9d5ae716285cc6f1cb6d2c5b506b90b88037a7f5fc713a",
-      "size": 1612,
-      "mtime": 1781299916.4803507
+      "hash": "4782e5a37ae03d167257be736fd7096ce28d6806c90a51c865ad23fd8fb17836",
+      "size": 1602,
+      "mtime": 1781301680.369081
     },
     "rules/benchmark_summary.smk": {
       "hash": "e05153e26e0af0fcde2a79f89436fba1c1a8b2e3018154ad2c433b66d056ba33",
@@ -158,9 +158,9 @@
       "mtime": 1781299916.4829814
     },
     "rules/differential_accessibility.smk": {
-      "hash": "eeadeb3bbbeceb8dfb616b8b1b8e57d18329fcf214a474414295ea19f4ad02cd",
-      "size": 1723,
-      "mtime": 1781299916.4835398
+      "hash": "1513d8f5352e601d3ef82e94c402f376f633145a59502ef178327d147376ad89",
+      "size": 1713,
+      "mtime": 1781301680.3718784
     },
     "rules/fragment_size_analysis.smk": {
       "hash": "1d47febfaf7ee74801da2faf2a0cd6c79f0bdce3b90e03f371f7674afb6f0bfa",
@@ -183,9 +183,9 @@
       "mtime": 1781299916.4857962
     },
     "rules/bowtie2.smk": {
-      "hash": "aa7f5b82252507a06598655e7eda072dd50d5dbdb36d5e4fa1484626a40f15a4",
-      "size": 1576,
-      "mtime": 1781299916.4863358
+      "hash": "96c0a0353af68d81847fabe0c6d12c800b84dc6ba839d59345056763b8ae5d08",
+      "size": 1575,
+      "mtime": 1781301680.3742604
     },
     "rules/peak_annotation.smk": {
       "hash": "6db2b71cfae5dcbeb6c44a7a801481300f479b3bfcd78672b2631ffba125d516",
@@ -208,14 +208,14 @@
       "mtime": 1781299916.4890225
     },
     "rules/tobias.smk": {
-      "hash": "ca14485c5f00ab03e83ae63b814a6a358568c841d8c8719f00d78d4fd1a6ed5b",
-      "size": 7437,
-      "mtime": 1781299916.4901128
+      "hash": "1cf87786b572ce6977574f67ab74ed921a366f67ac987eec2e593feed11133d4",
+      "size": 4921,
+      "mtime": 1781301734.3290167
     },
     "rules/multiqc.smk": {
-      "hash": "17f1f73dcac0b97940393654e7c7ed3ac4a750c1036fa5c0d41e637e794d33c2",
-      "size": 2489,
-      "mtime": 1781299916.4918654
+      "hash": "ef10f5043fe26a69d535ee6a6f722931ffdc617069223307c09e49a9b827b62f",
+      "size": 2493,
+      "mtime": 1781301680.379186
     },
     "rules/preseq.smk": {
       "hash": "94d3d600a5fd97e87532d0c56586bc5521adc1f486f1f9a1769f70aebcf5469d",
@@ -268,9 +268,9 @@
       "mtime": 1781299950.2653959
     },
     "rules/macs2_peak_calling.smk": {
-      "hash": "f3fc97c6f47f1d44ae89140dd2649fe5cddd098ae555cdf5eca1d5ae5fc0d856",
-      "size": 1656,
-      "mtime": 1781299916.5013046
+      "hash": "968ea98c58fc422d00299d33419c6c0eb9ebf8a79668aad3744bc40486ecb278",
+      "size": 1660,
+      "mtime": 1781301680.383262
     },
     "rules/samtools_index.smk": {
       "hash": "de5c44cee84d97c22a8fcd36e187607d4eb113daec4620dd893b282358179a0c",
@@ -278,9 +278,9 @@
       "mtime": 1781299916.5022924
     },
     "rules/fastqc.smk": {
-      "hash": "64f89f9d24ff84a86f729ae9a30192b7f96ad4a46b407d5490ba3903216f4c2f",
-      "size": 1625,
-      "mtime": 1781299916.503279
+      "hash": "c42b5c0054e7cd83e649bd24cd63f82a50817b4b1b77bd6e56cab7b206f4b614",
+      "size": 1629,
+      "mtime": 1781301680.3849897
     },
     "rules/cross_correlation.smk": {
       "hash": "847627bd57b611a499d8a342fa9a3c64c34c60af38d7520ecc236607b0211b33",
@@ -476,6 +476,21 @@
       "hash": "cebb3cf3423218a3521d37150f2d6b8c90033877e8af2513bf5c33cb551bfdc4",
       "size": 16038,
       "mtime": 1781153088.1001067
+    },
+    "rules/scripts/run_tobias_score.py": {
+      "hash": "9d0ee29591024006955f1ed66b367a90f23919b4106f498a523e5da37b40a998",
+      "size": 1502,
+      "mtime": 1781301722.828855
+    },
+    "rules/scripts/run_heatmap.py": {
+      "hash": "c4e0bc72813038ab02092d0ab884ef7193cb5195d305479cbc453d2319a586ac",
+      "size": 2533,
+      "mtime": 1781301694.9914653
+    },
+    "rules/scripts/run_tobias_atacorrect.py": {
+      "hash": "e093b0d172e42e14e8f8e6003f6b4a9649c1a0e37f39b9df37608936744b5b3b",
+      "size": 2467,
+      "mtime": 1781301714.3427358
     },
     "rules/scripts/archr_clustering.R": {
       "hash": "0d6e022a761c75e516eefbee63f45459f893de44393594324cc099d7f6bf33ae",

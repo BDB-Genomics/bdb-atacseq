@@ -20,7 +20,7 @@ jobs:
       - name: Install Snakemake
         run: |
           python -m pip install --upgrade pip
-          pip install "snakemake>=8.0,<9.0" "pyyaml" "pulp>=2.0,<2.8"
+          pip install "snakemake>=8.0,<9.0" "pyyaml" "pulp>=2.0,<2.8" "pytest"
 
       - name: Install Micromamba
         uses: mamba-org/setup-micromamba@v1
@@ -46,6 +46,10 @@ jobs:
       - name: Lint Workflow
         run: |
           snakemake --lint
+
+      - name: Run Config Validation Tests
+        run: |
+          pytest rules/scripts/test_validate_config.py
 
       - name: Validate Workflow (Dry-run)
         run: |
