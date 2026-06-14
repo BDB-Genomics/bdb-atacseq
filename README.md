@@ -67,18 +67,30 @@ qc_gate:
 snakemake --configfile config.yaml custom_override.yaml --cores 8
 ```
 
-### Hardware Profiles
-Pre-built profiles adapt the pipeline to your hardware:
-* **Local:** `snakemake --profile profile/local` (8 parallel jobs)
-* **SLURM/HPC:** `snakemake --profile profile/slurm` (100 parallel jobs)
-* **Low-Resource (Laptops):** `snakemake --profile profile/low_resource` (Caps every rule to 4GB memory limits)
-* **Ultra-Low Memory:** `python3 rules/scripts/run_batched.py --batch-size 2` (Processes 2 samples at a time sequentially)
+### Profiles & Environments
+The framework supports 8 pre-configured profiles under the `profile/` directory. These profiles adjust max jobs, print shell commands, configure executors, and set default resource footprints:
+
+*   **`local`**: Sets Snakemake to run up to 8 concurrent local jobs.
+*   **`slurm`**: Submits rules directly to a cluster workload manager using customized rule-resource mappings.
+*   **`low_resource`**: Forces rule execution boundaries (e.g., caps every rule to a maximum of 4GB memory limits) for local execution on standard laptops.
+*   **`test`**: Pre-configured CI test profile. Uses a relaxed configuration file (`config_test.yaml`) to allow minimal synthetic testing datasets to bypass strict QC enrichment thresholds.
+*   **`aws`**: Configured to run on Amazon Web Services using AWS Batch, S3 buckets, and the `tibanna` executor.
+*   **`gcp`**: Configured to run on Google Cloud Platform utilizing `google-lifesciences` executors and Google Cloud Storage (GCS) buckets.
+*   **`azure`**: Configured for Azure Batch execution and Blob storage integration.
+*   **`kubernetes`**: Container-native execution scaling across a Kubernetes cluster.
+
+### Ultra-Low Memory Sequential Batching
+For massive sample datasets on limited-resource systems, run the custom batch execution manager:
+```bash
+python3 rules/scripts/run_batched.py --batch-size 2 --cores 8 --profile profile/local
+```
+This processes samples in batches of 2 sequentially, avoiding parallel execution memory peaks while utilizing all available cores per rule.
 
 ---
 
 ## 3. Pipeline Architecture
 
-Switching the `ATAC_MODE` environment variable dictates which analysis tracks are executed:
+Switching the `ATAC_MODE` environment variable dictates which modality analysis track is executed:
 
 | Stage | Bulk Mode (`bulk`) | Single-Cell Mode (`scatac`) |
 | :--- | :--- | :--- |
@@ -107,7 +119,36 @@ If a sample passes the gate but yields **zero peaks** after blacklist filtering,
 
 ---
 
-## 5. Output Manifest
+## 5. Structured Logging & Auditing
+
+The pipeline records structured JSON metrics for downstream AI analysis or automated run reports. On completion or execution failure, Snakemake executes the log parser (`rules/scripts/aggregate_logs.py`) which generates `results/reporting/pipeline_execution_summary.json`.
+
+*   **On Success**: Consolidates resource benchmarks (CPU time, peak memory usage, and execution status) for every Snakemake rule in the DAG.
+*   **On Failure**: Recursively crawls the `logs/` directory to locate error sources, uses regular expression filters to avoid false positives (e.g., matching "0 errors" or "no exceptions"), and extracts the last 5 relevant error lines to provide a clean execution failure trace.
+
+---
+
+## 6. Testing & CI Sandboxes
+
+The repository contains two utilities for pipeline testing, benchmarking, and development:
+
+### A. Synthetic CI Data Generator
+Generate minimal but completely valid synthetic datasets for CI validation:
+```bash
+python3 rules/scripts/generate_test_data.py
+```
+This outputs synthetic FASTQ, FASTA genome references, GTF annotation files, and Bowtie indices. Reads are intentionally mapped and distributed near target TSS sites to guarantee that Bioconductor metrics (like `tss_enrichment.R` and `diff_accessibility.R`) pass without encountering division-by-zero or length mismatch exceptions.
+
+### B. ENCODE Real-Data Sandbox
+To test the pipeline against real-world biological samples, set up the hg38 sandbox environment:
+```bash
+bash rules/scripts/download_real_data.sh
+```
+This script downloads a subsampled ENCODE ChIP/ATAC sample (ENCSR356KRQ), UCSC references for chromosomes 19 and M, GENCODE v44 basic annotations, and JASPAR motif libraries, then builds Bowtie2 and Chromap index files automatically.
+
+---
+
+## 7. Output Manifest
 
 All outputs are written to the `results/` directory, cleanly organized by stage:
 
@@ -120,7 +161,7 @@ All outputs are written to the `results/` directory, cleanly organized by stage:
 
 ---
 
-## 6. Agentic & GEOAgent Integration
+## 8. Agentic & GEOAgent Integration
 
 The pipeline is fully integrated into autonomous agentic ecosystems (such as Stanford's Biomni, CoScientist, or GEOAgent) as a downstream execution engine.
 
