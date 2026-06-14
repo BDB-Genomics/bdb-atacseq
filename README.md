@@ -119,4 +119,41 @@ All outputs are written to the `results/` directory, cleanly organized by stage:
 * **`benchmarks/`**: Memory and CPU time consumption for every single job executed.
 
 ---
+
+## 6. Agentic & GEOAgent Integration
+
+The pipeline is fully integrated into autonomous agentic ecosystems (such as Stanford's Biomni, CoScientist, or GEOAgent) as a downstream execution engine.
+
+### JiekaiLab/GEOAgent Metadata Bridge
+If you discover and retrieve dataset metadata packages from the Gene Expression Omnibus (GEO) via the **GEOAgent** portal, you can convert its standardized metadata files (e.g. `ATAC_meta.csv`) directly into a BDB-Genomics execution config.
+
+Run the metadata bridge script:
+```bash
+python3 rules/scripts/geo_agent_bridge.py path/to/GEOAgent_ATAC_meta.csv --download
+```
+* **Parameters:**
+  * `--download`: Automatically fetches raw SRA runs from SRA-AWS links or NCBI via `prefetch` / SRA Toolkit and unpacks them to `data/fastq/`.
+  * `--out-samples`: Path to write the output BDB sample sheet (defaults to `data/fastp/samples_geo.tsv`).
+  * `--out-config`: Path to write the configured pipeline file (defaults to `config_geo.yaml`).
+
+### Agentic Tool Wrapper (LangChain)
+The pipeline is wrapped as a LangChain-compatible tool node in `rules/scripts/atacseq_tool.py` for direct registration in LLM agent toolkits:
+
+```python
+from rules.scripts.atacseq_tool import run_atacseq_pipeline
+
+# Trigger end-to-end GEO processing and pipeline run autonomously:
+status = run_atacseq_pipeline(
+    geo_metadata_csv="path/to/GEOAgent_ATAC_meta.csv",
+    download_geo=True,
+    profile="local",
+    cores=8
+)
+print(status)
+```
+
+The tool handles pre-flight configuration validations and returns execution metrics alongside structured JSON execution summaries (generated on run success/failure) directly to the LLM context.
+
+---
 **Citation:** Bhandary, H. (2026). *BDB-Genomics ATAC-seq Framework (Version 3.0.0).*
+
