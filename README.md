@@ -1,9 +1,27 @@
-# BDB-Genomics ATAC-seq Pipeline
+# 🧬 BDB-Genomics ATAC-seq Framework
 
-A production-grade, config-driven Snakemake framework for end-to-end ATAC-seq analysis. Built for resilience, it supports both bulk and single-cell modalities, automatically scales from 4GB laptops to HPC clusters, and implements strict Quality Control gating to halt poor samples before downstream processing.
+A production-grade, config-driven Snakemake framework for end-to-end chromatin accessibility analysis. Built for resilience, it supports both bulk and single-cell modalities, automatically scales from 4GB laptops to HPC clusters, and implements strict Quality Control gating to halt poor samples before downstream processing.
 
 [![CI](https://github.com/BDB-Genomics/atacseq-pipeline/actions/workflows/lint.yml/badge.svg)](https://github.com/BDB-Genomics/atacseq-pipeline/actions/workflows/lint.yml)
 [![Snakemake](https://img.shields.io/badge/Snakemake-%E2%89%A58.0-blue.svg)](https://snakemake.github.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+## 🗺️ Navigation Map
+
+| Section | What You'll Find | Jump To |
+| :--- | :--- | :--- |
+| **Quick Start** | Installation, first run, Docker | [1. Quick Start](#1-quick-start) |
+| **Configuration** | `config.yaml`, overrides, profiles | [2. Configuration & Profiles](#2-configuration--profiles) |
+| **Architecture** | Dual-modality workflow, stages, tools | [3. Pipeline Architecture](#3-pipeline-architecture) |
+| **Quality Control** | QC gate, thresholds, graceful degradation | [4. Quality Control & Fail-Safes](#4-quality-control--fail-safes) |
+| **Logging** | Structured JSON, telemetry, AI-ready | [5. Structured Logging & Auditing](#5-structured-logging--auditing) |
+| **Testing** | Synthetic data, real data sandbox, CI | [6. Testing & CI Sandboxes](#6-testing--ci-sandboxes) |
+| **Outputs** | Result directories, file organization | [7. Output Manifest](#7-output-manifest) |
+| **Agentic** | LangChain wrapper, GEOAgent bridge | [8. Agentic & GEOAgent Integration](#8-agentic--geoagent-integration) |
+| **Publishing** | Zenodo, DOI, citation | [9. Depositing to Zenodo](#9-depositing-to-zenodo-publishing--archiving) |
+| **Repository** | File tree, scripts, rules reference | [10. Repository Structure](#10-repository-structure) |
 
 ---
 
@@ -11,6 +29,7 @@ A production-grade, config-driven Snakemake framework for end-to-end ATAC-seq an
 
 ### Installation & Execution (Local)
 The pipeline handles all tool dependencies internally via Conda and Singularity.
+
 ```bash
 conda create -n atacseq snakemake>=8.0 -c conda-forge -c bioconda
 conda activate atacseq
@@ -23,15 +42,16 @@ ATAC_MODE=scatac snakemake --use-conda --cores 8
 ```
 
 ### Installation & Execution (Docker Container)
-For platforms where Conda/Singularity installation is difficult (e.g. macOS or Windows), you can run the pipeline directly inside a Docker container.
+For platforms where Conda/Singularity installation is difficult (e.g., macOS or Windows), you can run the pipeline directly inside a Docker container.
 
-#### 1. Build the Host Runner Image:
+**1. Build the Host Runner Image:**
 ```bash
 docker build -t bdb-atacseq .
 ```
-*Note: The Dockerfile creates a host environment (using micromamba) containing Snakemake and Python. Individual rule dependencies (like Bowtie2, MACS2) will still be downloaded dynamically by Snakemake at runtime.*
+> [!NOTE]
+> The Dockerfile creates a host environment (using micromamba) containing Snakemake and Python. Individual rule dependencies (like Bowtie2, MACS2) will still be downloaded dynamically by Snakemake at runtime.
 
-#### 2. Execute the Pipeline via Docker:
+**2. Execute the Pipeline via Docker:**
 Run the pipeline by mounting your workspace directory into the container:
 ```bash
 docker run -it --rm \
@@ -39,7 +59,8 @@ docker run -it --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
   bdb-atacseq --use-conda --cores 8
 ```
-*(Optional: If running in a Docker-in-Docker environment, mounting the docker socket allows Snakemake to spin up tool containers from inside the host runner).*
+> [!TIP]
+> If running in a Docker-in-Docker environment, mounting the docker socket allows Snakemake to spin up tool containers from inside the host runner.
 
 ---
 
@@ -60,7 +81,7 @@ You can override specific parameters on the fly without touching the main `confi
 # custom_override.yaml
 qc_gate:
   params:
-    min_frip: 0.0  # Turn off FRiP requirement for a quick test
+    min_frip: 0.0 # Turn off FRiP requirement for a quick test
 ```
 ```bash
 # Snakemake natively merges files from left to right
@@ -68,23 +89,24 @@ snakemake --configfile config.yaml custom_override.yaml --cores 8
 ```
 
 ### Profiles & Environments
-The framework supports 8 pre-configured profiles under the `profile/` directory. These profiles adjust max jobs, print shell commands, configure executors, and set default resource footprints:
+The framework supports 8 pre-configured profiles under the `profile/` directory:
 
-*   **`local`**: Sets Snakemake to run up to 8 concurrent local jobs.
-*   **`slurm`**: Submits rules directly to a cluster workload manager using customized rule-resource mappings.
-*   **`low_resource`**: Forces rule execution boundaries (e.g., caps every rule to a maximum of 4GB memory limits) for local execution on standard laptops.
-*   **`test`**: Pre-configured CI test profile. Uses a relaxed configuration file (`config_test.yaml`) to allow minimal synthetic testing datasets to bypass strict QC enrichment thresholds.
-*   **`aws`**: Configured to run on Amazon Web Services using AWS Batch, S3 buckets, and the `tibanna` executor.
-*   **`gcp`**: Configured to run on Google Cloud Platform utilizing `google-lifesciences` executors and Google Cloud Storage (GCS) buckets.
-*   **`azure`**: Configured for Azure Batch execution and Blob storage integration.
-*   **`kubernetes`**: Container-native execution scaling across a Kubernetes cluster.
+| Profile | Purpose | Environment |
+| :--- | :--- | :--- |
+| `local` | Up to 8 concurrent local jobs | Workstation |
+| `slurm` | Cluster workload manager submission | HPC |
+| `low_resource` | Caps memory to 4GB per rule | Laptop |
+| `test` | Relaxed QC for synthetic CI datasets | CI/CD |
+| `aws` | AWS Batch + S3 + Tibanna executor | Cloud |
+| `gcp` | Google Life Sciences + GCS | Cloud |
+| `azure` | Azure Batch + Blob storage | Cloud |
+| `kubernetes`| Container-native K8s scaling | Cloud |
 
 ### Ultra-Low Memory Sequential Batching
-For massive sample datasets on limited-resource systems, run the custom batch execution manager:
+For massive sample datasets on limited-resource systems:
 ```bash
 python3 rules/scripts/run_batched.py --batch-size 2 --cores 8 --profile profile/local
 ```
-This processes samples in batches of 2 sequentially, avoiding parallel execution memory peaks while utilizing all available cores per rule.
 
 ---
 
@@ -107,10 +129,11 @@ Switching the `ATAC_MODE` environment variable dictates which modality analysis 
 
 ### The QC Gate
 The pipeline implements a hard gate (`rules/scripts/parse_qc_metrics.py`) before peak calling. Samples must pass four strict thresholds (configurable in `config.yaml`):
-1. **FRiP Score:** $\ge 0.2$
-2. **TSS Enrichment:** $\ge 7.0$
-3. **Mapping Rate:** $\ge 80.0\%$
-4. **Duplicate Rate:** $\le 20.0\%$
+
+*   **FRiP Score:** $\ge 0.2$
+*   **TSS Enrichment:** $\ge 7.0$
+*   **Mapping Rate:** $\ge 80.0\%$
+*   **Duplicate Rate:** $\le 20.0\%$
 
 Samples that fail are documented in `{sample}_qc_pass.txt` and automatically bypassed for downstream footprinting/differential analysis to save compute time.
 
@@ -137,10 +160,10 @@ Generate minimal but completely valid synthetic datasets for CI validation:
 ```bash
 python3 rules/scripts/generate_test_data.py
 ```
-This outputs synthetic FASTQ, FASTA genome references, GTF annotation files, and Bowtie indices. Reads are intentionally mapped and distributed near target TSS sites to guarantee that Bioconductor metrics (like `tss_enrichment.R` and `diff_accessibility.R`) pass without encountering division-by-zero or length mismatch exceptions.
+This outputs synthetic FASTQ, FASTA genome references, GTF annotation files, and Bowtie indices. Reads are intentionally mapped and distributed near target TSS sites to guarantee that Bioconductor metrics pass without encountering division-by-zero or length mismatch exceptions.
 
 ### B. ENCODE Real-Data Sandbox
-To test the pipeline against real-world biological samples, set up the hg38 sandbox environment:
+To test the pipeline against real-world biological samples:
 ```bash
 bash rules/scripts/download_real_data.sh
 ```
@@ -152,34 +175,31 @@ This script downloads a subsampled ENCODE ChIP/ATAC sample (ENCSR356KRQ), UCSC r
 
 All outputs are written to the `results/` directory, cleanly organized by stage:
 
-* **`results/alignment/`**: Post-filtered, sorted, and Tn5-shifted BAMs.
-* **`results/metrics_qc/`**: MultiQC HTML report aggregating FastQC, Preseq, Picard, and the QC Gate JSONs.
-* **`results/peak_calling/`**: MACS2 narrowPeaks, consensus BEDs, and IDR sets.
-* **`results/differential/`**: DESeq2 tables, Volcano/MA/PCA plots.
-* **`results/footprinting/`**: TOBIAS bias-corrected BigWigs and BINDetect motif plots.
-* **`benchmarks/`**: Memory and CPU time consumption for every single job executed.
+*   **`results/alignment/`**: Post-filtered, sorted, and Tn5-shifted BAMs.
+*   **`results/metrics_qc/`**: MultiQC HTML report aggregating FastQC, Preseq, Picard, and the QC Gate JSONs.
+*   **`results/peak_calling/`**: MACS2 narrowPeaks, consensus BEDs, and IDR sets.
+*   **`results/differential/`**: DESeq2 tables, Volcano/MA/PCA plots.
+*   **`results/footprinting/`**: TOBIAS bias-corrected BigWigs and BINDetect motif plots.
+*   **`benchmarks/`**: Memory and CPU time consumption for every single job executed.
 
 ---
 
 ## 8. Agentic & GEOAgent Integration
 
-The pipeline is fully integrated into autonomous agentic ecosystems (such as Stanford's Biomni, CoScientist, or GEOAgent) as a downstream execution engine.
+The pipeline is fully integrated into autonomous agentic ecosystems as a downstream execution engine.
 
 ### JiekaiLab/GEOAgent Metadata Bridge
-If you discover and retrieve dataset metadata packages from the Gene Expression Omnibus (GEO) via the **GEOAgent** portal, you can convert its standardized metadata files (e.g. `ATAC_meta.csv`) directly into a BDB-Genomics execution config.
-
-Run the metadata bridge script:
+Convert GEOAgent standardized metadata files (e.g. `ATAC_meta.csv`) directly into a BDB-Genomics execution config:
 ```bash
 python3 rules/scripts/geo_agent_bridge.py path/to/GEOAgent_ATAC_meta.csv --download
 ```
-* **Parameters:**
-  * `--download`: Automatically fetches raw SRA runs from SRA-AWS links or NCBI via `prefetch` / SRA Toolkit and unpacks them to `data/fastq/`.
-  * `--out-samples`: Path to write the output BDB sample sheet (defaults to `data/fastp/samples_geo.tsv`).
-  * `--out-config`: Path to write the configured pipeline file (defaults to `config_geo.yaml`).
+*   **Parameters:**
+    *   `--download`: Automatically fetches raw SRA runs from SRA-AWS links or NCBI via `prefetch` / SRA Toolkit.
+    *   `--out-samples`: Path to write the output BDB sample sheet (defaults to `data/fastp/samples_geo.tsv`).
+    *   `--out-config`: Path to write the configured pipeline file (defaults to `config_geo.yaml`).
 
 ### Agentic Tool Wrapper (LangChain)
-The pipeline is wrapped as a LangChain-compatible tool node in `rules/scripts/atacseq_tool.py` for direct registration in LLM agent toolkits:
-
+The pipeline is wrapped as a LangChain-compatible tool node in `rules/scripts/atacseq_tool.py`:
 ```python
 from rules.scripts.atacseq_tool import run_atacseq_pipeline
 
@@ -193,8 +213,6 @@ status = run_atacseq_pipeline(
 print(status)
 ```
 
-The tool handles pre-flight configuration validations and returns execution metrics alongside structured JSON execution summaries (generated on run success/failure) directly to the LLM context.
-
 ---
 
 ## 9. Depositing to Zenodo (Publishing & Archiving)
@@ -202,33 +220,80 @@ The tool handles pre-flight configuration validations and returns execution metr
 To make your analyses and code citable in scientific publications, you can deposit this framework to Zenodo to obtain a persistent Digital Object Identifier (DOI).
 
 ### Option A: Direct Zenodo CLI Tool
-The repository includes a dedicated helper script (`rules/scripts/zenodo_deposit.py`) to build a clean software release (via `git archive` to exclude massive sample files or logs) and draft a Zenodo deposition.
+The repository includes a dedicated helper script (`rules/scripts/zenodo_deposit.py`) to build a clean software release and draft a Zenodo deposition.
 
-1. **Generate a Zenodo Access Token**:
-   * For testing, create a token at [Zenodo Sandbox](https://sandbox.zenodo.org/account/settings/applications/).
-   * For production, create a token at [Zenodo Production](https://zenodo.org/account/settings/applications/).
-   * Ensure your token has `deposit:write` and `deposit:actions` scopes.
+**1. Generate a Zenodo Access Token:**
+*   For testing: [Zenodo Sandbox](https://sandbox.zenodo.org/account/settings/applications/)
+*   For production: [Zenodo Production](https://zenodo.org/account/settings/applications/)
+*   *Ensure your token has `deposit:write` and `deposit:actions` scopes.*
 
-2. **Run the Deposition CLI**:
-   ```bash
-   # Upload a draft to Zenodo Sandbox (Safe test):
-   export ZENODO_TOKEN="your_sandbox_token_here"
-   python3 rules/scripts/zenodo_deposit.py
-   
-   # Upload a draft to Production Zenodo:
-   export ZENODO_TOKEN="your_production_token_here"
-   python3 rules/scripts/zenodo_deposit.py --production
-   ```
-*Note: The script automatically parses your name, title, version, keywords, abstract, and licensing directly from `CITATION.cff`.*
+**2. Run the Deposition CLI:**
+```bash
+# Upload a draft to Zenodo Sandbox (Safe test):
+export ZENODO_TOKEN="your_sandbox_token_here"
+python3 rules/scripts/zenodo_deposit.py
+
+# Upload a draft to Production Zenodo:
+export ZENODO_TOKEN="your_production_token_here"
+python3 rules/scripts/zenodo_deposit.py --production
+```
+> [!NOTE]
+> The script automatically parses your name, title, version, keywords, abstract, and licensing directly from `CITATION.cff`.
 
 ### Option B: Native GitHub-Zenodo Integration (Automated)
 For public repositories hosted on GitHub:
-1. Log in to [Zenodo](https://zenodo.org/) using your GitHub credentials.
-2. Go to your Zenodo Profile -> GitHub settings and toggle the switch for `BDB-Genomics/atacseq-pipeline` to **On**.
-3. Create a new GitHub Release on your repository.
-4. Zenodo will automatically capture the repository release archive, mint a new DOI, and link it to your profile page.
+1.  Log in to [Zenodo](https://zenodo.org/) using your GitHub credentials.
+2.  Go to your Zenodo Profile -> GitHub settings and toggle the switch for `BDB-Genomics/atacseq-pipeline` to **On**.
+3.  Create a new GitHub Release on your repository.
+4.  Zenodo will automatically capture the repository release archive, mint a new DOI, and link it to your profile page.
 
 ---
-**Citation:** Bhandary, H. (2026). *BDB-Genomics ATAC-seq Framework (Version 3.0.0).*
 
+## 10. Repository Structure
 
+```text
+BDB-Genomics/atacseq-pipeline/
+├── .github/workflows/          # CI/CD configuration (lint.yml)
+├── assets/                     # Banners, logos, visual assets
+├── profile/
+│   ├── local/                  # Local execution profile
+│   ├── slurm/                  # SLURM cluster profile
+│   ├── low_resource/           # ≤4GB RAM laptop profile
+│   ├── test/                   # CI test profile (relaxed QC)
+│   ├── aws/                    # AWS Batch + Tibanna profile
+│   ├── gcp/                    # Google Life Sciences profile
+│   ├── azure/                  # Azure Batch profile
+│   └── kubernetes/             # Kubernetes cluster profile
+├── rules/
+│   ├── scripts/
+│   │   ├── aggregate_logs.py           # Structured JSON telemetry
+│   │   ├── atacseq_tool.py             # LangChain agent wrapper
+│   │   ├── geo_agent_bridge.py         # GEOAgent metadata importer
+│   │   ├── validate_config.py          # Pre-flight validation
+│   │   ├── test_validate_config.py     # Pytest suite (100+ assertions)
+│   │   ├── generate_test_data.py       # Synthetic CI data generator
+│   │   ├── download_real_data.sh       # ENCODE real-data sandbox
+│   │   ├── run_batched.py              # Low-memory batch executor
+│   │   ├── run_tobias_atacorrect.py    # TOBIAS ATACorrect wrapper
+│   │   ├── run_tobias_score.py         # TOBIAS ScoreBigwig wrapper
+│   │   ├── parse_qc_metrics.py         # QC gate metric parser
+│   │   ├── zenodo_deposit.py           # Zenodo publishing helper
+│   │   └── [*.R]                       # R analysis scripts (ArchR, DESeq2, etc.)
+│   ├── envs/                   # Conda environment definitions (per-tool)
+│   ├── config/                 # Configuration schemas and templates
+│   ├── [40+ .smk files]        # Snakemake rules (alignment, QC, peaks, etc.)
+│   └── template_tool.smk       # Boilerplate for adding new tools
+├── config.yaml                 # Main configuration file (single source of truth)
+├── Snakefile                   # Main workflow entry point
+├── Dockerfile                  # Container with micromamba + ENTRYPOINT
+├── CITATION.cff                # Citation metadata
+├── CHANGELOG.md                # Version history
+├── CONTRIBUTING.md             # Contribution guidelines
+├── LICENSE                     # MIT License
+├── test_envs.sh                # Environment validation script
+└── README.md                   # This file
+```
+
+---
+
+**Citation:** Bhandary, H. (2026). *BDB-Genomics ATAC-seq Framework (Version 3.0.0).* [https://github.com/BDB-Genomics/atacseq-pipeline](https://github.com/BDB-Genomics/atacseq-pipeline)
