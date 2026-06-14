@@ -20,8 +20,7 @@ A production-grade, config-driven Snakemake framework for end-to-end chromatin a
 | **Testing** | Synthetic data, real data sandbox, CI | [6. Testing & CI Sandboxes](#6-testing--ci-sandboxes) |
 | **Outputs** | Result directories, file organization | [7. Output Manifest](#7-output-manifest) |
 | **Agentic** | LangChain wrapper, GEOAgent bridge | [8. Agentic & GEOAgent Integration](#8-agentic--geoagent-integration) |
-| **Publishing** | Zenodo, DOI, citation | [9. Depositing to Zenodo](#9-depositing-to-zenodo-publishing--archiving) |
-| **Repository** | File tree, scripts, rules reference | [10. Repository Structure](#10-repository-structure) |
+| **Repository** | File tree, scripts, rules reference | [9. Repository Structure](#9-repository-structure) |
 
 ---
 
@@ -215,41 +214,7 @@ print(status)
 
 ---
 
-## 9. Depositing to Zenodo (Publishing & Archiving)
-
-To make your analyses and code citable in scientific publications, you can deposit this framework to Zenodo to obtain a persistent Digital Object Identifier (DOI).
-
-### Option A: Direct Zenodo CLI Tool
-The repository includes a dedicated helper script (`rules/scripts/zenodo_deposit.py`) to build a clean software release and draft a Zenodo deposition.
-
-**1. Generate a Zenodo Access Token:**
-*   For testing: [Zenodo Sandbox](https://sandbox.zenodo.org/account/settings/applications/)
-*   For production: [Zenodo Production](https://zenodo.org/account/settings/applications/)
-*   *Ensure your token has `deposit:write` and `deposit:actions` scopes.*
-
-**2. Run the Deposition CLI:**
-```bash
-# Upload a draft to Zenodo Sandbox (Safe test):
-export ZENODO_TOKEN="your_sandbox_token_here"
-python3 rules/scripts/zenodo_deposit.py
-
-# Upload a draft to Production Zenodo:
-export ZENODO_TOKEN="your_production_token_here"
-python3 rules/scripts/zenodo_deposit.py --production
-```
-> [!NOTE]
-> The script automatically parses your name, title, version, keywords, abstract, and licensing directly from `CITATION.cff`.
-
-### Option B: Native GitHub-Zenodo Integration (Automated)
-For public repositories hosted on GitHub:
-1.  Log in to [Zenodo](https://zenodo.org/) using your GitHub credentials.
-2.  Go to your Zenodo Profile -> GitHub settings and toggle the switch for `BDB-Genomics/atacseq-pipeline` to **On**.
-3.  Create a new GitHub Release on your repository.
-4.  Zenodo will automatically capture the repository release archive, mint a new DOI, and link it to your profile page.
-
----
-
-## 10. Repository Structure
+## 9. Repository Structure
 
 ```text
 BDB-Genomics/atacseq-pipeline/
