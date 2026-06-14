@@ -9,24 +9,37 @@ A production-grade, config-driven Snakemake framework for end-to-end ATAC-seq an
 
 ## 1. Quick Start
 
-### Installation
+### Installation & Execution (Local)
 The pipeline handles all tool dependencies internally via Conda and Singularity.
 ```bash
 conda create -n atacseq snakemake>=8.0 -c conda-forge -c bioconda
 conda activate atacseq
-```
 
-### Execution
-```bash
 # Standard Bulk run (8 cores)
 snakemake --use-conda --cores 8
 
 # Single-cell ATAC run
 ATAC_MODE=scatac snakemake --use-conda --cores 8
-
-# Reproducible run using Singularity containers instead of Conda
-snakemake --use-singularity --cores 8
 ```
+
+### Installation & Execution (Docker Container)
+For platforms where Conda/Singularity installation is difficult (e.g. macOS or Windows), you can run the pipeline directly inside a Docker container.
+
+#### 1. Build the Host Runner Image:
+```bash
+docker build -t bdb-atacseq .
+```
+*Note: The Dockerfile creates a host environment (using micromamba) containing Snakemake and Python. Individual rule dependencies (like Bowtie2, MACS2) will still be downloaded dynamically by Snakemake at runtime.*
+
+#### 2. Execute the Pipeline via Docker:
+Run the pipeline by mounting your workspace directory into the container:
+```bash
+docker run -it --rm \
+  -v $(pwd):/app \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  bdb-atacseq --use-conda --cores 8
+```
+*(Optional: If running in a Docker-in-Docker environment, mounting the docker socket allows Snakemake to spin up tool containers from inside the host runner).*
 
 ---
 
