@@ -27,6 +27,8 @@ restart-times: 1
 latency-wait: 120
 
 # ─── USER MUST EDIT THESE ────────────────────────────────────────────
+# NOTE: These are fallback values. Snakemake will automatically prioritize the
+# dynamic, size-based resource formulas defined in the individual rules over these defaults.
 default-resources:
   mem_mb: 4000
   time: 60
