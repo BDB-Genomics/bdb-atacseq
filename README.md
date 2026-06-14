@@ -8,20 +8,6 @@ A production-grade, config-driven Snakemake framework for end-to-end chromatin a
 
 ---
 
-## 🗺️ Navigation Map
-
-| Section | What You'll Find | Jump To |
-| :--- | :--- | :--- |
-| **Quick Start** | Installation, first run, Docker | [1. Quick Start](#1-quick-start) |
-| **Configuration** | `config.yaml`, overrides, profiles | [2. Configuration & Profiles](#2-configuration--profiles) |
-| **Architecture** | Dual-modality workflow, stages, tools | [3. Pipeline Architecture](#3-pipeline-architecture) |
-| **Quality Control** | QC gate, thresholds, graceful degradation | [4. Quality Control & Fail-Safes](#4-quality-control--fail-safes) |
-| **Logging** | Structured JSON, telemetry, AI-ready | [5. Structured Logging & Auditing](#5-structured-logging--auditing) |
-| **Testing** | Synthetic data, real data sandbox, CI | [6. Testing & CI Sandboxes](#6-testing--ci-sandboxes) |
-| **Outputs** | Result directories, file organization | [7. Output Manifest](#7-output-manifest) |
-| **Agentic** | LangChain wrapper, GEOAgent bridge | [8. Agentic & GEOAgent Integration](#8-agentic--geoagent-integration) |
-| **Repository** | File tree, scripts, rules reference | [9. Repository Structure](#9-repository-structure) |
-
 ---
 
 ## 1. Quick Start
@@ -143,30 +129,27 @@ If a sample passes the gate but yields **zero peaks** after blacklist filtering,
 
 ## 5. Structured Logging & Auditing
 
-The pipeline records structured JSON metrics for downstream AI analysis or automated run reports. On completion or execution failure, Snakemake executes the log parser (`rules/scripts/aggregate_logs.py`) which generates `results/reporting/pipeline_execution_summary.json`.
-
-*   **On Success**: Consolidates resource benchmarks (CPU time, peak memory usage, and execution status) for every Snakemake rule in the DAG.
-*   **On Failure**: Recursively crawls the `logs/` directory to locate error sources, uses regular expression filters to avoid false positives (e.g., matching "0 errors" or "no exceptions"), and extracts the last 5 relevant error lines to provide a clean execution failure trace.
+On every run (success or failure), the pipeline generates a machine-readable execution summary at:
+```
+results/reporting/pipeline_execution_summary.json
+```
+This JSON includes per-rule CPU time, peak memory, and — on failure — the last 5 error lines extracted from `logs/`.
 
 ---
 
 ## 6. Testing & CI Sandboxes
 
-The repository contains two utilities for pipeline testing, benchmarking, and development:
-
-### A. Synthetic CI Data Generator
-Generate minimal but completely valid synthetic datasets for CI validation:
+**Synthetic data** (for CI — no downloads needed):
 ```bash
 python3 rules/scripts/generate_test_data.py
 ```
-This outputs synthetic FASTQ, FASTA genome references, GTF annotation files, and Bowtie indices. Reads are intentionally mapped and distributed near target TSS sites to guarantee that Bioconductor metrics pass without encountering division-by-zero or length mismatch exceptions.
+Generates FASTQ, FASTA, GTF, and Bowtie2 indices with TSS-targeted reads sufficient to pass all QC gates.
 
-### B. ENCODE Real-Data Sandbox
-To test the pipeline against real-world biological samples:
+**Real data** (subsampled ENCODE hg38, ~200 MB):
 ```bash
 bash rules/scripts/download_real_data.sh
 ```
-This script downloads a subsampled ENCODE ChIP/ATAC sample (ENCSR356KRQ), UCSC references for chromosomes 19 and M, GENCODE v44 basic annotations, and JASPAR motif libraries, then builds Bowtie2 and Chromap index files automatically.
+Downloads ENCSR356KRQ chr19+chrM, GENCODE v44 annotations, JASPAR motifs, and builds all indices.
 
 ---
 
@@ -185,32 +168,13 @@ All outputs are written to the `results/` directory, cleanly organized by stage:
 
 ## 8. Agentic & GEOAgent Integration
 
-The pipeline is fully integrated into autonomous agentic ecosystems as a downstream execution engine.
-
-### JiekaiLab/GEOAgent Metadata Bridge
-Convert GEOAgent standardized metadata files (e.g. `ATAC_meta.csv`) directly into a BDB-Genomics execution config:
+**GEOAgent bridge** — convert GEO metadata directly into a pipeline run:
 ```bash
-python3 rules/scripts/geo_agent_bridge.py path/to/GEOAgent_ATAC_meta.csv --download
+python3 rules/scripts/geo_agent_bridge.py path/to/ATAC_meta.csv --download
 ```
-*   **Parameters:**
-    *   `--download`: Automatically fetches raw SRA runs from SRA-AWS links or NCBI via `prefetch` / SRA Toolkit.
-    *   `--out-samples`: Path to write the output BDB sample sheet (defaults to `data/fastp/samples_geo.tsv`).
-    *   `--out-config`: Path to write the configured pipeline file (defaults to `config_geo.yaml`).
+`--download` fetches SRA FASTQs automatically. Outputs a ready-to-use `config_geo.yaml` and sample sheet.
 
-### Agentic Tool Wrapper (LangChain)
-The pipeline is wrapped as a LangChain-compatible tool node in `rules/scripts/atacseq_tool.py`:
-```python
-from rules.scripts.atacseq_tool import run_atacseq_pipeline
-
-# Trigger end-to-end GEO processing and pipeline run autonomously:
-status = run_atacseq_pipeline(
-    geo_metadata_csv="path/to/GEOAgent_ATAC_meta.csv",
-    download_geo=True,
-    profile="local",
-    cores=8
-)
-print(status)
-```
+**LangChain tool wrapper** — register the pipeline as an autonomous agent tool via `rules/scripts/atacseq_tool.py`. See the script docstring for the full API.
 
 ---
 
