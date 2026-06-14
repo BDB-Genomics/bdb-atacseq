@@ -251,7 +251,9 @@ onstart:
 onsuccess:
     print(f"\n[SUCCESS] Pipeline completed successfully!")
     print(f"Final MultiQC report: {config['multiqc']['output']}/multiqc_report.html\n")
+    subprocess.run(["python3", "rules/scripts/aggregate_logs.py", "success", "results/reporting/pipeline_execution_summary.json"])
 
 onerror:
     print(f"\n[ERROR] Pipeline encountered an error.")
     print(f"Please check the log files in 'logs/' for details.\n")
+    subprocess.run(["python3", "rules/scripts/aggregate_logs.py", "error", "results/reporting/pipeline_execution_summary.json"])
