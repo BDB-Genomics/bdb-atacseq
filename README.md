@@ -182,6 +182,8 @@ python3 rules/scripts/geo_agent_bridge.py path/to/ATAC_meta.csv --download
 
 ## 9. Repository Structure
 
+![ATAC-seq Pipeline Architecture Graph](assets/pipeline_graph.png)
+
 ```text
 BDB-Genomics/atacseq-pipeline/
 ├── .github/workflows/          # CI/CD configuration (lint.yml)
