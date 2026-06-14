@@ -1,0 +1,41 @@
+# Snakemake Google Cloud Life Sciences Profile
+# Usage: snakemake --profile profile/gcp
+#
+# Prerequisites:
+#   1. Install the executor plugin:
+#      pip install snakemake-executor-plugin-google-lifesciences
+#   2. Authenticate with Google Cloud:
+#      gcloud auth application-default login
+#   3. Create a GCS bucket for intermediate storage:
+#      gsutil mb gs://your-bucket-name
+#   4. Update the settings below with your project ID and bucket name.
+#
+# Cost: $300 free credit for new accounts (90 days).
+#        Always-free tier includes 1 f1-micro instance.
+#        Delete resources after use to avoid charges.
+
+executor: google-lifesciences
+use-conda: true
+use-singularity: true
+jobs: 50
+printshellcmds: true
+show-failed-logs: true
+keep-going: true
+rerun-incomplete: true
+restart-times: 1
+
+latency-wait: 120
+
+# ─── USER MUST EDIT THESE ────────────────────────────────────────────
+default-resources:
+  mem_mb: 4000
+  time: 60
+  threads: 1
+  machine_type: "n1-standard-4"
+
+# Google Cloud settings (replace with your values)
+google-lifesciences-project: "YOUR_GCP_PROJECT_ID"
+google-lifesciences-region: "us-central1"
+default-remote-prefix: "YOUR_GCS_BUCKET/atacseq-pipeline"
+default-remote-provider: "GS"
+# ─────────────────────────────────────────────────────────────────────

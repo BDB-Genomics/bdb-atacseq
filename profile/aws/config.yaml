@@ -1,0 +1,43 @@
+# Snakemake AWS Batch / Tibanna Profile
+# Usage: snakemake --profile profile/aws
+#
+# Prerequisites:
+#   1. Install the executor plugin:
+#      pip install snakemake-executor-plugin-tibanna
+#   2. Configure AWS credentials:
+#      aws configure
+#      (or set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY)
+#   3. Deploy Tibanna unicorn (one-time setup):
+#      pip install tibanna
+#      tibanna deploy_unicorn -g atacseq -b YOUR_S3_BUCKET
+#   4. Create an S3 bucket for intermediate storage:
+#      aws s3 mb s3://your-bucket-name
+#   5. Update the settings below with your bucket name.
+#
+# Cost: AWS Free Tier includes 750 hours/month of t2.micro for 12 months.
+#        Tibanna is serverless (Lambda + Step Functions) — pay per invocation.
+#        Delete resources after use to avoid charges.
+
+executor: tibanna
+use-conda: true
+use-singularity: true
+jobs: 50
+printshellcmds: true
+show-failed-logs: true
+keep-going: true
+rerun-incomplete: true
+restart-times: 1
+
+latency-wait: 120
+
+# ─── USER MUST EDIT THESE ────────────────────────────────────────────
+default-resources:
+  mem_mb: 4000
+  time: 60
+  threads: 1
+
+# Tibanna settings (replace with your values)
+tibanna-sfn: "tibanna_unicorn_atacseq"
+default-remote-prefix: "YOUR_S3_BUCKET/atacseq-pipeline"
+default-remote-provider: "S3"
+# ─────────────────────────────────────────────────────────────────────

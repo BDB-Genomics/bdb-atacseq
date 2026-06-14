@@ -1,0 +1,42 @@
+# Snakemake Kubernetes Profile
+# Usage: snakemake --profile profile/kubernetes
+#
+# Prerequisites:
+#   1. Install the executor plugin:
+#      pip install snakemake-executor-plugin-kubernetes
+#   2. Have a running Kubernetes cluster (any provider):
+#      - GKE: gcloud container clusters create atacseq-cluster --num-nodes=2
+#      - EKS: eksctl create cluster --name atacseq-cluster --nodes=2
+#      - Minikube (local): minikube start --memory=8192 --cpus=4
+#   3. Configure kubectl to point to your cluster:
+#      kubectl config current-context
+#   4. Create a cloud storage bucket for intermediate files
+#      and update the settings below.
+#
+# Cost: Varies by provider. GCP offers $300 free credit.
+#        Always delete the cluster after the run to stop billing:
+#        gcloud container clusters delete atacseq-cluster
+
+executor: kubernetes
+use-conda: true
+use-singularity: true
+jobs: 50
+printshellcmds: true
+show-failed-logs: true
+keep-going: true
+rerun-incomplete: true
+restart-times: 1
+
+latency-wait: 120
+
+# ─── USER MUST EDIT THESE ────────────────────────────────────────────
+default-resources:
+  mem_mb: 4000
+  time: 60
+  threads: 1
+
+# Kubernetes settings (replace with your values)
+kubernetes-namespace: "default"
+default-remote-prefix: "YOUR_BUCKET/atacseq-pipeline"
+default-remote-provider: "GS"       # or "S3" for AWS, "AzBlob" for Azure
+# ─────────────────────────────────────────────────────────────────────

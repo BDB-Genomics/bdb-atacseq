@@ -1,0 +1,41 @@
+# Snakemake Azure Batch Profile
+# Usage: snakemake --profile profile/azure
+#
+# Prerequisites:
+#   1. Install the executor plugin:
+#      pip install snakemake-executor-plugin-azure-batch
+#   2. Authenticate with Azure:
+#      az login
+#   3. Create a Batch account and a storage account:
+#      az batch account create --name atacseqbatch --resource-group YOUR_RG --location eastus
+#      az storage account create --name atacseqstorage --resource-group YOUR_RG --location eastus
+#   4. Create a Blob container for intermediate storage:
+#      az storage container create --name atacseq-pipeline --account-name atacseqstorage
+#   5. Update the settings below with your account details.
+#
+# Cost: Azure offers $200 free credit for new accounts (30 days).
+#        Pay-as-you-go after that. Delete resources after use.
+
+executor: azure-batch
+use-conda: true
+use-singularity: true
+jobs: 50
+printshellcmds: true
+show-failed-logs: true
+keep-going: true
+rerun-incomplete: true
+restart-times: 1
+
+latency-wait: 120
+
+# ─── USER MUST EDIT THESE ────────────────────────────────────────────
+default-resources:
+  mem_mb: 4000
+  time: 60
+  threads: 1
+
+# Azure Batch settings (replace with your values)
+az-batch-account-url: "https://YOUR_BATCH_ACCOUNT.eastus.batch.azure.com"
+default-remote-prefix: "YOUR_BLOB_CONTAINER/atacseq-pipeline"
+default-remote-provider: "AzBlob"
+# ─────────────────────────────────────────────────────────────────────
