@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Detect conda executable dynamically
+CONDA_EXEC=$(which conda 2>/dev/null || which mamba 2>/dev/null || echo "/home/himanshu/miniconda3/bin/conda")
+
 ENVS=(
   rules/envs/02_alignment/chromap.yaml
   rules/envs/02_alignment/bowtie2.yaml
@@ -38,21 +41,29 @@ ENVS=(
 PASS=()
 FAIL=()
 ENV_NAME="__env_test_tmp__"
+LOG_FILE="env_test_tmp.log"
+
+# Cleanup trap to ensure the temp log and test env are always removed on exit
+cleanup() {
+  rm -f "$LOG_FILE"
+  "$CONDA_EXEC" env remove -n "$ENV_NAME" -y 2>/dev/null || true
+}
+trap cleanup EXIT
 
 for yaml in "${ENVS[@]}"; do
   echo "==> Testing: $yaml"
   # Clean up any leftover env from previous run
-  /home/himanshu/miniconda3/bin/conda env remove -n "$ENV_NAME" -y 2>/dev/null || true
+  "$CONDA_EXEC" env remove -n "$ENV_NAME" -y 2>/dev/null || true
 
-  if /home/himanshu/miniconda3/bin/conda env create -n "$ENV_NAME" -f "$yaml" 2>&1 | tee /tmp/env_test.log; then
+  if "$CONDA_EXEC" env create -n "$ENV_NAME" -f "$yaml" 2>&1 | tee "$LOG_FILE"; then
     echo "    PASS"
     PASS+=("$yaml")
-    /home/himanshu/miniconda3/bin/conda env remove -n "$ENV_NAME" -y 2>/dev/null || true
+    "$CONDA_EXEC" env remove -n "$ENV_NAME" -y 2>/dev/null || true
   else
-    ERR=$(tail -5 /tmp/env_test.log | tr '\n' ' ')
+    ERR=$(tail -5 "$LOG_FILE" | tr '\n' ' ')
     echo "    FAIL: $ERR"
     FAIL+=("$yaml|||$ERR")
-    /home/himanshu/miniconda3/bin/conda env remove -n "$ENV_NAME" -y 2>/dev/null || true
+    "$CONDA_EXEC" env remove -n "$ENV_NAME" -y 2>/dev/null || true
   fi
 done
 
