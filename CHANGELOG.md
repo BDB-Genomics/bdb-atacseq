@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - **OpenWiki Workflow**: `.github/workflows/openwiki-update.yml` for daily automated agent documentation via GitHub Actions.
 - **Understand-Anything**: Integrated Egonex-AI codebase analysis plugin with `.gitignore` exclusions for intermediate files.
 - **Script Flowcharts**: `rules/scripts/README.md` with expandable Mermaid flowcharts for all Python and R helper scripts.
+- **`test_envs.sh`**: Dynamic Conda environment verification script.
 
 ### Changed
 - **README.md**: Revised with detailed setup instructions, Bowtie2 index building, reference data directory tree, sample sheet schema, config validation steps, and security features table.
