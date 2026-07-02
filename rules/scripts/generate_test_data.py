@@ -295,7 +295,7 @@ def main() -> None:
 
     # Create directory tree
     for subdir in ["data/fastq", "data/reference/index", "data/motifs",
-                    "data/reference/chromap", "data/fastp"]:
+                    "data/reference/chromap"]:
         os.makedirs(os.path.join(root, subdir), exist_ok=True)
 
     # --- Reference genome ---------------------------------------------------
@@ -344,7 +344,7 @@ def main() -> None:
         fh.write("placeholder")
 
     # --- Sample sheet -------------------------------------------------------
-    generate_samples_tsv(os.path.join(root, "data/fastp/samples.tsv"))
+    generate_samples_tsv(os.path.join(root, "data/samples.tsv"))
 
     # --- Summary ------------------------------------------------------------
     print("\n" + "=" * 60)

@@ -130,7 +130,7 @@ def main():
     parser.add_argument("--mode", type=str, default=None, choices=["bulk", "scatac"],
                         help="Pipeline mode: bulk or scatac (default: read from config.yaml)")
     parser.add_argument("--config", type=str, default="config.yaml", help="Path to config.yaml")
-    parser.add_argument("--sample-sheet", type=str, default="data/fastp/samples.tsv", help="Path to sample sheet")
+    parser.add_argument("--sample-sheet", type=str, default="data/samples.tsv", help="Path to sample sheet")
     parser.add_argument("--conda-frontend", type=str, default="mamba", choices=["conda", "mamba"],
                         help="Conda frontend: conda or mamba (default: mamba)")
     parser.add_argument("--dry-run", action="store_true", help="Show batches without running")

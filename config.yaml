@@ -44,7 +44,7 @@
 # ==============================================================================
 global:
   mode: "bulk"
-  samples: "data/fastp/samples.tsv"
+  samples: "data/samples.tsv"
   references:
     genome_fa: &GENOME_FA "data/reference/genome.fa"
     genome_sizes: &GENOME_SIZES "data/reference/genome.chrom.sizes"

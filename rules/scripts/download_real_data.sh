@@ -84,3 +84,4 @@ echo "JASPAR MEME DB: ${MOTIFS_DIR}/jaspar_vertebrates.meme"
 echo "Bowtie2 Index: ${INDEX_DIR}/"
 echo "Chromap Index: ${CHROMAP_DIR}/"
 ls -lh "${FASTQ_DIR}"
+# dummy comment for git impact test

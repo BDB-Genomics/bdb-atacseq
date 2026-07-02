@@ -153,7 +153,7 @@ def main():
     parser.add_argument("meta_csv", help="Path to GEOAgent/bioStream ATAC_meta.csv file")
     parser.add_argument("--fastq-dir", default="data/fastq", help="Directory to save fastq files")
     parser.add_argument("--sra-dir", default="data/sra", help="Directory to save temporary SRA files")
-    parser.add_argument("--out-samples", default="data/fastp/samples_geo.tsv", help="Output TSV sample sheet path")
+    parser.add_argument("--out-samples", default="data/samples_geo.tsv", help="Output TSV sample sheet path")
     parser.add_argument("--out-config", default="config_geo.yaml", help="Output config yaml file path")
     parser.add_argument("--download", action="store_true", help="Download and extract SRA files automatically")
     
