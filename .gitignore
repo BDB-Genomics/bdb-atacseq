@@ -37,3 +37,5 @@ PAT
 .understand-anything/intermediate/
 .understand-anything/diff-overlay.json
 
+# --- Change Tracking ---
+.tracking/

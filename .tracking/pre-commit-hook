@@ -1,9 +1,0 @@
-#!/bin/bash
-# Pre-commit hook: auto-track changes before each commit
-# Install: cp .tracking/pre-commit-hook .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
-
-TRACKING_DIR="$(git rev-parse --show-toplevel)/.tracking"
-
-if [ -f "$TRACKING_DIR/track_changes.py" ]; then
-    python3 "$TRACKING_DIR/track_changes.py" --snapshot > /dev/null 2>&1
-fi
