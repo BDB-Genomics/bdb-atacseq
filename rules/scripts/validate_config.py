@@ -13,7 +13,7 @@ import yaml
 
 
 SAMPLE_COLUMNS = ("sample", "fastq_r1", "fastq_r2", "replicate", "condition")
-SAMPLE_NAME_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
+SAMPLE_NAME_PATTERN = re.compile(r"^(?!.*\.\.)[A-Za-z0-9._-]+$")
 CONFIG_ACCESS_PATTERN = re.compile(r"config((?:\[['\"][^'\"]+['\"]\])+)")
 CONFIG_KEY_PATTERN = re.compile(r"\[['\"]([^'\"]+)['\"]\]")
 SAMPLES_LIST_USAGE_PATTERN = re.compile(r"sample\s*=\s*config\[['\"]samples['\"]\]")

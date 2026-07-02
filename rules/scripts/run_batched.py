@@ -19,17 +19,50 @@ Ideal for machines with ≤4GB RAM where even --jobs 2 causes OOM.
 import argparse
 import csv
 import os
+import re
 import subprocess
 import sys
 import yaml
 from pathlib import Path
+from typing import Any
+
+
+SAMPLE_NAME_PATTERN = re.compile(r"^(?!.*\.\.)[A-Za-z0-9._-]+$")
 
 
 def get_samples(sample_sheet: Path) -> list[str]:
     """Read sample names from the TSV sample sheet."""
     with sample_sheet.open(newline="") as f:
         reader = csv.DictReader(f, delimiter="\t")
-        return [row["sample"] for row in reader if row.get("sample")]
+        samples = []
+        for row in reader:
+            s = row.get("sample")
+            if s:
+                if not SAMPLE_NAME_PATTERN.match(s):
+                    print(f"ERROR: Invalid sample name '{s}'. Must contain only alphanumeric, dot, underscore, and dash, and no double dots.", file=sys.stderr)
+                    sys.exit(1)
+                samples.append(s)
+        return samples
+
+
+def get_config_path(config: dict[str, Any], path_keys: tuple[str, ...]) -> str:
+    """Safely get a nested configuration value using get() or exit with an error message."""
+    curr: Any = config
+    for k in path_keys:
+        if isinstance(curr, dict):
+            curr = curr.get(k)
+            if curr is None:
+                print(f"ERROR: Missing required config key: {'.'.join(path_keys)}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            print(f"ERROR: Missing required config key: {'.'.join(path_keys)}", file=sys.stderr)
+            sys.exit(1)
+    
+    val_str = str(curr)
+    if re.match(r"^(True|False|None)$", val_str, re.IGNORECASE):
+        print(f"ERROR: Config path key '{'.'.join(path_keys)}' has invalid value: '{val_str}' (cannot be a boolean or None).", file=sys.stderr)
+        sys.exit(1)
+    return val_str
 
 
 def run_batch(
@@ -47,21 +80,21 @@ def run_batch(
     for s in samples:
         if mode == "bulk":
             target_files.extend([
-                f"{config['fastp']['output']}/{s}_R1_trimmed.fastq.gz",
-                f"{config['bowtie2']['output']}/{s}.bam",
-                f"{config['samtools_sort']['output']['sorted_bam']}/{s}.sorted.bam",
-                f"{config['samtools_markdup']['output']['markdup_bam']}/{s}.sorted.dedup.bam",
-                f"{config['tn5_shift']['output']['shifted_bam']}/{s}.filtered.shifted.bam",
-                f"{config['macs2']['output']['peaks']}/{s}_peaks.narrowPeak",
-                f"{config['blacklist_filter']['output']['filtered_peaks']}/{s}_filtered_peaks.bed",
-                f"{config['qc_gate']['output']}/{s}_qc_pass.txt",
-                f"{config['bigwig']['output']['bigwig']}/{s}.bw",
+                f"{get_config_path(config, ('fastp', 'output'))}/{s}_R1_trimmed.fastq.gz",
+                f"{get_config_path(config, ('bowtie2', 'output'))}/{s}.bam",
+                f"{get_config_path(config, ('samtools_sort', 'output', 'sorted_bam'))}/{s}.sorted.bam",
+                f"{get_config_path(config, ('samtools_markdup', 'output', 'markdup_bam'))}/{s}.sorted.dedup.bam",
+                f"{get_config_path(config, ('tn5_shift', 'output', 'shifted_bam'))}/{s}.filtered.shifted.bam",
+                f"{get_config_path(config, ('macs2', 'output', 'peaks'))}/{s}_peaks.narrowPeak",
+                f"{get_config_path(config, ('blacklist_filter', 'output', 'filtered_peaks'))}/{s}_filtered_peaks.bed",
+                f"{get_config_path(config, ('qc_gate', 'output'))}/{s}_qc_pass.txt",
+                f"{get_config_path(config, ('bigwig', 'output', 'bigwig'))}/{s}.bw",
             ])
         else:  # scatac
             target_files.extend([
-                f"{config['fastp']['output']}/{s}_R1_trimmed.fastq.gz",
-                f"{config['chromap']['output']}/{s}.bam",
-                f"{config['bigwig']['output']['bigwig']}/{s}.bw",
+                f"{get_config_path(config, ('fastp', 'output'))}/{s}_R1_trimmed.fastq.gz",
+                f"{get_config_path(config, ('chromap', 'output'))}/{s}.bam",
+                f"{get_config_path(config, ('bigwig', 'output', 'bigwig'))}/{s}.bw",
             ])
 
     cmd = [
@@ -191,12 +224,12 @@ def main():
         "--conda-frontend", args.conda_frontend,
         "--cores", "1",
         "--profile", "profile/low_resource",
-        f"{config['multiqc']['output']}/multiqc_report.html",
+        f"{get_config_path(config, ('multiqc', 'output'))}/multiqc_report.html",
         *args.extra_args,
     ]
     subprocess.run(final_cmd)
 
-    print(f"\nPipeline complete. MultiQC report: {config['multiqc']['output']}/multiqc_report.html")
+    print(f"\nPipeline complete. MultiQC report: {get_config_path(config, ('multiqc', 'output'))}/multiqc_report.html")
 
 
 if __name__ == "__main__":
