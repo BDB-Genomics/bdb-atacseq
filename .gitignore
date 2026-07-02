@@ -33,3 +33,7 @@ PAT
 /sshkey.pub
 /download.log
 
+# --- Understand-Anything ---
+.understand-anything/intermediate/
+.understand-anything/diff-overlay.json
+

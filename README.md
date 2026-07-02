@@ -1,188 +1,155 @@
-# 🧬 BDB-Genomics ATAC-seq Framework
+# BDB-Genomics ATAC-seq Framework
 
 A production-grade, config-driven Snakemake framework for end-to-end chromatin accessibility analysis. Built for resilience, it supports both bulk and single-cell modalities, automatically scales from 4GB laptops to HPC clusters, and implements strict Quality Control gating to halt poor samples before downstream processing.
 
-Unlike single-modality pipelines, this framework handles both bulk and single-cell ATAC-seq from a single config file, with built-in QC gating, agentic LLM integration, and execution profiles spanning laptops to Kubernetes clusters.
+---
 
-[![CI](https://github.com/BDB-Genomics/atacseq-pipeline/actions/workflows/lint.yml/badge.svg)](https://github.com/BDB-Genomics/atacseq-pipeline/actions/workflows/lint.yml)
-[![Snakemake](https://img.shields.io/badge/Snakemake-%E2%89%A58.0-blue.svg)](https://snakemake.github.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## 🏗️ Pipeline Architecture
+
+```mermaid
+graph TD
+    %% ── Stage 1: Preprocessing ──
+    Raw[Raw FASTQ Files] --> FastP[fastp<br>QC & Trimming]
+    FastP --> FastQC[FastQC]
+
+    %% ── Stage 2: Alignment & Processing ──
+    FastP --> ModeSwitch{ATAC_MODE?}
+    
+    ModeSwitch -- bulk --> AlignTarget[Bowtie2<br>Target Alignment]
+    ModeSwitch -- scatac --> AlignChromap[Chromap<br>Single-Cell Alignment]
+
+    %% ── Stage 3: Filtering & QC ──
+    AlignTarget --> FilterBulk[samtools MAPQ filter & Tn5 shift]
+    AlignChromap --> FilterSC[ArchR Arrow creation & doublet removal]
+
+    FilterBulk -.-> Picard[Picard Insert Metrics]
+    FilterBulk -.-> Qualimap[Qualimap BamQC]
+    FilterBulk -.-> TSS[TSS Enrichment]
+
+    %% ── Stage 4: Peak Calling ──
+    FilterBulk --> MACS2[MACS2 Peak Calling]
+    MACS2 --> IDR[IDR Replicate Concordance]
+    IDR --> Blacklist[Blacklist Filter]
+
+    FilterSC --> PeakSC[ArchR Marker Peak Identification]
+
+    %% ── Stage 5: Downstream Analysis ──
+    Blacklist --> PeakAnnot[Peak Annotation<br>ChIPseeker]
+    Blacklist --> Motif[Motif Analysis<br>HOMER]
+    Blacklist --> DiffAcc[Differential Accessibility<br>DESeq2]
+    
+    FilterSC --> Cicero[Co-accessibility<br>Cicero]
+    FilterSC --> chromVAR[Motif Accessibility<br>chromVAR]
+
+    %% ── Stage 6: Footprinting ──
+    FilterBulk --> TOBIAS[Footprinting<br>TOBIAS BINDetect]
+
+    %% ── Styling ──
+    classDef input fill:#f8f9fa,stroke:#6c757d,color:#000;
+    classDef process fill:#e2e3e5,stroke:#383d41,color:#000;
+    classDef analysis fill:#d1ecf1,stroke:#0c5460,color:#000;
+    classDef diffbind fill:#e8daef,stroke:#6c3483,color:#1a1a2e;
+    classDef qc fill:#fff3cd,stroke:#856404,color:#856404;
+
+    class Raw input;
+    class FastP,ModeSwitch,AlignTarget,AlignChromap,FilterBulk,FilterSC,MACS2,IDR,PeakSC,Cicero,chromVAR process;
+    class Blacklist,PeakAnnot,Motif,TOBIAS analysis;
+    class DiffAcc diffbind;
+    class Picard,Qualimap,TSS,FastQC qc;
+```
 
 ---
 
----
+## ⚙️ Setup & Installation
 
-## 1. Quick Start
+Follow these steps to set up your environment, reference data, and metadata sheets.
 
-### Installation & Execution (Local)
-The pipeline handles all tool dependencies internally via Conda and Singularity.
+### 1. Prerequisites & Environment Setup
+The pipeline relies on **Snakemake 8.0+** and manages dependencies dynamically via Conda/Mamba environments. 
 
+Install the base environment using Conda/Mamba:
 ```bash
-conda create -n atacseq snakemake>=8.0 -c conda-forge -c bioconda
-conda activate atacseq
+# Create the environment with snakemake and yaml parser
+mamba create -n snakemake -c conda-forge -c bioconda snakemake python=3.10 pyyaml
 
-# Standard Bulk run (8 cores)
-snakemake --use-conda --cores 8
+# Activate the environment
+conda activate snakemake
+```
+
+### 2. Reference Data Preparation
+All reference files must be placed inside the `data/reference/` directory (or configured explicitly in `config.yaml`). 
+
+Your target Bowtie2 indices must be built beforehand:
+```bash
+# Example command to build target Bowtie2 index
+bowtie2-build genome.fa data/reference/bowtie2/genome
+```
+
+Ensure your directory structure matches the following tree:
+```text
+data/
+├── reference/
+│   ├── genome.fa                    # Target reference genome FASTA
+│   ├── genome.chrom.sizes           # Chromosome sizes file (generated via: samtools faidx)
+│   ├── annotation.gtf               # GTF/GFF gene annotation
+│   ├── ENCODE_blacklist.bed         # Bed file of blacklisted regions to exclude
+│   └── bowtie2/
+│       ├── genome.1.bt2             # Bowtie2 index files for target genome
+│       └── ...
+└── samples.tsv                      # Tab-delimited sample sheet metadata
+```
+
+### 3. Metadata & Configuration
+* **Sample Sheet (`data/samples.tsv`)**: Create a tab-separated file with these exact headers. Specify sample names, replicates, experimental conditions, and path locations for your raw paired-end reads:
+  ```text
+  sample	replicate	condition	fastq_r1	fastq_r2
+  sample_1	1	control	data/reads/sample_1_R1.fq.gz	data/reads/sample_1_R2.fq.gz
+  sample_2	2	control	data/reads/sample_2_R1.fq.gz	data/reads/sample_2_R2.fq.gz
+  ```
+* **Pipeline Config (`config.yaml`)**: Edit the global parameters, adapter trimming settings, filtering thresholds (e.g. MAPQ scores, TSS limits), and target file pathways to align with your organism of interest.
+
+### 4. Setup Verification
+Run the built-in validation script to ensure all referenced config keys, types, and physical paths on disk are syntactically and structurally correct before launching the pipeline:
+```bash
+python3 rules/scripts/validate_config.py config.yaml
+```
+
+---
+
+## 🚀 Running the Pipeline
+
+### Option A: Standard Cluster / Server Run
+Run Snakemake directly, enabling it to download and manage the required tool dependencies automatically inside Conda environments:
+```bash
+# Bulk ATAC run
+snakemake --cores 8 --use-conda
 
 # Single-cell ATAC run
-ATAC_MODE=scatac snakemake --use-conda --cores 8
+ATAC_MODE=scatac snakemake --cores 8 --use-conda
 ```
 
-### Installation & Execution (Docker Container)
-For platforms where Conda/Singularity installation is difficult (e.g., macOS or Windows), you can run the pipeline directly inside a Docker container.
-
-**1. Build the Host Runner Image:**
+### Option B: Low-Resource Batch Execution (≤4GB RAM machines)
+For local testing or execution on standard personal laptops where parallel Snakemake jobs cause memory/OOM crashes, use the cohort batch orchestrator:
 ```bash
-docker build -t bdb-atacseq .
-```
-> [!NOTE]
-> The Dockerfile creates a host environment (using micromamba) containing Snakemake and Python. Individual rule dependencies (like Bowtie2, MACS2) will still be downloaded dynamically by Snakemake at runtime.
-
-**2. Execute the Pipeline via Docker:**
-Run the pipeline by mounting your workspace directory into the container:
-```bash
-docker run -it --rm \
-  -v $(pwd):/app \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  bdb-atacseq --use-conda --cores 8
-```
-> [!TIP]
-> If running in a Docker-in-Docker environment, mounting the docker socket allows Snakemake to spin up tool containers from inside the host runner.
-
----
-
-## 2. Configuration & Profiles
-
-The pipeline is completely configuration-driven. You never need to modify the underlying Snakemake rules.
-
-### The Source of Truth: `config.yaml`
-Every file path, genome size, and thread count is defined here. For example, MACS2 dynamically computes the genome size at parse time:
-```python
-# The pipeline automatically parses the genome size from your reference files:
-gsize=sum(int(line.strip().split()[1]) for line in open(config['global']['references']['genome_sizes']))
-```
-
-### Dynamic Configuration Overrides
-You can override specific parameters on the fly without touching the main `config.yaml` file. The pipeline safely merges your overrides into memory.
-```yaml
-# custom_override.yaml
-qc_gate:
-  params:
-    min_frip: 0.0 # Turn off FRiP requirement for a quick test
-```
-```bash
-# Snakemake natively merges files from left to right
-snakemake --configfile config.yaml custom_override.yaml --cores 8
-```
-
-### Profiles & Environments
-The framework supports 8 pre-configured profiles under the `profile/` directory:
-
-| Profile | Purpose | Environment |
-| :--- | :--- | :--- |
-| `local` | Up to 8 concurrent local jobs | Workstation |
-| `slurm` | Cluster workload manager submission | HPC |
-| `low_resource` | Caps memory to 4GB per rule | Laptop |
-| `test` | Relaxed QC for synthetic CI datasets | CI/CD |
-| `aws` | AWS Batch + S3 + Tibanna executor | Cloud |
-| `gcp` | Google Life Sciences + GCS | Cloud |
-| `azure` | Azure Batch + Blob storage | Cloud |
-| `kubernetes`| Container-native K8s scaling | Cloud |
-
-### Ultra-Low Memory Sequential Batching
-For massive sample datasets on limited-resource systems:
-```bash
-python3 rules/scripts/run_batched.py --batch-size 2 --cores 8 --profile profile/local
+python3 rules/scripts/run_batched.py --batch-size 2 --cores 4 --memory 4000
 ```
 
 ---
 
-## 3. Pipeline Architecture
+## 🔒 Security & Robustness Features
 
-Switching the `ATAC_MODE` environment variable dictates which modality analysis track is executed:
-
-| Stage | Bulk Mode (`bulk`) | Single-Cell Mode (`scatac`) |
-| :--- | :--- | :--- |
-| **Alignment** | Bowtie2 (`--very-sensitive`) | Chromap (`--preset atac`) |
-| **Filtering** | MAPQ > 30, Fixmate, ENCODE Blacklist removal, Tn5 Shift | ArchR Arrow creation & doublet removal |
-| **Peak Calling** | MACS2, IDR replicate concordance | ArchR marker peak identification |
-| **Co-accessibility**| N/A | Cicero (500bp window, 250kb distance) |
-| **Differential** | DESeq2 (FDR 0.05, log2FC 1.0) | ArchR cluster markers |
-| **Footprinting** | HINT-ATAC & TOBIAS BINDetect | chromVAR motif accessibility |
+| Layer | Mechanism |
+|---|---|
+| **Pre-flight validation** | `validate_config.py` checks all config keys, scalar types, and physical file paths before DAG construction |
+| **Sample sanitization** | Regex rejects shell metacharacters and `..` path traversal in sample names |
+| **Shell safety** | Every rule uses `set -euo pipefail`; Python subprocesses use `shell=False` |
+| **Graceful degradation** | R/Python analytics write placeholder outputs on zero-data scenarios instead of crashing |
+| **Type safety** | Config path extractor rejects boolean/None coercion into file paths |
+| **Reproducibility** | Pinned Conda environments + Singularity container directives on every rule |
 
 ---
 
-## 4. Quality Control & Fail-Safes
-
-### The QC Gate
-The pipeline implements a hard gate (`rules/scripts/parse_qc_metrics.py`) before peak calling. Samples must pass four strict thresholds (configurable in `config.yaml`):
-
-*   **FRiP Score:** $\ge 0.2$
-*   **TSS Enrichment:** $\ge 7.0$
-*   **Mapping Rate:** $\ge 80.0\%$
-*   **Duplicate Rate:** $\le 20.0\%$
-
-Samples that fail are documented in `{sample}_qc_pass.txt` and automatically bypassed for downstream footprinting/differential analysis to save compute time.
-
-### Graceful Fallbacks for Empty Samples
-If a sample passes the gate but yields **zero peaks** after blacklist filtering, downstream rules (ChIPseeker, heatmaps, TOBIAS) will automatically detect the empty file. Rather than crashing the DAG, they utilize single-line Python routines to instantly generate valid dummy outputs (e.g., empty DataFrames, blank PDFs) and proceed.
-
----
-
-## 5. Structured Logging & Auditing
-
-On every run (success or failure), the pipeline generates a machine-readable execution summary at:
-```
-results/reporting/pipeline_execution_summary.json
-```
-This JSON includes per-rule CPU time, peak memory, and — on failure — the last 5 error lines extracted from `logs/`.
-
----
-
-## 6. Testing & CI Sandboxes
-
-**Synthetic data** (for CI — no downloads needed):
-```bash
-python3 rules/scripts/generate_test_data.py
-```
-Generates FASTQ, FASTA, GTF, and Bowtie2 indices with TSS-targeted reads sufficient to pass all QC gates.
-
-**Real data** (subsampled ENCODE hg38, ~200 MB):
-```bash
-bash rules/scripts/download_real_data.sh
-```
-Downloads ENCSR356KRQ chr19+chrM, GENCODE v44 annotations, JASPAR motifs, and builds all indices.
-
----
-
-## 7. Output Manifest
-
-All outputs are written to the `results/` directory, cleanly organized by stage:
-
-*   **`results/alignment/`**: Post-filtered, sorted, and Tn5-shifted BAMs.
-*   **`results/metrics_qc/`**: MultiQC HTML report aggregating FastQC, Preseq, Picard, and the QC Gate JSONs.
-*   **`results/peak_calling/`**: MACS2 narrowPeaks, consensus BEDs, and IDR sets.
-*   **`results/differential/`**: DESeq2 tables, Volcano/MA/PCA plots.
-*   **`results/footprinting/`**: TOBIAS bias-corrected BigWigs and BINDetect motif plots.
-*   **`benchmarks/`**: Memory and CPU time consumption for every single job executed.
-
----
-
-## 8. Agentic & GEOAgent Integration
-
-**GEOAgent bridge** — convert GEO metadata directly into a pipeline run:
-```bash
-python3 rules/scripts/geo_agent_bridge.py path/to/ATAC_meta.csv --download
-```
-`--download` fetches SRA FASTQs automatically. Outputs a ready-to-use `config_geo.yaml` and sample sheet.
-
-**LangChain tool wrapper** — register the pipeline as an autonomous agent tool via `rules/scripts/atacseq_tool.py`. See the script docstring for the full API.
-
----
-
-## 9. Repository Structure
-
-![ATAC-seq Pipeline Architecture Graph](assets/pipeline_graph.png)
+## 🏗️ Repository Structure
 
 ```text
 BDB-Genomics/atacseq-pipeline/
@@ -199,34 +166,18 @@ BDB-Genomics/atacseq-pipeline/
 │   └── kubernetes/             # Kubernetes cluster profile
 ├── rules/
 │   ├── scripts/
+│   │   ├── README.md                   # Flowcharts and script reference
 │   │   ├── aggregate_logs.py           # Structured JSON telemetry
 │   │   ├── atacseq_tool.py             # LangChain agent wrapper
 │   │   ├── geo_agent_bridge.py         # GEOAgent metadata importer
 │   │   ├── validate_config.py          # Pre-flight validation
-│   │   ├── test_validate_config.py     # Pytest suite (100+ assertions)
+│   │   ├── test_validate_config.py     # Pytest suite
 │   │   ├── generate_test_data.py       # Synthetic CI data generator
-│   │   ├── download_real_data.sh       # ENCODE real-data sandbox
 │   │   ├── run_batched.py              # Low-memory batch executor
-│   │   ├── run_tobias_atacorrect.py    # TOBIAS ATACorrect wrapper
-│   │   ├── run_tobias_score.py         # TOBIAS ScoreBigwig wrapper
-│   │   ├── parse_qc_metrics.py         # QC gate metric parser
-│   │   ├── zenodo_deposit.py           # Zenodo publishing helper
 │   │   └── [*.R]                       # R analysis scripts (ArchR, DESeq2, etc.)
-│   ├── envs/                   # Conda environment definitions (per-tool)
-│   ├── config/                 # Configuration schemas and templates
-│   ├── [40+ .smk files]        # Snakemake rules (alignment, QC, peaks, etc.)
-│   └── template_tool.smk       # Boilerplate for adding new tools
-├── config.yaml                 # Main configuration file (single source of truth)
-├── Snakefile                   # Main workflow entry point
-├── Dockerfile                  # Container with micromamba + ENTRYPOINT
-├── CITATION.cff                # Citation metadata
-├── CHANGELOG.md                # Version history
-├── CONTRIBUTING.md             # Contribution guidelines
-├── LICENSE                     # MIT License
-├── test_envs.sh                # Environment validation script
-└── README.md                   # This file
+│   ├── envs/                   # Conda environment definitions
+│   └── [40+ .smk files]        # Snakemake rules
+├── config.yaml                 # Configuration file
+├── Snakefile                   # Snakemake entry point
+└── AGENTS.md                   # Agent entrypoint and navigation map
 ```
-
----
-
-**Citation:** Bhandary, H. (2026). *BDB-Genomics ATAC-seq Framework (Version 3.0.0).* [https://github.com/BDB-Genomics/atacseq-pipeline](https://github.com/BDB-Genomics/atacseq-pipeline)
