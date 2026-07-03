@@ -6,7 +6,21 @@ This directory contains the modular Snakemake rule definitions that make up the 
 
 ## 🏗️ Architecture
 
-The rules are designed to be entirely modular and self-contained. Every rule specifies its own:
+The rules are designed to be entirely modular and self-contained. Below is the simplified dependency graph:
+
+```mermaid
+graph TD
+    A((Input FASTQ)) --> B[fastp]
+    B --> C[bowtie2 / chromap]
+    C --> D[samtools processing]
+    D --> E[blacklist/mito filter]
+    E --> F[tn5 shift]
+    F --> G[macs2 peak calling]
+    G --> H[peak annotation & motif analysis]
+    F --> I[coverage tracks & bigwig]
+```
+
+Every rule specifies its own:
 - **Inputs and Outputs**: Dynamically resolved via `config.yaml`.
 - **Resources**: Memory and time constraints for HPC scheduling.
 - **Environment**: Tool-specific Conda definitions (found in `envs/`).
