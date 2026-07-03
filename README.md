@@ -96,6 +96,7 @@ For detailed architectural information, please consult the specific `README.md` 
 | [`envs/`](envs/) | Grouped, multi-tool Conda environments for manual debugging |
 | [`rules/envs/`](rules/envs/) | Strict, 1-to-1 modular Conda environments for automated rules |
 | [`rules/`](rules/) | Modular `.smk` files and dependency flowcharts |
+| [`AGENTS.md`](AGENTS.md) | Agent context for the Understand-Anything plugin and Open-Wiki integration |
 
 ---
 
