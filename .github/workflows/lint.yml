@@ -53,7 +53,7 @@ jobs:
 
       - name: Validate Workflow (Dry-run)
         run: |
-          snakemake -n --use-conda --conda-frontend mamba --profile profile/test
+          snakemake -n --use-conda --conda-frontend mamba --profile profiles/test
 
   test:
     runs-on: ubuntu-latest
@@ -95,7 +95,7 @@ jobs:
 
       - name: Run Pipeline (Test Mode)
         run: |
-          snakemake --use-conda --conda-frontend mamba --profile profile/test \
+          snakemake --use-conda --conda-frontend mamba --profile profiles/test \
             --cores 4 \
             --latency-wait 60
 
