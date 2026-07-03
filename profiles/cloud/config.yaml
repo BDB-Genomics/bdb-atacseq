@@ -1,0 +1,27 @@
+# Snakemake Cloud Profile (Google Batch / AWS Batch)
+# Usage: snakemake --profile profiles/cloud
+
+# Set the executor plugin (Snakemake 8.0+)
+# Change this to 'aws-batch', 'kubernetes', or 'azure-batch' depending on your provider
+executor: googlebatch
+
+use-conda: true
+conda-frontend: mamba
+jobs: 200
+printshellcmds: true
+reason: true
+show-failed-logs: true
+keep-going: true
+rerun-incomplete: true
+restart-times: 2
+
+# Cloud Storage Configuration
+# Change 'GS' to 'S3' or 'AzBlob' depending on your provider
+default-remote-provider: GS
+default-remote-prefix: your-bucket-name/pipeline-execution
+
+# Cloud-specific resource configurations
+default-resources:
+  - mem_mb=8000
+  - time="02:00:00"
+  - threads=2
