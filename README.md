@@ -1,6 +1,8 @@
-# BDB-Genomics ATAC-seq Framework
+# BDB-Genomics ATAC-seq Pipeline
 
-A production-grade, config-driven Snakemake framework for end-to-end chromatin accessibility analysis. Built for resilience, it supports both bulk and single-cell modalities, automatically scales from 4GB laptops to HPC clusters, and implements strict Quality Control gating to halt poor samples before downstream processing.
+A production-grade, config-driven Snakemake framework for end-to-end chromatin accessibility analysis. 
+
+Built for resilience, it supports both bulk and single-cell modalities, automatically scales from 4GB laptops to HPC clusters and Cloud instances, and implements strict Quality Control gating to halt poor samples before downstream processing.
 
 ---
 
@@ -60,124 +62,47 @@ graph TD
 
 ---
 
-## ⚙️ Setup & Installation
+## 🚀 Quick Start
 
-Follow these steps to set up your environment, reference data, and metadata sheets.
+The pipeline relies on **Snakemake 8.0+** and uses a wrapper script to bootstrap execution seamlessly.
 
-### 1. Prerequisites & Environment Setup
-The pipeline relies on **Snakemake 8.0+** and manages dependencies dynamically via Conda/Mamba environments. 
+### 1. Configure the Run
+Edit `config.yaml` to specify your parameters and ensure your metadata is in `data/samples.tsv`.
 
-Install the base environment using Conda/Mamba:
+### 2. Execute
+Run the pipeline using the wrapper script, which handles environment detection, pre-flight validation, and execution profiles automatically:
+
 ```bash
-# Create the environment with snakemake and yaml parser
-mamba create -n snakemake -c conda-forge -c bioconda snakemake python=3.10 pyyaml
+# Run locally using 8 cores
+scripts/run_pipeline.sh -c 8 -- --profile profiles/local
 
-# Activate the environment
-conda activate snakemake
-```
+# Run on an HPC cluster using SLURM
+scripts/run_pipeline.sh -- --profile profiles/slurm
 
-### 2. Reference Data Preparation
-All reference files must be placed inside the `data/reference/` directory (or configured explicitly in `config.yaml`). 
-
-Your target Bowtie2 indices must be built beforehand:
-```bash
-# Example command to build target Bowtie2 index
-bowtie2-build genome.fa data/reference/bowtie2/genome
-```
-
-Ensure your directory structure matches the following tree:
-```text
-data/
-├── reference/
-│   ├── genome.fa                    # Target reference genome FASTA
-│   ├── genome.chrom.sizes           # Chromosome sizes file (generated via: samtools faidx)
-│   ├── annotation.gtf               # GTF/GFF gene annotation
-│   ├── ENCODE_blacklist.bed         # Bed file of blacklisted regions to exclude
-│   └── bowtie2/
-│       ├── genome.1.bt2             # Bowtie2 index files for target genome
-│       └── ...
-└── samples.tsv                      # Tab-delimited sample sheet metadata
-```
-
-### 3. Metadata & Configuration
-* **Sample Sheet (`data/samples.tsv`)**: Create a tab-separated file with these exact headers. Specify sample names, replicates, experimental conditions, and path locations for your raw paired-end reads:
-  ```text
-  sample	replicate	condition	fastq_r1	fastq_r2
-  sample_1	1	control	data/reads/sample_1_R1.fq.gz	data/reads/sample_1_R2.fq.gz
-  sample_2	2	control	data/reads/sample_2_R1.fq.gz	data/reads/sample_2_R2.fq.gz
-  ```
-* **Pipeline Config (`config.yaml`)**: Edit the global parameters, adapter trimming settings, filtering thresholds (e.g. MAPQ scores, TSS limits), and target file pathways to align with your organism of interest.
-
-### 4. Setup Verification
-Run the built-in validation script to ensure all referenced config keys, types, and physical paths on disk are syntactically and structurally correct before launching the pipeline:
-```bash
-python3 rules/scripts/validate_config.py config.yaml
+# Run in the Cloud (e.g., Google Cloud Batch)
+scripts/run_pipeline.sh -- --profile profiles/gcp
 ```
 
 ---
 
-## 🚀 Running the Pipeline
+## 📁 Repository Documentation Map
 
-### Option A: Standard Cluster / Server Run
-Run Snakemake directly, enabling it to download and manage the required tool dependencies automatically inside Conda environments:
-```bash
-# Bulk ATAC run
-snakemake --cores 8 --use-conda
+For detailed architectural information, please consult the specific `README.md` files located in each foundational directory:
 
-# Single-cell ATAC run
-ATAC_MODE=scatac snakemake --cores 8 --use-conda
-```
-
-### Option B: Low-Resource Batch Execution (≤4GB RAM machines)
-For local testing or execution on standard personal laptops where parallel Snakemake jobs cause memory/OOM crashes, use the cohort batch orchestrator:
-```bash
-python3 rules/scripts/run_batched.py --batch-size 2 --cores 4 --memory 4000
-```
-
----
-
-## 🔒 Security & Robustness Features
-
-| Layer | Mechanism |
+| Directory | What you will find there |
 |---|---|
-| **Pre-flight validation** | `validate_config.py` checks all config keys, scalar types, and physical file paths before DAG construction |
-| **Sample sanitization** | Regex rejects shell metacharacters and `..` path traversal in sample names |
-| **Shell safety** | Every rule uses `set -euo pipefail`; Python subprocesses use `shell=False` |
-| **Graceful degradation** | R/Python analytics write placeholder outputs on zero-data scenarios instead of crashing |
-| **Type safety** | Config path extractor rejects boolean/None coercion into file paths |
-| **Reproducibility** | Pinned Conda environments + Singularity container directives on every rule |
+| [`profiles/`](profiles/) | Cloud, SLURM, and local execution configuration profiles |
+| [`scripts/`](scripts/) | Pipeline orchestration and execution wrappers |
+| [`envs/`](envs/) | Grouped, multi-tool Conda environments for manual debugging |
+| [`rules/envs/`](rules/envs/) | Strict, 1-to-1 modular Conda environments for automated rules |
+| [`rules/`](rules/) | Modular `.smk` files and dependency flowcharts |
 
 ---
 
-## 🏗️ Repository Structure
+## 🔒 Security & Fail-Safes
 
-```text
-BDB-Genomics/atacseq-pipeline/
-├── .github/workflows/          # CI/CD configuration (lint.yml)
-├── assets/                     # Banners, logos, visual assets
-├── profile/
-│   ├── local/                  # Local execution profile
-│   ├── slurm/                  # SLURM cluster profile
-│   ├── low_resource/           # ≤4GB RAM laptop profile
-│   ├── test/                   # CI test profile (relaxed QC)
-│   ├── aws/                    # AWS Batch + Tibanna profile
-│   ├── gcp/                    # Google Life Sciences profile
-│   ├── azure/                  # Azure Batch profile
-│   └── kubernetes/             # Kubernetes cluster profile
-├── rules/
-│   ├── scripts/
-│   │   ├── README.md                   # Flowcharts and script reference
-│   │   ├── aggregate_logs.py           # Structured JSON telemetry
-│   │   ├── atacseq_tool.py             # LangChain agent wrapper
-│   │   ├── geo_agent_bridge.py         # GEOAgent metadata importer
-│   │   ├── validate_config.py          # Pre-flight validation
-│   │   ├── test_validate_config.py     # Pytest suite
-│   │   ├── generate_test_data.py       # Synthetic CI data generator
-│   │   ├── run_batched.py              # Low-memory batch executor
-│   │   └── [*.R]                       # R analysis scripts (ArchR, DESeq2, etc.)
-│   ├── envs/                   # Conda environment definitions
-│   └── [40+ .smk files]        # Snakemake rules
-├── config.yaml                 # Configuration file
-├── Snakefile                   # Snakemake entry point
-└── AGENTS.md                   # Agent entrypoint and navigation map
-```
+| Mechanism | Description |
+|---|---|
+| **Pre-flight Validation** | The `scripts/` wrapper enforces configuration validation *before* execution. |
+| **Strict Isolation** | `rules/envs/` guarantees completely isolated tool executions. |
+| **Defensive Analytics** | R and Python scripts gracefully write placeholder outputs instead of crashing when biological data yields 0 peaks/overlaps. |
