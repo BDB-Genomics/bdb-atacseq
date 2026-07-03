@@ -8,7 +8,7 @@ printshellcmds: true
 show-failed-logs: true
 rerun-incomplete: true
 restart-times: 0
-configfile: "profile/test/config_test.yaml"
+configfile: "profiles/test/config_test.yaml"
 
 
 default-resources:
