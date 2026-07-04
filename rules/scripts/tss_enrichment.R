@@ -210,13 +210,15 @@ cat("Panel 1: Computing TSS enrichment profile...\n")
         tss_sample <- tss_regions_cov[sample(length(tss_regions_cov), n_sample)]
         cat("  Sampling", n_sample, "TSS regions for visualization\n")
     }
-    sigs <- featureAlignedSignal(
-        reads,
+    sigs_list <- featureAlignedSignal(
+        cvglists = list("sample" = reads),
         feature.gr = tss_sample,
         upstream = upstream,
         downstream = downstream,
         n.tile = 200
     )
+    
+    sigs <- if (is.list(sigs_list)) sigs_list[[1]] else sigs_list
     
     # Average signal
     avg_signal <- colMeans(sigs, na.rm = TRUE)
