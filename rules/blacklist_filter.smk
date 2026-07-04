@@ -25,5 +25,5 @@ rule blacklist_region_filter:
             -a {input.peaks} \
             -b {params.blacklist} \
         > {output.filtered_peaks} \
-        2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        2> {log}
         """

@@ -27,5 +27,5 @@ rule tn5_shift:
            2> {log}  && \
         samtools sort -@ {threads} -o {output.shifted_filtered_bam} {output.shifted_filtered_bam}.unsorted 2>> {log} && \
         rm -f {output.shifted_filtered_bam}.unsorted && \
-        samtools index {output.shifted_filtered_bam} {output.shifted_filtered_bam_index} 2>> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        samtools index {output.shifted_filtered_bam} {output.shifted_filtered_bam_index} 2>> {log}
         """

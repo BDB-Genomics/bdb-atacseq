@@ -22,5 +22,5 @@ rule samtools_index_post_filter:
         -@ {threads} \
         {input.filtered_bam} \
         {output.filtered_bam_indexed} \
-        2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        2> {log}
         """

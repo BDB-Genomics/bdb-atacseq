@@ -61,7 +61,7 @@ rule peak_annotation:
             feature_summary <- as.data.frame(table(peakAnno@anno$annotation));
             write.table(feature_summary, "{output.summary}", sep="\\t", row.names=FALSE, quote=FALSE);
         }}
-        ' 2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        ' 2> {log}
         """
 
 

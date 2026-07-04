@@ -53,6 +53,7 @@ global:
     blacklist: &BLACKLIST "data/reference/ENCODE_blacklist.bed"
     annotation_gtf: &ANNOTATION_GTF "data/reference/annotation.gtf"
     motif_db: &MOTIF_DB "data/motifs/jaspar_vertebrates.meme"
+    jaspar_sqlite: &JASPAR_SQLITE "data/reference/JASPAR2024.sqlite"
 
 # ==============================================================================
 # Tool Specific Configurations
@@ -601,6 +602,7 @@ chromvar_analysis:
     motif_db: *MOTIF_DB
     genome_fa: *GENOME_FA
     genome_sizes: *GENOME_SIZES
+    jaspar_sqlite: *JASPAR_SQLITE
   threads: 8
   resources:
     mem_mb: 16000

@@ -42,5 +42,5 @@ rule picard_CollectInsertSizeMetrics:
         else 
            echo "UNSUCCESSFUL; EXIT STATUS: ${{EXIT_STATUS}}" >> {log}
            exit ${{EXIT_STATUS}}
-        fi || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        fi
         """

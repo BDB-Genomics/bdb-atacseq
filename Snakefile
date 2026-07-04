@@ -160,7 +160,6 @@ if MODE == "bulk":
         expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
         expand("{path}/{sample}_tss_enrichment.txt", path=config['tss_enrichment']['output'], sample=SAMPLES),
         expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES),
-        expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES),
         expand("{path}/{sample}_crosscorr.txt", path=config['cross_correlation']['output'], sample=SAMPLES)
     ]
     VISUALIZATION_TARGETS = [
@@ -189,7 +188,8 @@ if MODE == "bulk":
         config['benchmark_summary']['output']
     ]
     if not config.get("ci_mode", False):
-        PEAK_TARGETS.append(expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES))
+        QC_METRICS_TARGETS.extend(expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES))
+        PEAK_TARGETS.extend(expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES))
 
 elif MODE == "scatac":
     QC_GATE_TARGETS = []

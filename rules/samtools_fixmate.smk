@@ -19,6 +19,6 @@ rule samtools_fixmate:
     shell:
         """
         set -o pipefail
-        samtools sort -n -@ {threads} {input.sorted_bam_noMT} |  samtools fixmate -m -@ {threads} - - | samtools sort -@ {threads} -o {output.sorted_bam_noMT_fixmate} - 2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        samtools sort -n -@ {threads} {input.sorted_bam_noMT} |  samtools fixmate -m -@ {threads} - - | samtools sort -@ {threads} -o {output.sorted_bam_noMT_fixmate} - 2> {log}
        """
        

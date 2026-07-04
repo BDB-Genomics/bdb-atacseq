@@ -22,6 +22,6 @@ rule samtools_index_postmarkdup:
         -@ {threads} \
         {input.markdup_bam}\
         {output.indexed_markdup_bam} \
-        2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        2> {log}
         """
          

@@ -24,9 +24,6 @@ rule preseq:
         preseq {params.extra} \
             -B {input.bam} \
             -o {output.complexity} \
-            2> {log} || {{
-                echo "[WARNING] Preseq failed (usually due to low/insufficient reads or duplicates). Creating placeholder output." >> {log}
-                touch {output.complexity}
-            }}
+            2> {log}
         """
 

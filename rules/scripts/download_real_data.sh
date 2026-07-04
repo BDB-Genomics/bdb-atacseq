@@ -41,8 +41,9 @@ wget -O "gencode.v44.basic.annotation.gtf.gz" "https://ftp.ebi.ac.uk/pub/databas
 echo "=== Downloading ENCODE Blacklist BED ==="
 wget -O "ENCFF356LFX.bed.gz" "https://www.encodeproject.org/files/ENCFF356LFX/@@download/ENCFF356LFX.bed.gz"
 
-echo "=== Downloading JASPAR Vertebrates Meme Database ==="
+echo "=== Downloading JASPAR Vertebrates Database ==="
 wget -O "${MOTIFS_DIR}/jaspar_vertebrates.meme" "https://jaspar.elixir.no/download/data/2024/CORE/JASPAR2024_CORE_vertebrates_non-redundant_pfms_meme.txt"
+wget -O "${REF_DIR}/JASPAR2024.sqlite" "https://jaspar.elixir.no/download/database/JASPAR2024.sqlite" || echo "WARNING: Failed to download JASPAR2024.sqlite from jaspar.elixir.no"
 
 echo "=== Post-processing Genome and Reference Files ==="
 # 1. Combine FASTA files

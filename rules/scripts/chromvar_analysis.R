@@ -96,8 +96,15 @@ tryCatch({
     
     cat("Loading motif database\n")
     pfm_list <- tryCatch({
-        db <- JASPAR2024()
-        getMatrixSet(db, opts=list(species=9606, collection="CORE"))
+        jaspar_sqlite <- snakemake@params[["jaspar_sqlite"]]
+        if (!is.null(jaspar_sqlite) && file.exists(jaspar_sqlite)) {
+            cat("Loading JASPAR database from local SQLite file:", jaspar_sqlite, "\n")
+            db <- RSQLite::dbConnect(RSQLite::SQLite(), jaspar_sqlite)
+            getMatrixSet(db, opts=list(species=9606, collection="CORE"))
+        } else {
+            db <- JASPAR2024()
+            getMatrixSet(db, opts=list(species=9606, collection="CORE"))
+        }
     }, error = function(e) {
         cat("Warning: Failed to load JASPAR2024 database from web, using local dummy motif list\n")
         dummy_matrix <- matrix(c(

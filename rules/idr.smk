@@ -37,6 +37,6 @@ rule idr_analysis:
                 cat {input.rep1} {input.rep2} | sort -k1,1 -k2,2n > {output.idr_peaks}
             }}
 
-        mv {output.idr_peaks}.png {output.plot} 2>/dev/null || touch {output.plot}
-        cp {output.idr_peaks} {output.opt_peaks} 2>/dev/null || touch {output.opt_peaks}
+        mv {output.idr_peaks}.png {output.plot} 2>/dev/null
+        cp {output.idr_peaks} {output.opt_peaks} 2>/dev/null
         """

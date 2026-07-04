@@ -30,5 +30,5 @@ rule cross_correlation:
             -rf \
             -p={params.num_threads} \
             -s=10:5:{params.max_range} \
-            2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+            2> {log}
         """

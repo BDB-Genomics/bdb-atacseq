@@ -22,18 +22,10 @@ rule motif_analysis:
 
     shell:
         """
-        if [ ! -s {input.filtered_peaks} ] || [ $(wc -l < {input.filtered_peaks}) -eq 0 ]; then
-            echo "[WARNING] Peak file is empty. Creating dummy motif analysis output." >> {log}
-            mkdir -p {output.html}
-            echo "<html><body>No peaks found for motif analysis.</body></html>" > {output.html}/homerResults.html
-            echo "<html><body>No peaks found for motif analysis.</body></html>" > {output.html}/knownResults.html
-            touch {output.html}/homerResults.txt {output.html}/knownResults.txt
-        else
-            findMotifsGenome.pl {input.filtered_peaks} {params.genome_assembly} {output.html} \
-                -p {threads} \
-                -len 8,10,12 \
-                -size 200 \
-            2> {log}
-        fi
+        findMotifsGenome.pl {input.filtered_peaks} {params.genome_assembly} {output.html} \
+            -p {threads} \
+            -len 8,10,12 \
+            -size 200 \
+        2> {log}
         """
 

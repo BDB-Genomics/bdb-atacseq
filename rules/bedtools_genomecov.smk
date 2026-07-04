@@ -26,5 +26,5 @@ rule bedtools_genomecov:
           -ibam {input.shifted_bam} \
           {params.extra} \
           > {output.bedgraph} \
-          2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+          2> {log}
         """

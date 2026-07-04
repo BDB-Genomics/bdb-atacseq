@@ -42,5 +42,5 @@ rule benchmark_summary:
                 cpu=$(head -n 2 "$f" | tail -n 1 | cut -f3)
                 echo -e "${{rule}}\\t${{sample}}\\t${{runtime}}\\t${{mem}}\\t${{cpu}}" >> {output.summary}
             }}
-        done 2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        done 2> {log}
         """

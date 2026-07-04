@@ -23,5 +23,5 @@ rule count_peaks:
             -counts \
         | awk '{{print $1"\\t"$2"\\t"$3"\\t"$NF}}' \
         > {output.counts} \
-        2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        2> {log}
         """

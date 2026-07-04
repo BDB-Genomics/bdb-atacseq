@@ -15,5 +15,5 @@ rule remove_blacklist_reads:
     message: "[REMOVE BLACKLIST READS] SAMPLE: {wildcards.sample} | Filtering reads using bedtools"
     shell:
         """
-        bedtools intersect -v -abam {input.bam} -b {input.blacklist} > {output.bam} 2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        bedtools intersect -v -abam {input.bam} -b {input.blacklist} > {output.bam} 2> {log}
         """
