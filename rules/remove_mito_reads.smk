@@ -22,7 +22,7 @@ rule remove_mito_reads:
     shell:
         """
         # Get BAM header chromosome names to dynamically locate MT/M/chrM/chrMT
-        mito_chr=$(samtools view -H {input.sorted_bam} | grep -o -E "SN:(chr)?(M|MT)" | cut -d':' -f2 | head -n1)
+        mito_chr=$(samtools view -H {input.sorted_bam} | grep -o -E "SN:(chr)?(M|MT)" | cut -d':' -f2 | head -n1 || true)
         if [ -z "$mito_chr" ]; then
             mito_chr="{params.mito_chr}"
         fi

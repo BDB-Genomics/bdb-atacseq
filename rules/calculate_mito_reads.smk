@@ -26,7 +26,7 @@ rule calculate_mito_reads:
         samtools index -@ {threads} {input.sorted_bam}
 
         # Get BAM header chromosome names to dynamically locate MT/M/chrM/chrMT
-        mito_chr=$(samtools view -H {input.sorted_bam} | grep -o -E "SN:(chr)?(M|MT)" | cut -d':' -f2 | head -n1)
+        mito_chr=$(samtools view -H {input.sorted_bam} | grep -o -E "SN:(chr)?(M|MT)" | cut -d':' -f2 | head -n1 || true)
         [ -z "$mito_chr" ] && mito_chr="{params.mito_chr}"
 
         
