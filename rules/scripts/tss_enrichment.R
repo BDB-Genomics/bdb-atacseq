@@ -97,30 +97,8 @@ bamParam <- ScanBamParam(
 gal <- readGAlignments(bamfile, use.names = TRUE, param = bamParam)
 cat("Read", format(length(gal), big.mark=","), "alignments within target windows\n")
 
-# Gracefully handle zero alignments overlapping TSS (common in low-depth mock tests)
 if (length(gal) == 0) {
-    cat("[WARNING] Zero alignments found overlapping TSS regions. Creating fallback results and plots.\n")
-    # Save fallback results text file
-    result_df <- data.frame(
-        Sample = sample_name, 
-        TSS_Enrichment = 0.0,
-        Total_Alignments = 0,
-        TSS_Regions = length(tss_regions),
-        Common_Chromosomes = 0,
-        Quality = "Poor",
-        stringsAsFactors = FALSE
-    )
-    write.table(result_df, file=out_text, sep="\t", quote=FALSE, row.names=FALSE)
-    
-    # Save fallback plot PDF
-    pdf(out_pdf, width=10, height=5)
-    plot(1, type = "n", xlim = c(-10, 10), ylim = c(-10, 10), 
-         xlab = "", ylab = "", main = paste0(sample_name, " - TSS Enrichment"), axes=FALSE)
-    text(0, 0, "Warning: Zero alignments overlapping TSS regions.\nCannot compute TSS enrichment profile.", cex=1.3, col="red")
-    dev.off()
-    
-    cat("TSS Enrichment Analysis Complete (Graceful Fallback)!\n")
-    quit(save="no", status=0)
+    stop("Zero alignments found overlapping TSS regions. Cannot compute TSS enrichment.")
 }
 
 # Check overlap between BAM and TSS regions
@@ -218,12 +196,12 @@ par(mar=c(5, 5, 4, 2))
 
 # PANEL 1: TSS Enrichment Profile (Main Plot)
 cat("Panel 1: Computing TSS enrichment profile...\n")
-tryCatch({
     reads <- coverage(gal)
     # Ensure tss_regions only contains chromosomes that actually have coverage in reads
     coverage_chroms <- names(reads)
     tss_regions_cov <- tss_regions[as.character(seqnames(tss_regions)) %in% coverage_chroms]
-    tss_regions_cov <- keepSeqlevels(tss_regions_cov, intersect(seqlevels(tss_regions_cov), coverage_chroms), pruning.mode="coarse")
+    tss_regions_cov <- keepSeqlevels(tss_regions_cov, coverage_chroms, pruning.mode="coarse")
+    seqlevels(tss_regions_cov) <- coverage_chroms
     
     n_sample <- min(length(tss_regions_cov), 10000)
     tss_sample <- tss_regions_cov
@@ -375,32 +353,6 @@ tryCatch({
          cex = 1.4, col = color, font = 2)
     
     grid(col = "gray70", lty = "dotted")
-    
-}, error = function(e) {
-    cat("Error in creating plots:", conditionMessage(e), "\n")
-    
-    # Fallback: simple plot
-    plot(1, type = "n", 
-         xlim = c(-upstream, downstream),
-         ylim = c(0, max(2, tsse_score)),
-         xlab = "Distance from TSS (bp)",
-         ylab = "Enrichment Score",
-         main = paste0(sample_name, "\nTSS Score: ", round(tsse_score, 3)),
-         las = 1,
-         cex.lab = 1.3,
-         cex.main = 1.5)
-    
-    text(0, tsse_score/2, 
-         paste0("TSS Enrichment Score:\n", round(tsse_score, 3)),
-         cex = 2.5, col = color, font = 2)
-    
-    text(0, tsse_score * 0.75,
-         paste0("Quality: ", quality),
-         cex = 2, col = color)
-    
-    abline(v = 0, lty = 2, col = "red", lwd = 2)
-    grid(col = "gray70")
-})
 
 dev.off()
 cat("Plots saved to:", out_pdf, "\n\n")
