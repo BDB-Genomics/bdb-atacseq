@@ -97,6 +97,5 @@ rule tobias_bindetect:
                 --outdir {output.bindetect_dir} \
                 --cores {threads} \
                 2> {log}
-        fi
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        fi || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

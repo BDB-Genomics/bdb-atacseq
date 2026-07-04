@@ -29,6 +29,5 @@ rule fastqc:
         -t {threads} \
         -o {params.out_dir} \
         {input.R1_trimmed} {input.R2_trimmed} \
-        2> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

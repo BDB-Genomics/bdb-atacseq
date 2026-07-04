@@ -31,6 +31,5 @@ rule remove_mito_reads:
         awk -v mito_chr="$mito_chr" 'BEGIN {{OFS="\\t"}} /^@/ || $3 != mito_chr {{print $0}}' 2>> {log} | \
         samtools sort -@ {threads} -o {output.noMT_sorted_bam} - 2>> {log}
         
-        echo "Complete mitochondrial removal for {wildcards.sample}" &>> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        echo "Complete mitochondrial removal for {wildcards.sample}" &>> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

@@ -33,7 +33,6 @@ rule macs2_peak_calling:
             --outdir {params.dir} \
             {params.nomodel} \
             -q {params.qval} \
-            2> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+            2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
 
          """

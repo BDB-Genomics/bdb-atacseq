@@ -24,7 +24,6 @@ rule sorted_bedgraph:
         -S {resources.mem_mb}M \
         {input.bedgraph} \
         > {output.sorted_bedgraph} \
-        2> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """
         

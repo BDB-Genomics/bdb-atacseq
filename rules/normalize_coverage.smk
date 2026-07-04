@@ -27,6 +27,5 @@ rule normalize_coverage:
              -o {output.normalized_coverage} \
              --normalizeUsing {params.method} \
              --numberOfProcessors {threads} \
-             2> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+             2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
          """

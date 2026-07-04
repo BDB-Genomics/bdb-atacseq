@@ -45,6 +45,5 @@ rule calculate_mito_reads:
         echo "Mito Fraction: ${{fraction}}" >> {output.mito_stats}
 
         # Remove the inline index to keep the directory clean
-        rm -f {input.sorted_bam}.bai
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        rm -f {input.sorted_bam}.bai || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

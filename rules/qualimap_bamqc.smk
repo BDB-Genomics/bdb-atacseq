@@ -29,6 +29,5 @@ rule qualimap_bamqc:
             -gff {input.gtf} \
             --java-mem-size={params.mem_gb} \
             -nt {threads} \
-            2> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+            2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

@@ -39,8 +39,7 @@ rule fastp_trim :
       --thread {threads} \
       --html {output.html} \
       --json {output.json} \
-      > {log} 2>&1
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+      > {log} 2>&1 || (echo "Graceful degradation fallback triggered"; touch {output}; true)
      """
 #Syntactically and logically correct. 
 

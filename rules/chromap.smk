@@ -39,6 +39,5 @@ rule chromap_align:
             --SAM \
             2> {log}
 
-        samtools view -bS {output.BAM} > {output.tagBam} 2>> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        samtools view -bS {output.BAM} > {output.tagBam} 2>> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

@@ -63,6 +63,5 @@ rule fragment_size_analysis:
               paste("Max_size:", max(fragments))
         )
         writeLines(stats_summary, "{output.stats}")
-        ' | Rscript - 2> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        ' | Rscript - 2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

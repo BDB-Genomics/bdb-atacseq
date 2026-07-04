@@ -30,8 +30,7 @@ rule samtools_view:
         -f 2 \
         {input.dedup_bam} \
         -o {output.filtered_bam} \
-        2> {log}
-        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
+        2> {log} || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """
 
    
