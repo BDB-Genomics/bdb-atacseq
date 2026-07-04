@@ -36,23 +36,10 @@ if os.path.exists(filtered_peaks) and os.path.getsize(filtered_peaks) > 0:
                 break
 
 if is_empty:
-    # Generate dummy outputs
+    import sys
     with open(log_matrix, 'w') as f:
-        f.write("[WARNING] Peak file is empty. Generating dummy heatmap outputs.\n")
-    
-    with gzip.open(matrix, 'wb') as f:
-        f.write(b'# computeMatrix dummy')
-        
-    with open(regions, 'w') as f:
-        f.write('')
-        
-    try:
-        fig, ax = plt.subplots()
-        ax.text(0.5, 0.5, 'No peaks found for heatmap', size=15, ha='center', va='center')
-        plt.savefig(plot)
-    except Exception as e:
-        with open(log_plot, 'w') as f:
-            f.write(f"Error generating dummy plot: {str(e)}\n")
+        f.write("[ERROR] Peak file is empty. Cannot generate heatmap.\n")
+    sys.exit(1)
 else:
     # Run computeMatrix
     cmd_matrix = [

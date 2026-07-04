@@ -23,21 +23,10 @@ if os.path.exists(peaks) and os.path.getsize(peaks) > 0:
                 break
 
 if is_empty:
+    import sys
     with open(log_err, 'a') as log_f:
-        log_f.write(f"[WARNING] No peaks found in {peaks}. Creating dummy footprint bigWig file.\n")
-        
-    headers = []
-    with open(genome_sizes) as f:
-        for line in f:
-            if line.strip():
-                parts = line.strip().split()
-                headers.append((parts[0], int(parts[1])))
-                
-    import pyBigWig
-    bw = pyBigWig.open(footprint_bw, 'w')
-    bw.addHeader(headers)
-    bw.addEntries([headers[0][0]], [0], ends=[100], values=[0.0])
-    bw.close()
+        log_f.write(f"[ERROR] No peaks found in {peaks}. Cannot run TOBIAS FootprintScores.\n")
+    sys.exit(1)
 else:
     # Run TOBIAS FootprintScores
     cmd = [

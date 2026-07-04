@@ -27,35 +27,7 @@ sample_name <- snakemake@wildcards[["sample"]]
 cat("Sample:", sample_name, "\n")
 cat("Loading peaks:", peak_file, "\n")
 
-# Define safe fallback function
-write_dummy_outputs <- function(message) {
-    cat("[chromVAR SAFEGUARD]", message, "\n")
-    # Try to load motifs to get their IDs
-    motif_ids <- tryCatch({
-        db <- JASPAR2024()
-        names(getMatrixSet(db, opts=list(species=9606, collection="CORE")))
-    }, error = function(e) {
-        c("TEST_MOTIF_1")
-    })
-    
-    # Create dummy dataframes
-    dummy_df <- data.frame(matrix(NA, nrow=length(motif_ids), ncol=1))
-    rownames(dummy_df) <- motif_ids
-    colnames(dummy_df) <- sample_name
-    
-    # Write files
-    write.table(dummy_df, output_deviations, sep="\t", quote=FALSE, col.names=NA)
-    write.table(dummy_df, output_bias, sep="\t", quote=FALSE, col.names=NA)
-    
-    # Write dummy plot
-    pdf(output_plot, width=6, height=6)
-    plot.new()
-    text(0.5, 0.5, paste("chromVAR skipped:\n", message))
-    dev.off()
-    
-    cat("Safeguard dummy outputs written successfully.\n")
-}
-
+# Dummy fallback removed for strict fail-fast CI
 # Read and resize peaks to 500bp (chromVAR standard)
 if (file.info(peak_file)$size == 0) {
     peaks <- data.frame(V1=character(), V2=integer(), V3=integer(), stringsAsFactors=FALSE)
@@ -64,8 +36,7 @@ if (file.info(peak_file)$size == 0) {
 }
 
 if (nrow(peaks) < 2) {
-    write_dummy_outputs("Fewer than 2 peaks in peak file")
-    quit(save="no", status=0)
+    stop("Fewer than 2 peaks in peak file")
 }
 
 gr_peaks <- GRanges(seqnames=peaks$V1,
@@ -106,20 +77,7 @@ tryCatch({
             getMatrixSet(db, opts=list(species=9606, collection="CORE"))
         }
     }, error = function(e) {
-        cat("Warning: Failed to load JASPAR2024 database from web, using local dummy motif list\n")
-        dummy_matrix <- matrix(c(
-          0.25, 0.25, 0.25, 0.25,
-          0.25, 0.25, 0.25, 0.25,
-          0.25, 0.25, 0.25, 0.25,
-          0.25, 0.25, 0.25, 0.25,
-          0.25, 0.25, 0.25, 0.25,
-          0.25, 0.25, 0.25, 0.25,
-          0.25, 0.25, 0.25, 0.25,
-          0.25, 0.25, 0.25, 0.25
-        ), ncol=4, byrow=TRUE)
-        colnames(dummy_matrix) <- c("A", "C", "G", "T")
-        pfm <- PFMatrix(ID="TEST_MOTIF_1", name="TEST_MOTIF_1", profileMatrix=t(dummy_matrix))
-        PFMatrixList(pfm)
+        stop(paste("Failed to load JASPAR2024 database:", e$message))
     })
     
     cat("Matching motifs to peaks\n")
@@ -170,5 +128,5 @@ tryCatch({
     
     cat("chromVAR analysis complete for", sample_name, "\n")
 }, error = function(e) {
-    write_dummy_outputs(e$message)
+    stop(e$message)
 })

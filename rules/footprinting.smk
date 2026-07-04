@@ -24,8 +24,8 @@ rule footprinting:
     shell:
         """
         if [ ! -s {input.peaks} ] || [ $(wc -l < {input.peaks}) -eq 0 ]; then
-            echo "Peak file {input.peaks} is empty. Creating empty footprints file." >> {log}
-            touch {output.footprints}
+            echo "Peak file {input.peaks} is empty. Cannot perform footprinting." >> {log}
+            exit 1
         else
             mkdir -p {params.tmp_dir}
             if rgt-hint footprinting \
@@ -40,12 +40,12 @@ rule footprinting:
                 if [ -f {params.tmp_dir}/{wildcards.sample}.bed ]; then
                     mv {params.tmp_dir}/{wildcards.sample}.bed {output.footprints}
                 else
-                    echo "[WARNING] rgt-hint completed but output file not found. Creating placeholder." >> {log}
-                    touch {output.footprints}
+                    echo "[ERROR] rgt-hint completed but output file not found." >> {log}
+                    exit 1
                 fi
             else
-                echo "[WARNING] rgt-hint footprinting failed (common in low-depth test data). Creating placeholder." >> {log}
-                touch {output.footprints}
+                echo "[ERROR] rgt-hint footprinting failed." >> {log}
+                exit 1
             fi
             rm -rf {params.tmp_dir}
         fi

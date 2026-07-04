@@ -41,17 +41,8 @@ rule peak_annotation:
         }}
 
         if (is_empty) {{
-            cat("Peak file is empty. Generating dummy annotation and summary.\\n");
-            dummy_anno <- data.frame(
-                seqnames = character(), start = integer(), end = integer(), width = integer(),
-                strand = character(), annotation = character(), geneChr = character(),
-                geneStart = integer(), geneEnd = integer(), geneLength = integer(),
-                geneStrand = character(), geneId = character(), distanceToTSS = numeric()
-            )
-            write.table(dummy_anno, "{output.annotation}", sep="\\t", row.names=FALSE, quote=FALSE);
-
-            dummy_summary <- data.frame(Var1 = character(), Freq = integer())
-            write.table(dummy_summary, "{output.summary}", sep="\\t", row.names=FALSE, quote=FALSE);
+            cat("Peak file is empty. Cannot perform peak annotation.\\n", file=stderr());
+            quit(status = 1);
         }} else {{
             txdb <- makeTxDbFromGFF("{params.gff}", format="gtf");
             peakAnno <- annotatePeak(peakfile, TxDb=txdb, tssRegion=c(-3000, 3000), verbose=FALSE);
