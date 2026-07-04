@@ -43,21 +43,7 @@ count_matrix <- as.data.frame(do.call(cbind, list_of_counts))
 rownames(count_matrix) <- peak_regions
 
 if (is.null(peak_regions) || length(peak_regions) < 10) {
-    cat("Warning: Too few peaks found for DESeq2 differential accessibility analysis. Generating dummy outputs.\n")
-    dummy_results <- data.frame(
-        peak=character(), baseMean=numeric(), log2FoldChange=numeric(),
-        lfcSE=numeric(), stat=numeric(), pvalue=numeric(), padj=numeric(),
-        significant=character(), stringsAsFactors=FALSE
-    )
-    write.table(dummy_results, output_results, sep="\t", quote=FALSE, row.names=FALSE)
-    for (out_pdf in c(output_volcano, output_ma, output_heatmap, output_pca)) {
-        pdf(out_pdf, width=6, height=6)
-        plot.new()
-        text(0.5, 0.5, "Insufficient peaks for analysis")
-        dev.off()
-    }
-    cat("Differential Accessibility Analysis Complete (Dummy Mode)!\n")
-    q(save="no")
+    stop("Too few peaks found for DESeq2 differential accessibility analysis.")
 }
 
 cat("Count matrix:", nrow(count_matrix), "peaks x", ncol(count_matrix), "samples\n")
@@ -74,7 +60,6 @@ coldata <- data.frame(
 
 cat("Conditions:", paste(unique(coldata$condition), collapse=", "), "\n")
 
-tryCatch({
     cat("Running DESeq2\n")
     dds <- DESeqDataSetFromMatrix(
         countData = count_matrix,
@@ -163,34 +148,6 @@ tryCatch({
     }
     dev.off()
     cat("  Heatmap saved\n")
-}, error = function(e) {
-    cat("Warning: DESeq2 analysis failed (", e$message, "). Generating dummy outputs.\n")
-    dummy_results <- data.frame(
-        peak=character(), baseMean=numeric(), log2FoldChange=numeric(),
-        lfcSE=numeric(), stat=numeric(), pvalue=numeric(), padj=numeric(),
-        significant=character(), stringsAsFactors=FALSE
-    )
-    if (!is.null(peak_regions) && length(peak_regions) > 0) {
-        dummy_results <- data.frame(
-            peak=peak_regions,
-            baseMean=rep(0, length(peak_regions)),
-            log2FoldChange=rep(0, length(peak_regions)),
-            lfcSE=rep(0, length(peak_regions)),
-            stat=rep(0, length(peak_regions)),
-            pvalue=rep(1, length(peak_regions)),
-            padj=rep(1, length(peak_regions)),
-            significant=rep("No", length(peak_regions)),
-            stringsAsFactors=FALSE
-        )
-    }
-    write.table(dummy_results, output_results, sep="\t", quote=FALSE, row.names=FALSE)
-    for (out_pdf in c(output_volcano, output_ma, output_heatmap, output_pca)) {
-        pdf(out_pdf, width=6, height=6)
-        plot.new()
-        text(0.5, 0.5, paste("DESeq2 failed:\n", e$message))
-        dev.off()
-    }
-})
 
 cat("===========================================\n")
 cat("Differential Accessibility Analysis Complete!\n")
