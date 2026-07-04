@@ -28,5 +28,5 @@ rule frip_calculation:
         echo -e "Sample\\tTotal_Reads\\tReads_in_Peaks\\tFRiP_Score" >> {output.frip}
         echo -e "{wildcards.sample}\\t$total_fragments\\t$fragments_in_peaks\\t$frip" >> {output.frip}
         ) 2> {log}
-        || (echo "Graceful degradation fallback triggered for {rule}"; touch {output}; true)
+        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

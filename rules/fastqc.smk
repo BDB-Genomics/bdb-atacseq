@@ -30,5 +30,5 @@ rule fastqc:
         -o {params.out_dir} \
         {input.R1_trimmed} {input.R2_trimmed} \
         2> {log}
-        || (echo "Graceful degradation fallback triggered for {rule}"; touch {output}; true)
+        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

@@ -24,7 +24,7 @@ rule samtools_sort:
         -o {output.bam_sorted} \
         {input.unsorted_bam} \
         2> {log}
-        || (echo "Graceful degradation fallback triggered for {rule}"; touch {output}; true)
+        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """
         
         

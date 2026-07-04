@@ -32,5 +32,5 @@ rule remove_mito_reads:
         samtools sort -@ {threads} -o {output.noMT_sorted_bam} - 2>> {log}
         
         echo "Complete mitochondrial removal for {wildcards.sample}" &>> {log}
-        || (echo "Graceful degradation fallback triggered for {rule}"; touch {output}; true)
+        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

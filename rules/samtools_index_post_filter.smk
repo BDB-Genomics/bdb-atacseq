@@ -23,5 +23,5 @@ rule samtools_index_post_filter:
         {input.filtered_bam} \
         {output.filtered_bam_indexed} \
         2> {log}
-        || (echo "Graceful degradation fallback triggered for {rule}"; touch {output}; true)
+        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

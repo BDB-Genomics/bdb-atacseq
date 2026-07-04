@@ -54,5 +54,5 @@ rule consensus_peaks:
         cp {output.consensus} {output.counts}
 
         rm -f {output.consensus}.merged.tmp {output.consensus}.candidate.bed {output.consensus}.overlaps.tmp
-        || (echo "Graceful degradation fallback triggered for {rule}"; touch {output}; true)
+        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """

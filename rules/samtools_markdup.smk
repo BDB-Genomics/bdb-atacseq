@@ -28,6 +28,6 @@ rule samtools_markdup:
         {input.sorted_bam_noMT_fixmate} \
         {output.deduplicated_bam} \
         2> {log}
-        || (echo "Graceful degradation fallback triggered for {rule}"; touch {output}; true)
+        || (echo "Graceful degradation fallback triggered"; touch {output}; true)
         """
 
