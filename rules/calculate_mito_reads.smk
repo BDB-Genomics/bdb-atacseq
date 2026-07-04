@@ -35,7 +35,13 @@ rule calculate_mito_reads:
         
         # Mitochondrial reads
         mito=0
-        [ "${{total}}" -ne 0 ] && mito=$(samtools view -c {input.sorted_bam} "$mito_chr" 2>> {log})
+        if [ "${{total}}" -ne 0 ]; then
+            if samtools idxstats {input.sorted_bam} | cut -f1 | grep -Fxq "$mito_chr"; then
+                mito=$(samtools view -c {input.sorted_bam} "$mito_chr" 2>> {log})
+            else
+                echo "[WARNING] Mitochondrial chromosome $mito_chr not found in BAM. Proceeding with 0 mito reads."
+            fi
+        fi
         
         # Calculate fraction
         fraction=$(awk -v m="$mito" -v t="$total" 'BEGIN {{if (t > 0) printf "%.6f", m/t; else print "0.000000"}}')
