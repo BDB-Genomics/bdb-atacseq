@@ -25,7 +25,7 @@ tryCatch({
     write.table(feature_summary, snakemake@output[["summary"]], sep = "\t", row.names = FALSE, quote = FALSE)
     
     message("Peak annotation completed successfully (empty file safeguard)!")
-    return(TRUE)
+    quit(save = "no", status = 0, runLast = FALSE)
   }
   
   message("Building TxDb database from GFF/GTF: ", gff_file)
