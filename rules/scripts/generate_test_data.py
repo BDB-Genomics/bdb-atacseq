@@ -203,6 +203,26 @@ def generate_fastq_paired(
             f2.write(f"@READ{read_idx:06d}/2\n{r2_seq}\n+\n{quals}\n")
             read_idx += 1
 
+        # --- Ultra-dense Spike-in for Peak Calling -----------
+        # We'll put 1000 reads in exactly one 100bp region on chr1.
+        chrom = "chr1"
+        if chrom in genome_seqs and chrom in tss_by_chrom:
+            seq = genome_seqs[chrom]
+            tss = tss_by_chrom[chrom][0]  # The first gene's TSS
+            for _ in range(1000):
+                frag_len = max(READ_LENGTH + 10, min(int(random.gauss(FRAGMENT_MEAN, FRAGMENT_SD)), 400))
+                offset = random.randint(-50, 50)
+                pos = tss + offset
+                pos = max(0, min(pos, len(seq) - frag_len))
+
+                fragment = seq[pos : pos + frag_len]
+                r1_seq = fragment[:READ_LENGTH]
+                r2_seq = reverse_complement(fragment[-READ_LENGTH:])
+
+                f1.write(f"@READ{read_idx:06d}/1\n{r1_seq}\n+\n{quals}\n")
+                f2.write(f"@READ{read_idx:06d}/2\n{r2_seq}\n+\n{quals}\n")
+                read_idx += 1
+
         # --- Random reads: uniformly distributed across the genome --------
         chrom_list = list(genome_seqs.keys())
         for _ in range(n_random):
