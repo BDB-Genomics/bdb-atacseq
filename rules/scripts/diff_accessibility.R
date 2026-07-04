@@ -25,7 +25,7 @@ samples_info <- read.delim(sample_sheet, header=TRUE, sep="\t")
 cat("Building count matrix from", length(count_files), "files\n")
 
 peak_regions <- NULL
-count_matrix <- data.frame()
+list_of_counts <- list()
 
 for (cf in count_files) {
     sample_name <- gsub("_peak_counts.tsv$", "", basename(cf))
@@ -36,10 +36,10 @@ for (cf in count_files) {
         peak_regions <- paste(df$chr, df$start, df$end, sep="_")
     }
 
-    count_matrix <- cbind(count_matrix, df$count)
+    list_of_counts[[sample_name]] <- df$count
 }
 
-colnames(count_matrix) <- gsub("_peak_counts.tsv$", "", basename(count_files))
+count_matrix <- as.data.frame(do.call(cbind, list_of_counts))
 rownames(count_matrix) <- peak_regions
 
 if (is.null(peak_regions) || length(peak_regions) < 10) {
