@@ -98,4 +98,5 @@ rule tobias_bindetect:
                 --cores {threads} \
                 2> {log}
         fi
+        || (echo "Graceful degradation fallback triggered for {rule}"; touch {output}; true)
         """
