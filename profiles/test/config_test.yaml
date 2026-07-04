@@ -4,3 +4,20 @@ qc_gate:
     min_tss_enr: 0.0
     min_mapping_rate: 0.0
     max_duplicate_rate: 100.0
+
+macs2:
+  params:
+    qvalue: 0.99
+
+idr:
+  params:
+    idr_threshold: 0.99
+
+consensus_peaks:
+  params:
+    min_samples: 1
+
+differential_accessibility:
+  params:
+    fdr_threshold: 0.99
+    log2fc_threshold: 0.0
