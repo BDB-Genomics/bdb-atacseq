@@ -8,6 +8,7 @@ rule footprinting:
 
     params:
         organism=config['footprinting']['params']['organism'],
+        genome_fa=config['global']['references']['genome_fa'],
         rgt_genome_dir=lambda wildcards: f"{__import__('os').path.expanduser('~')}/rgtdata/{config['footprinting']['params']['organism']}",
         tmp_dir=lambda wildcards, output: f"{__import__('os').path.dirname(output.footprints)}/tmp_{wildcards.sample}"
 
@@ -29,7 +30,7 @@ rule footprinting:
             exit 1
         else
             mkdir -p {params.rgt_genome_dir}
-            ln -sf {config['global']['references']['genome_fa']} {params.rgt_genome_dir}/genome_{params.organism}.fa
+            ln -sf {params.genome_fa} {params.rgt_genome_dir}/genome_{params.organism}.fa
             mkdir -p {params.tmp_dir}
             if rgt-hint footprinting \
                 --atac-seq \
