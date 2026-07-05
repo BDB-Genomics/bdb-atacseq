@@ -25,6 +25,8 @@ rule idr_analysis:
 
     shell:
         """
+        mkdir -p $(dirname {output.idr_peaks}) $(dirname {output.opt_peaks}) $(dirname {output.plot})
+
         idr \
             --samples {input.rep1} {input.rep2} \
             --input-file-type narrowPeak \
@@ -37,6 +39,11 @@ rule idr_analysis:
                 cat {input.rep1} {input.rep2} | sort -k1,1 -k2,2n > {output.idr_peaks}
             }}
 
-        mv {output.idr_peaks}.png {output.plot} 2>/dev/null
-        cp {output.idr_peaks} {output.opt_peaks} 2>/dev/null
+        if [ -f {output.idr_peaks}.png ]; then
+            mv {output.idr_peaks}.png {output.plot}
+        else
+            touch {output.plot}
+        fi
+
+        cp {output.idr_peaks} {output.opt_peaks}
         """
