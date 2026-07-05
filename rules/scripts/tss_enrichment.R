@@ -196,9 +196,9 @@ par(mar=c(5, 5, 4, 2))
 
 # PANEL 1: TSS Enrichment Profile (Main Plot)
 cat("Panel 1: Computing TSS enrichment profile...\n")
-    reads_gr <- as(gal, "GRanges")
+    reads <- coverage(gal)
     # Ensure tss_regions only contains chromosomes that actually have coverage in reads
-    coverage_chroms <- unique(as.character(seqnames(reads_gr)))
+    coverage_chroms <- names(reads)
     tss_regions_cov <- tss_regions[as.character(seqnames(tss_regions)) %in% coverage_chroms]
     tss_regions_cov <- keepSeqlevels(tss_regions_cov, coverage_chroms, pruning.mode="coarse")
     seqlevels(tss_regions_cov) <- coverage_chroms
@@ -211,7 +211,7 @@ cat("Panel 1: Computing TSS enrichment profile...\n")
         cat("  Sampling", n_sample, "TSS regions for visualization\n")
     }
     sigs_list <- featureAlignedSignal(
-        cvglists = list("sample" = reads_gr),
+        cvglists = list("sample" = reads),
         feature.gr = tss_sample,
         upstream = upstream,
         downstream = downstream,
