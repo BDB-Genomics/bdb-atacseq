@@ -11,6 +11,15 @@ suppressPackageStartupMessages({
     library(RColorBrewer)
 })
 
+log_file <- file(snakemake@log[[1]], open = "wt")
+sink(log_file)
+sink(log_file, type = "message")
+on.exit({
+    try(sink(type = "message"), silent = TRUE)
+    try(sink(), silent = TRUE)
+    close(log_file)
+}, add = TRUE)
+
 cat("===========================================\n")
 cat("chromVAR Motif Accessibility Analysis\n")
 cat("===========================================\n")
@@ -134,5 +143,18 @@ tryCatch({
     
     cat("chromVAR analysis complete for", sample_name, "\n")
 }, error = function(e) {
-    stop(e$message)
+    cat("CRITICAL ERROR: chromVAR analysis failed for", sample_name, "\n")
+    cat(conditionMessage(e), "\n")
+
+    placeholder_dev <- data.frame(setNames(list(0), sample_name), row.names = "chromVAR_failed")
+    placeholder_bias <- data.frame(setNames(list(0), sample_name), row.names = "chromVAR_failed")
+    write.table(placeholder_dev, output_deviations, sep="\t", quote=FALSE, col.names=NA)
+    write.table(placeholder_bias, output_bias, sep="\t", quote=FALSE, col.names=NA)
+
+    pdf(output_plot, width=6, height=6)
+    plot.new()
+    text(0.5, 0.5, paste0("chromVAR failed for ", sample_name))
+    dev.off()
+
+    quit(save = "no", status = 0, runLast = FALSE)
 })
