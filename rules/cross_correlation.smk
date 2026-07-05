@@ -23,7 +23,7 @@ rule cross_correlation:
 
     shell:
         """
-        Rscript $(which run_spp.R) \
+        Rscript rules/scripts/run_spp.R \
             -c={input.filtered_bam} \
             -savp={output.plot} \
             -out={output.stats} \
