@@ -500,7 +500,7 @@ idr:
     plots: "results/peak_calling/idr/plots"
   params:
     idr_threshold: 0.05
-    rank_column: "score"
+    rank_column: "p.value"
   threads: 4
   resources:
     mem_mb: 4000
@@ -582,7 +582,7 @@ footprinting:
     footprints: "results/peak_calling/footprinting/footprints"
     plots: "results/peak_calling/footprinting/plots"
   params:
-    organism: "hg38"
+    organism: *GENOME_FA
   threads: 8
   resources:
     mem_mb: 16000
