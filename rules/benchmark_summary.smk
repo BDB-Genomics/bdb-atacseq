@@ -1,13 +1,20 @@
+def benchmark_summary_rules():
+    rules = [
+        "fastp", "fastqc", "bowtie2", "samtools_sort",
+        "samtools_markdup", "samtools_view", "tn5_shift",
+        "macs2", "frip", "tss_enrichment", "cross_correlation",
+        "motif_analysis", "bedtools_genomecov", "bigwig",
+        "heatmap",
+    ]
+    if not config.get("ci_mode", False):
+        rules.append("footprinting")
+    return rules
+
+
 rule benchmark_summary:
     input:
         benchmarks_per_sample=expand("benchmarks/{rule}/{sample}.txt",
-            rule=[
-                "fastp", "fastqc", "bowtie2", "samtools_sort",
-                "samtools_markdup", "samtools_view", "tn5_shift",
-                "macs2", "frip", "tss_enrichment", "cross_correlation",
-                "motif_analysis", "bedtools_genomecov", "bigwig",
-                "heatmap", "footprinting"
-            ],
+            rule=benchmark_summary_rules(),
             sample=SAMPLES
         ),
         benchmarks_mito=expand("benchmarks/remove_mito_reads/{sample}_noMT_sorted_bam.txt", sample=SAMPLES),

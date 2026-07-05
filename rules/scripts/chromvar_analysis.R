@@ -1,6 +1,7 @@
 suppressPackageStartupMessages({
     library(GenomicRanges)
     library(IRanges)
+    library(SummarizedExperiment)
     library(chromVAR)
     library(motifmatchr)
     library(TFBSTools)
@@ -101,11 +102,16 @@ tryCatch({
     write.table(raw_dev_clean, output_bias, sep="\t", quote=FALSE, col.names=NA)
     
     cat("Generating chromVAR plot\n")
-    # For a single sample (now 2 duplicated columns), there is zero variance across columns.
-    # So we'll write the dummy plot, which is perfectly fine.
-    valid_rows <- apply(dev_scores_clean, 1, function(x) !any(is.na(x)) && sd(x) > 0)
-    if (sum(valid_rows) >= 2) {
-        deviations_filtered <- dev_scores_clean[valid_rows, , drop=FALSE]
+    # Use the full deviation matrix for plotting. If there is only one column,
+    # duplicate it so the variance check stays well-defined.
+    plot_scores <- dev_scores
+    if (ncol(plot_scores) == 1) {
+        plot_scores <- cbind(plot_scores, plot_scores)
+    }
+
+    valid_rows <- apply(plot_scores, 1, function(x) all(!is.na(x)) && stats::sd(x) > 0)
+    if (sum(valid_rows, na.rm = TRUE) >= 2) {
+        deviations_filtered <- plot_scores[valid_rows, , drop=FALSE]
         top_n <- min(20, nrow(deviations_filtered))
         top_motifs <- head(rownames(deviations_filtered)[order(apply(deviations_filtered, 1, sd), decreasing=TRUE)], top_n)
         

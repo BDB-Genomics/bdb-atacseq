@@ -1,5 +1,5 @@
-rule multiqc:
-    input:
+def multiqc_inputs():
+    inputs = [
         expand("{path}/{sample}_R1_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
         expand("{path}/{sample}_R2_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
         expand("{path}/{sample}.json", path=config['fastp']['output'], sample=SAMPLES),
@@ -8,8 +8,19 @@ rule multiqc:
         expand("{path}/{sample}.alignment_metrics.txt", path=config['picard']['alignment_metrics']['output']['alignment_metrics'], sample=SAMPLES),
         expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
         expand("{path}/{sample}.insert_histogram.pdf", path=config['picard']['insert_metrics']['output']['histogram'], sample=SAMPLES),
-        expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES),
-        expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES)
+        expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES),
+    ]
+    if not config.get("ci_mode", False):
+        inputs.insert(
+            8,
+            expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES),
+        )
+    return inputs
+
+
+rule multiqc:
+    input:
+        multiqc_inputs()
         
     output:
         report_html=f"{config['multiqc']['output']}/multiqc_report.html"
@@ -40,5 +51,3 @@ rule multiqc:
             mv "{params.out_dir}/ATAC-seq-Pipeline-QC-Report_multiqc_report.html" "{output.report_html}"
         fi
         """
-
-

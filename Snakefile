@@ -228,7 +228,6 @@ elif MODE == "scatac":
 #TEMPLATE_TARGETS = [
 #    expand("results/template_category/template_tool/{sample}_template.txt", sample=SAMPLES)
 #]
-
 rule all:
     input:
         PREPROCESSING_TARGETS,
