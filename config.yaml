@@ -582,7 +582,7 @@ footprinting:
     footprints: "results/peak_calling/footprinting/footprints"
     plots: "results/peak_calling/footprinting/plots"
   params:
-    organism: *GENOME_FA
+    organism: "hg38"
   threads: 8
   resources:
     mem_mb: 16000
@@ -708,4 +708,3 @@ template_category: # [REPLACE] The broad category folder for your new tool (e.g.
     resources:
       mem_mb: 1000
       time: 10
-
