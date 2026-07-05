@@ -46,7 +46,7 @@ GENE_START_OFFSET = 10_000  # first gene starts here
 # ---------------------------------------------------------------------------
 # FASTQ parameters
 # ---------------------------------------------------------------------------
-READS_PER_SAMPLE = 7500
+READS_PER_SAMPLE = 20000
 READ_LENGTH = 75
 FRAGMENT_MEAN = 200
 FRAGMENT_SD = 30
