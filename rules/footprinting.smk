@@ -8,6 +8,7 @@ rule footprinting:
 
     params:
         organism=config['footprinting']['params']['organism'],
+        rgt_genome_dir=lambda wildcards: f"{__import__('os').path.expanduser('~')}/rgtdata/{config['footprinting']['params']['organism']}",
         tmp_dir=lambda wildcards, output: f"{__import__('os').path.dirname(output.footprints)}/tmp_{wildcards.sample}"
 
     resources:
@@ -27,6 +28,8 @@ rule footprinting:
             echo "Peak file {input.peaks} is empty. Cannot perform footprinting." >> {log}
             exit 1
         else
+            mkdir -p {params.rgt_genome_dir}
+            ln -sf {config['global']['references']['genome_fa']} {params.rgt_genome_dir}/genome_{params.organism}.fa
             mkdir -p {params.tmp_dir}
             if rgt-hint footprinting \
                 --atac-seq \
