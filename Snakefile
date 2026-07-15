@@ -23,7 +23,7 @@ MODE = os.getenv("ATAC_MODE", config.get("global", {}).get("mode", "bulk"))
 if MODE not in ("bulk", "scatac"):
     raise ValueError(f"Invalid mode '{MODE}'. Use 'bulk' or 'scatac'. Set via ATAC_MODE env var or config.yaml global.mode")
 
-config_file = workflow.overwrite_configfiles[0] if workflow.overwrite_configfiles else "config.yaml"
+config_file = workflow.overwrite_configfiles[0] if (workflow.overwrite_configfiles and not config.get("ci_mode")) else "config.yaml"
 
 try:
     subprocess.run(
