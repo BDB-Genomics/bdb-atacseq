@@ -6,7 +6,6 @@
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 import os
-import sys
 import csv
 import subprocess
 from pathlib import Path
@@ -25,7 +24,7 @@ if MODE not in ("bulk", "scatac"):
 
 try:
     subprocess.run(
-        [sys.executable, "rules/scripts/validate_config.py", "config.yaml"],
+        ["python3", "rules/scripts/validate_config.py", "config.yaml"],
         check=True,
     )
 except subprocess.CalledProcessError as e:
@@ -253,9 +252,9 @@ onstart:
 onsuccess:
     print(f"\n[SUCCESS] Pipeline completed successfully!")
     print(f"Final MultiQC report: {config['multiqc']['output']}/multiqc_report.html\n")
-    subprocess.run([sys.executable, "rules/scripts/aggregate_logs.py", "success", "results/reporting/pipeline_execution_summary.json"])
+    subprocess.run(["python3", "rules/scripts/aggregate_logs.py", "success", "results/reporting/pipeline_execution_summary.json"])
 
 onerror:
     print(f"\n[ERROR] Pipeline encountered an error.")
     print(f"Please check the log files in 'logs/' for details.\n")
-    subprocess.run([sys.executable, "rules/scripts/aggregate_logs.py", "error", "results/reporting/pipeline_execution_summary.json"])
+    subprocess.run(["python3", "rules/scripts/aggregate_logs.py", "error", "results/reporting/pipeline_execution_summary.json"])
