@@ -81,4 +81,5 @@ if [ ${#FAIL[@]} -gt 0 ]; then
     err="${entry##*|||}"
     echo "| $file | $err |"
   done
+  exit 1
 fi
