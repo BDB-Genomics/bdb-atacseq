@@ -23,15 +23,13 @@ MODE = os.getenv("ATAC_MODE", config.get("global", {}).get("mode", "bulk"))
 if MODE not in ("bulk", "scatac"):
     raise ValueError(f"Invalid mode '{MODE}'. Use 'bulk' or 'scatac'. Set via ATAC_MODE env var or config.yaml global.mode")
 
-config_file = workflow.overwrite_configfiles[0] if workflow.overwrite_configfiles else "config.yaml"
-
 try:
     subprocess.run(
-        [sys.executable, "rules/scripts/validate_config.py", config_file],
+        [sys.executable, "rules/scripts/validate_config.py", "config.yaml"],
         check=True,
     )
 except subprocess.CalledProcessError as e:
-    print(f"\n[CRITICAL ERROR] Configuration validation failed for '{config_file}'.")
+    print(f"\n[CRITICAL ERROR] Configuration validation failed for 'config.yaml'.")
     print(f"Please check the validation script output above for specific missing keys or errors.\n")
     raise e
 
