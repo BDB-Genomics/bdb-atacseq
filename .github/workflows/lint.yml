@@ -31,6 +31,10 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y bowtie2
 
+      - name: Install Chromap Aligner
+        run: |
+          micromamba install -y -c bioconda -c conda-forge chromap
+
       - name: Generate Test Data
         run: |
           python3 rules/scripts/generate_test_data.py
@@ -80,6 +84,10 @@ jobs:
       - name: Install Bowtie2 Aligner
         run: |
           sudo apt-get update && sudo apt-get install -y bowtie2
+
+      - name: Install Chromap Aligner
+        run: |
+          micromamba install -y -c bioconda -c conda-forge chromap
 
       - name: Generate Test Data
         run: |
