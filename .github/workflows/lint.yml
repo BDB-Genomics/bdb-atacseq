@@ -109,6 +109,13 @@ jobs:
             --cores 4 \
             --latency-wait 60
 
+      - name: Verify Output Files (Bulk)
+        run: |
+          if [ ! -s results/reporting/pipeline_execution_summary.json ]; then echo "Summary JSON missing or empty"; exit 1; fi
+          if [ ! -s results/reporting/multiqc/multiqc_report.html ]; then echo "MultiQC report missing or empty"; exit 1; fi
+          if [ ! -s results/peak_calling/macs2_peakcall/sample1_peaks.narrowPeak ]; then echo "MACS2 peaks missing or empty"; exit 1; fi
+          echo "All critical bulk ATAC-seq outputs verified successfully."
+
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -169,6 +176,13 @@ jobs:
           snakemake --use-conda --conda-frontend mamba --profile profiles/test \
             --cores 4 \
             --latency-wait 60
+
+      - name: Verify Output Files (scATAC)
+        run: |
+          if [ ! -s results/reporting/pipeline_execution_summary.json ]; then echo "Summary JSON missing or empty"; exit 1; fi
+          if [ ! -s results/scatac/archr/qc_report/ArchR_full_report.pdf ]; then echo "ArchR QC report missing or empty"; exit 1; fi
+          if [ ! -s results/scatac/archr/clusters/cell_clusters.tsv ]; then echo "ArchR clusters missing or empty"; exit 1; fi
+          echo "All critical scATAC-seq outputs verified successfully."
 
       - name: Upload Test Results
         if: always()
