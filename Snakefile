@@ -121,12 +121,6 @@ elif MODE == "scatac":
     include: "rules/chromap.smk"
     include: "rules/archr.smk"
     include: "rules/cicero.smk"
-    include: "rules/bedtools_genomecov.smk"
-    include: "rules/sorted_bedgraph.smk"
-    include: "rules/bigwig.smk"
-    include: "rules/correlation_analysis.smk"
-    include: "rules/motif_analysis.smk"
-    include: "rules/chromvar_analysis.smk"
 
 include: "rules/benchmark_summary.smk"
 include: "rules/multiqc.smk"
@@ -208,10 +202,7 @@ elif MODE == "scatac":
     QC_METRICS_TARGETS = [
         f"{config['archr']['output']['qc_report']}/ArchR_full_report.pdf"
     ]
-    VISUALIZATION_TARGETS = [
-        expand("{path}/{sample}.bw", path=config['bigwig']['output']['bigwig'], sample=SAMPLES),
-        f"{config['correlation_analysis']['output']}/correlation_heatmap.png"
-    ]
+    VISUALIZATION_TARGETS = []
     PEAK_TARGETS = [
         f"{config['archr']['output']['clusters']}/cell_clusters.tsv",
         f"{config['archr']['output']['plots']}/umap_clusters.pdf",
@@ -221,8 +212,6 @@ elif MODE == "scatac":
         f"{config['cicero']['output']['connections']}/coaccessibility_table.tsv",
         f"{config['cicero']['output']['ccans']}/ccans.bed",
         f"{config['cicero']['output']['plots']}/coaccessibility_plot.png",
-        expand("{path}/{sample}", path=config['motif_analysis']['output'], sample=SAMPLES),
-        expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
         config['benchmark_summary']['output']
     ]
 
