@@ -275,7 +275,7 @@ def generate_motif_db(filepath: str) -> None:
 
 
 def generate_bt2_index(index_dir: str, genome_fa: str) -> None:
-    """Build a real Bowtie2 index, falling back to placeholders."""
+    """Build a real Bowtie2 index."""
     os.makedirs(index_dir, exist_ok=True)
     try:
         subprocess.run(
@@ -285,13 +285,23 @@ def generate_bt2_index(index_dir: str, genome_fa: str) -> None:
             stderr=subprocess.DEVNULL,
         )
         print("  Bowtie2 index built successfully.")
-    except Exception:
-        print("  Warning: bowtie2-build not found, writing placeholder index files.")
-        for ext in ["1.bt2", "2.bt2", "3.bt2", "4.bt2", "rev.1.bt2", "rev.2.bt2"]:
-            path = os.path.join(index_dir, f"genome.{ext}")
-            with open(path, "wb") as fh:
-                fh.write(struct.pack("<I", 500_000))
-                fh.write(b"\x00" * 1000)
+    except Exception as e:
+        raise ValueError(f"Failed to build Bowtie2 index: {e}")
+
+
+def generate_chromap_index(index_dir: str, genome_fa: str) -> None:
+    """Build a real Chromap index."""
+    os.makedirs(index_dir, exist_ok=True)
+    try:
+        subprocess.run(
+            ["chromap", "-i", "-r", genome_fa, "-o", os.path.join(index_dir, "genome.index")],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        print("  Chromap index built successfully.")
+    except Exception as e:
+        raise ValueError(f"Failed to build Chromap index: {e}")
 
 
 def generate_samples_tsv(filepath: str) -> None:
@@ -361,10 +371,9 @@ def main() -> None:
 
 
 
-    # --- Misc placeholders --------------------------------------------------
-    print("[7/7] Chromap index placeholder ...")
-    with open(os.path.join(root, "data/reference/chromap/genome.index"), "w") as fh:
-        fh.write("placeholder")
+    # --- Chromap index ------------------------------------------------------
+    print("[7/7] Chromap index ...")
+    generate_chromap_index(os.path.join(root, "data/reference/chromap"), genome_fa)
 
     # --- Sample sheet -------------------------------------------------------
     generate_samples_tsv(os.path.join(root, "data/samples.tsv"))
