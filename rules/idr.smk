@@ -1,7 +1,9 @@
 rule idr_analysis:
     input:
         rep1=lambda wildcards: f"{config['macs2']['output']['peaks']}/{COND_REP_TO_SAMPLE[(wildcards.condition, wildcards.rep1)]}_peaks.narrowPeak",
-        rep2=lambda wildcards: f"{config['macs2']['output']['peaks']}/{COND_REP_TO_SAMPLE[(wildcards.condition, wildcards.rep2)]}_peaks.narrowPeak"
+        rep2=lambda wildcards: f"{config['macs2']['output']['peaks']}/{COND_REP_TO_SAMPLE[(wildcards.condition, wildcards.rep2)]}_peaks.narrowPeak",
+        qc_pass1=lambda wildcards: f"{config['qc_gate']['output']}/{COND_REP_TO_SAMPLE[(wildcards.condition, wildcards.rep1)]}_qc_pass.txt",
+        qc_pass2=lambda wildcards: f"{config['qc_gate']['output']}/{COND_REP_TO_SAMPLE[(wildcards.condition, wildcards.rep2)]}_qc_pass.txt"
 
     output:
         idr_peaks=f"{config['idr']['output']['idr_peaks']}/{{condition}}_rep{{rep1}}_rep{{rep2}}_idr_peaks.bed",

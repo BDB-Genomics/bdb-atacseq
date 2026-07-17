@@ -1,6 +1,7 @@
 rule consensus_peaks:
     input:
-        peaks=expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES)
+        peaks=expand("{path}/{sample}_filtered_peaks.bed", path=config['blacklist_filter']['output']['filtered_peaks'], sample=SAMPLES),
+        qc_pass=expand("{path}/{sample}_qc_pass.txt", path=config['qc_gate']['output'], sample=SAMPLES)
 
     output:
         consensus=f"{config['consensus_peaks']['output']['consensus']}/consensus_peaks.bed",

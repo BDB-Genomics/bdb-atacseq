@@ -3,7 +3,8 @@ rule tobias_atacorrect:
         bam=lambda wildcards: f"{config['tobias']['input']['filtered_bam']}/{wildcards.sample}.filtered.bam",
         peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed",
         genome=config['tobias']['params']['genome_fa'],
-        blacklist=config['tobias']['params']['blacklist']
+        blacklist=config['tobias']['params']['blacklist'],
+        qc_pass=lambda wildcards: f"{config['qc_gate']['output']}/{wildcards.sample}_qc_pass.txt"
 
     output:
         corrected_bw=f"{config['tobias']['output']['corrected_bw']}/{{sample}}_corrected.bw",
