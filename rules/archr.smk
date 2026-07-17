@@ -19,7 +19,7 @@ rule archr_pseudobulk:
     log: "logs/archr/pseudobulk.err"
     benchmark: "benchmarks/archr/pseudobulk.txt"
     conda: "envs/scatac/archr.yaml"
-    container: "https://depot.galaxyproject.org/singularity/r-base:4.3"
+    container: "https://depot.galaxyproject.org/singularity/bioconductor-archr:1.0.2--r42hdfd78af_0"
     threads: config['archr']['threads']
     message: "[ArchR Pseudo-bulk] Creating Arrow files from scATAC-seq BAMs"
 
@@ -73,6 +73,7 @@ rule archr_clustering:
     log: "logs/archr/clustering.err"
     benchmark: "benchmarks/archr/clustering.txt"
     conda: "envs/scatac/archr.yaml"
+    container: "https://depot.galaxyproject.org/singularity/bioconductor-archr:1.0.2--r42hdfd78af_0"
     threads: config['archr']['threads']
     message: "[ArchR Clustering] Identifying cell types from scATAC-seq data"
 

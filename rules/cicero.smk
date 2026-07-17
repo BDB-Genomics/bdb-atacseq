@@ -22,7 +22,7 @@ rule cicero_coaccessibility:
     log: "logs/cicero/coaccessibility.err"
     benchmark: "benchmarks/cicero/coaccessibility.txt"
     conda: "envs/scatac/cicero.yaml"
-    container: "https://depot.galaxyproject.org/singularity/r-base:4.3"
+    container: "https://depot.galaxyproject.org/singularity/bioconductor-cicero:1.20.0--r43hdfd78af_0"
     threads: config['cicero']['threads']
     message: "[Cicero] Computing chromatin co-accessibility networks"
 
