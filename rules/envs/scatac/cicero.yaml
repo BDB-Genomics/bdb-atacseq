@@ -5,7 +5,7 @@ channels:
 dependencies:
   - r-base=4.3
   - bioconductor-cicero=1.20
-  - bioconductor-monocle3=1.3
+  - r-monocle3
   - bioconductor-gviz=1.46
   - r-ggplot2=3.5
   - r-igraph=1.6
