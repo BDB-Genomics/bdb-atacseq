@@ -15,27 +15,6 @@ on.exit({
     close(log_file)
 }, add = TRUE)
 
-create_placeholder_pdf <- function(path, label) {
-    pdf(path, width = 8, height = 6)
-    plot.new()
-    text(0.5, 0.5, label)
-    dev.off()
-}
-
-create_placeholder_results <- function(path) {
-    placeholder <- data.frame(
-        baseMean = numeric(0),
-        log2FoldChange = numeric(0),
-        lfcSE = numeric(0),
-        stat = numeric(0),
-        pvalue = numeric(0),
-        padj = numeric(0),
-        peak = character(0),
-        significant = character(0),
-        stringsAsFactors = FALSE
-    )
-    write.table(placeholder, path, sep = "\t", quote = FALSE, row.names = FALSE)
-}
 
 safe_transform <- function(dds) {
     tryCatch(
@@ -48,18 +27,6 @@ safe_transform <- function(dds) {
     )
 }
 
-fail_safe <- function(message) {
-    cat("CRITICAL ERROR: differential accessibility failed\n")
-    cat(message, "\n")
-
-    create_placeholder_results(output_results)
-    create_placeholder_pdf(output_volcano, "Differential accessibility failed")
-    create_placeholder_pdf(output_ma, "Differential accessibility failed")
-    create_placeholder_pdf(output_heatmap, "Differential accessibility failed")
-    create_placeholder_pdf(output_pca, "Differential accessibility failed")
-
-    quit(save = "no", status = 0, runLast = FALSE)
-}
 
 cat("===========================================\n")
 cat("Differential Accessibility Analysis\n")
@@ -225,9 +192,4 @@ run_analysis <- function() {
     cat("===========================================\n")
 }
 
-tryCatch(
-    run_analysis(),
-    error = function(e) {
-        fail_safe(conditionMessage(e))
-    }
-)
+run_analysis()

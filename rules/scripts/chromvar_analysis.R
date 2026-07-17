@@ -58,7 +58,7 @@ cat("Using custom FASTA file:", genome_fa, "\n")
 library(Rsamtools)
 genome_obj <- FaFile(genome_fa)
 
-tryCatch({
+
     cat("Computing GC bias and fragment counts from BAM\n")
     # chromVAR getCounts expects: bamfile, peaks, paired=TRUE
     counts <- getCounts(bam_file, gr_peaks, paired=TRUE)
@@ -142,19 +142,4 @@ tryCatch({
     }
     
     cat("chromVAR analysis complete for", sample_name, "\n")
-}, error = function(e) {
-    cat("CRITICAL ERROR: chromVAR analysis failed for", sample_name, "\n")
-    cat(conditionMessage(e), "\n")
 
-    placeholder_dev <- data.frame(setNames(list(0), sample_name), row.names = "chromVAR_failed")
-    placeholder_bias <- data.frame(setNames(list(0), sample_name), row.names = "chromVAR_failed")
-    write.table(placeholder_dev, output_deviations, sep="\t", quote=FALSE, col.names=NA)
-    write.table(placeholder_bias, output_bias, sep="\t", quote=FALSE, col.names=NA)
-
-    pdf(output_plot, width=6, height=6)
-    plot.new()
-    text(0.5, 0.5, paste0("chromVAR failed for ", sample_name))
-    dev.off()
-
-    quit(save = "no", status = 0, runLast = FALSE)
-})
