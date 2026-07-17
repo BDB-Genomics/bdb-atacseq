@@ -9,4 +9,4 @@ dependencies:
   - bioconductor-gviz=1.46
   - r-ggplot2=3.5
   - r-igraph=1.6
-  - bioconductor-archr
+  - r-archr
