@@ -15,7 +15,7 @@ rule bigwig_conversion:
     log: "logs/bigwig/{sample}.err"
     benchmark: "benchmarks/bigwig/{sample}.txt"
     conda: "envs/06_visualization/bedGraph_to_bigwig.yaml"
-    container: "https://depot.galaxyproject.org/singularity/ucsc-bedgraphtobigwig:377--h4463345_0"
+    container: "docker://quay.io/biocontainers/ucsc-bedgraphtobigwig:445--h954228d_0"
     threads: config['bigwig']['threads']   
     message: "[bedGraphToBigWig] Sample: {wildcards.sample} | Sorted BedGraph: {input.sorted_bedgraph} | BigWig: {output.bigwig} | Genome: {params.genome}... "
        

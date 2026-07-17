@@ -9,8 +9,6 @@ dependencies:
   - r-ggplot2=3.5
   - r-data.table=1.15
   - python=3.10
-  - pip
+  - sinto
   - htslib
-  - pip:
-      - setuptools<70.0.0
-      - sinto
+  - setuptools<70.0.0
