@@ -13,7 +13,7 @@ rule frip_calculation:
     log: "logs/frip/{sample}.err"
     benchmark: "benchmarks/frip/{sample}.txt"
     conda: "envs/03_post_alignment/bedtools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/mulled-v2-ac74a7f02306649ee64e819b8830f69904d48507:6c2688b7762696e16544521798e29a9b1c76949b-0"
+    container: "https://depot.galaxyproject.org/singularity/mulled-v2-ac74a7f02306649ee64e819b8830f69904d48507--6c2688b7762696e16544521798e29a9b1c76949b-0"
     threads: config['frip_calculation']['threads']
     message: "[FRiP calculation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | BAM: {input.shifted_bam} | Output: {output.frip}"
         
