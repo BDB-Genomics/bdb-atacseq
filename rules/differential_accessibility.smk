@@ -22,7 +22,7 @@ rule differential_accessibility:
     log: "logs/differential_accessibility/diff.err"
     benchmark: "benchmarks/differential_accessibility/diff.txt"
     conda: "envs/05_peak_calling/diff_accessibility.yaml"
-    container: "https://depot.galaxyproject.org/singularity/bioconductor-deseq2:1.40.2--r42hdfd78af_0"
+    container: "docker://quay.io/biocontainers/bioconductor-deseq2:1.40.2--r43hf17093f_0"
     threads: config['differential_accessibility']['threads']
     message: "[Differential Accessibility] Running DESeq2 on {params.n_counts} samples"
 

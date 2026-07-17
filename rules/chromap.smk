@@ -21,7 +21,7 @@ rule chromap_align:
     log: "logs/chromap/{sample}.err"
     benchmark: "benchmarks/chromap/{sample}.txt"
     conda: "envs/02_alignment/chromap.yaml"
-    container: "docker://quay.io/biocontainers/chromap:0.2.6--h9ee545e_1"
+    container: "docker://quay.io/biocontainers/chromap:0.2.6--hdcf5f25_1"
     threads: config['chromap']['threads']
     message: "[CHROMAP] Sample: {wildcards.sample} | Mode: scATAC-seq | Preset: {params.preset}"
 

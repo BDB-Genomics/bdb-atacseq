@@ -19,7 +19,7 @@ rule peak_annotation:
     log: "logs/peak_annotation/{sample}.err"
     benchmark: "benchmarks/peak_annotation/{sample}.txt"
     conda: "envs/05_peak_calling/chipseeker.yaml"
-    container: "https://depot.galaxyproject.org/singularity/bioconductor-chipseeker:1.34.1--r42hdfd78af_0"
+    container: "docker://quay.io/biocontainers/bioconductor-chipseeker:1.42.0--r44hdfd78af_0"
     threads: config['peak_annotation']['threads']
     message: "[Peak annotation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.annotation}"
 
