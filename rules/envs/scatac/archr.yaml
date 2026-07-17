@@ -8,6 +8,7 @@ dependencies:
   - bioconductor-bsgenome.hsapiens.ucsc.hg38=1.4.5
   - r-ggplot2=3.5
   - r-data.table=1.15
+  - python=3.10
   - sinto
   - htslib
   - setuptools
