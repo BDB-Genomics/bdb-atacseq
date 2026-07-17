@@ -1,17 +1,24 @@
-multiqc_inputs = [
-    expand("{path}/{sample}_R1_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
-    expand("{path}/{sample}_R2_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
-    expand("{path}/{sample}.json", path=config['fastp']['output'], sample=SAMPLES),
-    expand("{path}/{sample}_qc_pass.json", path=config['qc_gate']['output'], sample=SAMPLES),
-    expand("{path}/{sample}_postFiltering.stats.txt", path=config['samtools_stats']['output']['stats'], sample=SAMPLES),
-    expand("{path}/{sample}.alignment_metrics.txt", path=config['picard']['alignment_metrics']['output']['alignment_metrics'], sample=SAMPLES),
-    expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
-    expand("{path}/{sample}.insert_histogram.pdf", path=config['picard']['insert_metrics']['output']['histogram'], sample=SAMPLES),
-] + ([] if config.get("ci_mode", False) else [
-    expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES),
-]) + [
-    expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES),
-]
+if MODE == "bulk":
+    multiqc_inputs = [
+        expand("{path}/{sample}_R1_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_R2_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
+        expand("{path}/{sample}.json", path=config['fastp']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_qc_pass.json", path=config['qc_gate']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_postFiltering.stats.txt", path=config['samtools_stats']['output']['stats'], sample=SAMPLES),
+        expand("{path}/{sample}.alignment_metrics.txt", path=config['picard']['alignment_metrics']['output']['alignment_metrics'], sample=SAMPLES),
+        expand("{path}/{sample}.insert_metrics.txt", path=config['picard']['insert_metrics']['output']['metrics'], sample=SAMPLES),
+        expand("{path}/{sample}.insert_histogram.pdf", path=config['picard']['insert_metrics']['output']['histogram'], sample=SAMPLES),
+    ] + ([] if config.get("ci_mode", False) else [
+        expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES),
+    ]) + [
+        expand("{path}/{sample}_qualimap_report", path=config['qualimap_bamqc']['output']['qc_dir'], sample=SAMPLES),
+    ]
+else:  # scatac
+    multiqc_inputs = [
+        expand("{path}/{sample}_R1_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
+        expand("{path}/{sample}_R2_trimmed_fastqc.zip", path=config['fastqc']['output'], sample=SAMPLES),
+        expand("{path}/{sample}.json", path=config['fastp']['output'], sample=SAMPLES),
+    ]
 
 
 rule multiqc:
