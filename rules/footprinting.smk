@@ -1,8 +1,7 @@
 rule footprinting:
     input:
         bam=lambda wildcards: f"{config['footprinting']['input']['filtered_bam']}/{wildcards.sample}.filtered.bam",
-        peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed",
-        qc_pass=lambda wildcards: f"{config['qc_gate']['output']}/{wildcards.sample}_qc_pass.txt"
+        peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed"
 
     output:
         footprints=f"{config['footprinting']['output']['footprints']}/{{sample}}_footprints.bed"

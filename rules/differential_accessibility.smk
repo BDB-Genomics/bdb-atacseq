@@ -1,8 +1,7 @@
 rule differential_accessibility:
     input:
         counts=expand("{path}/{sample}_peak_counts.tsv", path=config['count_peaks']['output'], sample=SAMPLES),
-        sample_sheet=config['global']['samples'],
-        qc_pass=expand("{path}/{sample}_qc_pass.txt", path=config['qc_gate']['output'], sample=SAMPLES)
+        sample_sheet=config['global']['samples']
 
     output:
         results=f"{config['differential_accessibility']['output']['results']}/diff_accessibility_results.tsv",

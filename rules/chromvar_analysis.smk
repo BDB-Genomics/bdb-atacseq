@@ -2,8 +2,7 @@ rule chromvar_analysis:
     input:
         shifted_bam=lambda wildcards: f"{config['chromvar_analysis']['input']['shifted_bam']}/{wildcards.sample}.filtered.shifted.bam",
         peaks=lambda wildcards: f"{config['blacklist_filter']['output']['filtered_peaks']}/{wildcards.sample}_filtered_peaks.bed",
-        motif_db=config['chromvar_analysis']['params']['motif_db'],
-        qc_pass=lambda wildcards: f"{config['qc_gate']['output']}/{wildcards.sample}_qc_pass.txt"
+        motif_db=config['chromvar_analysis']['params']['motif_db']
 
     output:
         deviations=f"{config['chromvar_analysis']['output']['deviations']}/{{sample}}_deviations.tsv",
