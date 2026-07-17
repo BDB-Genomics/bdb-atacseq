@@ -208,15 +208,15 @@ def main():
     with open(args.json_output, 'w') as f:
         json.dump(qc_data, f, indent=4)
 
-    # Snakemake Trigger Output
-    with open(args.output, 'w') as f:
-        f.write(f"{args.sample}\t{qc_data['overall']}\n")
-
     # Console Output
     print("\n".join(report))
-    
+
     if qc_data["overall"] == "FAILED":
-        sys.exit(0)
+        sys.exit(1)
+
+    # Snakemake Trigger Output (only written on success)
+    with open(args.output, 'w') as f:
+        f.write(f"{args.sample}\t{qc_data['overall']}\n")
 
 if __name__ == "__main__":
     main()
