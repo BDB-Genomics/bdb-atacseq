@@ -17,7 +17,7 @@ rule motif_analysis:
     log: "logs/motif_analysis/{sample}.log"
     benchmark: "benchmarks/motif_analysis/{sample}.txt"
     conda: "envs/05_peak_calling/motif_analysis.yaml"
-    container: "https://depot.galaxyproject.org/singularity/homer:4.11--pl526hc9558a2_3"
+    container: "docker://quay.io/biocontainers/homer:4.11--pl526hc9558a2_3"
     threads: config['motif_analysis']['threads']
     message: "[Motif analysis] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.html}"
 

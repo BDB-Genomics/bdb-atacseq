@@ -16,7 +16,7 @@ rule normalize_coverage:
     log: "logs/normalized_coverage/{sample}.err"
     benchmark: "benchmarks/normalized_coverage/{sample}.txt"
     conda: "envs/06_visualization/deeptools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/deeptools:3.5.1--py_0"
+    container: "docker://quay.io/biocontainers/deeptools:3.5.1--py_0"
     threads: config['normalized_coverage']['threads']     
     message: "[Normalize Coverage] Sample: {wildcards.sample} | Shifted Bam: {input.shifted_bam} | NormalizedCoverage: {output.normalized_coverage} |Method: {params.method}]..."
 

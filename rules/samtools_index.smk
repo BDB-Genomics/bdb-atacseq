@@ -12,7 +12,7 @@ rule samtools_index:
     log: "logs/samtools_index/{sample}.err"
     benchmark: "benchmarks/samtools_index/{sample}.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
     threads: config['samtools_index']['threads']
     message: "[SAMTOOLS INDEX] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT}| OUTPUT: {output.indexed_bam}"
         

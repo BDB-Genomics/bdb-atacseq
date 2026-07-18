@@ -15,7 +15,7 @@ rule blacklist_region_filter:
     log: "logs/blacklist_region_filter/{sample}.err"
     benchmark: "benchmarks/blacklist_region_filter/{sample}.txt"
     conda: "envs/03_post_alignment/bedtools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h468198e_3"
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
     threads: config['blacklist_filter']['threads']
     message: "[Bedtools intersect] Sample: {wildcards.sample} | Peaks: {input.peaks} | Filtered Peaks: {output.filtered_peaks} | Blacklist: {params.blacklist}"
 

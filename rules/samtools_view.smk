@@ -16,7 +16,7 @@ rule samtools_view:
     log: "logs/samtools_view/{sample}.out"
     benchmark: "benchmarks/samtools_view/{sample}.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
     threads: config['samtools_view']['threads']
     message: "[SAMTOOLS VIEW] SAMPLE: {wildcards.sample} | INPUT: {input.dedup_bam} | OUTPUT: {output.filtered_bam}| MINIMUM MAPQ: {params.minimum_mapq} | FILTER FLAGS: {params.filter_flags}"
         

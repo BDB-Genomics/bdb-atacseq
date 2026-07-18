@@ -18,7 +18,7 @@ rule correlation_analysis:
     log: "logs/correlation_analysis/correlation_analysis.err"
     benchmark: "benchmarks/correlation_analysis/correlation_analysis.txt"
     conda: "envs/06_visualization/deeptools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/deeptools:3.5.1--py_0"
+    container: "docker://quay.io/biocontainers/deeptools:3.5.1--py_0"
     threads: config['correlation_analysis']['threads']
     message: "[multiBigwigSummary +  plotCorrelation] | BigWigs: {input.bigwig} | Outputs: {output.npz}, {output.tab}, {output.heatmap} | Binsize: {params.bin_size} ..."
                 

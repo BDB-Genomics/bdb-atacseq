@@ -12,7 +12,7 @@ rule sorted_bedgraph:
     log: "logs/sorted_bedgraph/{sample}.err"
     benchmark: "benchmarks/sorted_bedgraph/{sample}.txt"
     conda: "envs/06_visualization/sorted_bedgraph.yaml"
-    container: "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h468198e_3"
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
     threads: config['sorted_bedgraph']['threads']
     message: "[sort]  Sample:  {wildcards.sample} | BedGraph: {input.bedgraph} | Sorted BedGraph: {output.sorted_bedgraph} | Resources: {resources.mem_mb}...  "
             

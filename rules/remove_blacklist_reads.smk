@@ -7,7 +7,7 @@ rule remove_blacklist_reads:
     log: "logs/remove_blacklist_reads/{sample}.err"
     benchmark: "benchmarks/remove_blacklist_reads/{sample}.txt"
     conda: "envs/03_post_alignment/bedtools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h468198e_3"
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
     threads: config['remove_blacklist_reads'].get('threads', 2)
     resources:
         mem_mb=lambda wildcards, input, attempt: max(config['remove_blacklist_reads']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,

@@ -16,7 +16,7 @@ rule picard_CollectAlignmentSummaryMetrics:
     log: "logs/picard/CollectAlignmentSummaryMetrics/{sample}.err"
     benchmark: "benchmarks/picard/CollectAlignmentSummaryMetrics/{sample}.txt"
     conda: "envs/04_metrics_qc/picard.yaml"
-    container: "https://depot.galaxyproject.org/singularity/picard:3.0.0--hdfd78af_1"
+    container: "docker://quay.io/biocontainers/picard:3.0.0--hdfd78af_1"
     threads: config['picard']['alignment_metrics']['threads']
     message: "[PICARD COLLECTALIGNMENTSUMMARYMETRICS] SAMPLE: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.alignment_metrics}| REFERENCE GENOME: {params.reference_genome}| VALIDATION STRINGENCY: {params.validation_stringency}."
 

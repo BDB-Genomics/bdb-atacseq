@@ -21,7 +21,7 @@ rule qc_gate:
     log: "logs/qc_gate/{sample}.log"
     benchmark: "benchmarks/qc_gate/{sample}.txt"
     conda: "envs/04_metrics_qc/qc_gate.yaml"
-    container: "https://depot.galaxyproject.org/singularity/python:3.10.4"
+    container: "docker://python:3.10-slim"
     threads: config['qc_gate']['threads']
     message: "[QC GATE] Checking ATAC-seq metrics for Sample: {wildcards.sample}"
     

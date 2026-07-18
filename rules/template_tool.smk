@@ -20,7 +20,7 @@ rule template_tool:
 
     log: "logs/template_category/template_tool/{sample}.log"
     conda: "envs/misc/template_tool.yaml"
-    container: "https://depot.galaxyproject.org/singularity/python:3.10.4"
+    container: "docker://python:3.10-slim"
     threads: config['template_category']['template_tool']['threads']
 
     # [TEMPLATE] Specify where logs and benchmarks will be saved.

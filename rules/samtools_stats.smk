@@ -12,7 +12,7 @@ rule samtools_stats:
     log: "logs/samtools_stats/{sample}.err"
     benchmark: "benchmarks/samtools_stats/{sample}.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
     threads: config['samtools_stats']['threads']
     message: "[SAMTOOLS STATISTICS] SAMPLE: {wildcards.sample}| INPUT: {input.filtered_bam}| OUTPUT: {output.stats}"
         

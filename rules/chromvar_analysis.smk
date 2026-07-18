@@ -20,7 +20,7 @@ rule chromvar_analysis:
     log: "logs/chromvar/{sample}.err"
     benchmark: "benchmarks/chromvar/{sample}.txt"
     conda: "envs/05_peak_calling/chromvar.yaml"
-    container: "https://depot.galaxyproject.org/singularity/bioconductor-chromvar:1.28.0--r42hdfd78af_0"
+    container: "docker://quay.io/biocontainers/bioconductor-chromvar:1.28.0--r42hdfd78af_0"
     threads: config['chromvar_analysis']['threads']
     message: "[chromVAR] Sample: {wildcards.sample} | BAM: {input.shifted_bam} | Peaks: {input.peaks} | Motifs: {input.motif_db}"
 

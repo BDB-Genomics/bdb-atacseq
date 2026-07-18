@@ -17,7 +17,7 @@ rule cross_correlation:
     log: "logs/cross_correlation/{sample}.err"
     benchmark: "benchmarks/cross_correlation/{sample}.txt"
     conda: "envs/04_metrics_qc/cross_correlation.yaml"
-    container: "https://depot.galaxyproject.org/singularity/phantompeakqualtools:1.2.2--r42hdfd78af_0"
+    container: "docker://quay.io/biocontainers/phantompeakqualtools:1.2.2--r42hdfd78af_0"
     threads: config['cross_correlation']['threads']
     message: "[Cross-Correlation] Sample: {wildcards.sample} | BAM: {input.filtered_bam} | Output: {output.stats}"
 

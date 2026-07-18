@@ -34,7 +34,7 @@ rule multiqc:
 
     log: "logs/multiqc/multiqc.err"
     conda: "envs/01_preprocessing/multiqc.yaml"
-    container: "https://depot.galaxyproject.org/singularity/multiqc:1.14--pyhdfd78af_0"
+    container: "docker://quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0"
     threads: config['multiqc']['threads']
     message: "Running MultiQC to aggregate all QC reports| INPUT: {input}"
         

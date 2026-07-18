@@ -12,7 +12,7 @@ rule samtools_index_postmarkdup:
     log: "logs/samtools_index/post_markdup/{sample}.err"
     benchmark: "benchmarks/samtools_index/post_markdup/{sample}.txt"
     conda: "envs/03_post_alignment/samtools.yaml"
-    container: "https://depot.galaxyproject.org/singularity/samtools:1.15.1--h1170115_0"
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
     threads: config['samtools_index_post_markdup']['threads']
     message: "[SAMTOOLS INDEX POST MARKDUP] SAMPLE: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.indexed_markdup_bam}"
         

@@ -18,7 +18,7 @@ rule consensus_peaks:
     log: "logs/consensus_peaks/consensus.err"
     benchmark: "benchmarks/consensus_peaks/consensus.txt"
     conda: "envs/05_peak_calling/consensus.yaml"
-    container: "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h468198e_3"
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
     threads: config['consensus_peaks']['threads']
     message: "[Consensus Peaks] Merging {params.n_peaks} peak sets | Min samples: {params.min_samples}"
 

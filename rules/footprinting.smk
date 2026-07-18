@@ -19,7 +19,7 @@ rule footprinting:
     log: "logs/footprinting/{sample}.err"
     benchmark: "benchmarks/footprinting/{sample}.txt"
     conda: "envs/05_peak_calling/footprinting.yaml"
-    container: "https://depot.galaxyproject.org/singularity/rgt:0.13.2--py39h1f90b4d_0"
+    container: "docker://quay.io/biocontainers/rgt:0.13.2--py39h1f90b4d_0"
     threads: config['footprinting']['threads']
     message: "[Footprinting] {wildcards.sample} | organism: {params.organism}"
 

@@ -17,7 +17,7 @@ rule qualimap_bamqc:
     log: "logs/qualimap/{sample}.err"
     benchmark: "benchmarks/qualimap/{sample}.txt"
     conda: "envs/04_metrics_qc/qualimap.yaml"
-    container: "https://depot.galaxyproject.org/singularity/qualimap:2.2.2d--1"
+    container: "docker://quay.io/biocontainers/qualimap:2.2.2d--1"
     threads: config['qualimap_bamqc']['threads']
     message: "[qualimap] Sample: {wildcards.sample} | Markdup Bam: {input.markdup_bam} | Reports: {output.qc_dir} | Extra: {params.extra}..."
 
