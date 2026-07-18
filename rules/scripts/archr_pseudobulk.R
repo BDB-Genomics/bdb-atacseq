@@ -21,25 +21,13 @@ fragment_files <- vapply(seq_along(bam_files), function(i) {
     frag <- file.path(arrow_dir, paste0(samples_info$sample[i], "_fragments.tsv.gz"))
     dir.create(dirname(frag), showWarnings=FALSE, recursive=TRUE)
     
-    # Write to a temporary uncompressed file first
-    temp_frag <- tempfile(pattern = "fragments_", tmpdir = arrow_dir)
     cmd <- paste(
         "sinto fragments -b", shQuote(bam),
-        "-f", shQuote(temp_frag),
+        "-f", shQuote(frag),
         "--collapse_within"
     )
     ret <- system(cmd)
     if (ret != 0) stop("sinto fragments failed for: ", bam)
-    
-    # Coordinate sort and compress using bgzip (which is required by tabix)
-    cmd_sort <- paste(
-        "sort -k1,1 -k2,2n -k3,3n", shQuote(temp_frag),
-        "| bgzip -c >", shQuote(frag)
-    )
-    ret_sort <- system(cmd_sort)
-    if (ret_sort != 0) stop("sorting/bgzip failed for: ", temp_frag)
-    
-    unlink(temp_frag)
     
     # Index the fragment file
     system(paste("tabix -p bed", shQuote(frag)))

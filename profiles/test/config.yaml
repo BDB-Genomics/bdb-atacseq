@@ -2,7 +2,6 @@
 # Usage: snakemake --profile profile/test
 # Runs a minimal subset of the pipeline for CI validation
 
-use-conda: true
 jobs: 4
 printshellcmds: true
 show-failed-logs: true
