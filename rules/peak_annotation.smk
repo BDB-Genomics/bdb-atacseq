@@ -25,34 +25,43 @@ rule peak_annotation:
 
     shell:
         """
-        Rscript -e '
-        library(ChIPseeker);
-        library(GenomicFeatures);
-        library(txdbmaker);
+        status=$(awk '{{print $2}}' {input.qc_pass})
+        if [ "$status" = "PASSED" ]; then
+            Rscript -e '
+            library(ChIPseeker);
+            library(GenomicFeatures);
+            library(txdbmaker);
 
-        peakfile <- "{input.filtered_peaks}";
+            peakfile <- "{input.filtered_peaks}";
 
-        is_empty <- TRUE
-        if (file.exists(peakfile) && file.info(peakfile)$size > 0) {{
-            lines <- readLines(peakfile, n=1)
-            if (length(lines) > 0 && trimws(lines[1]) != "") {{
-                is_empty <- FALSE
+            is_empty <- TRUE
+            if (file.exists(peakfile) && file.info(peakfile)$size > 0) {{
+                lines <- readLines(peakfile, n=1)
+                if (length(lines) > 0 && trimws(lines[1]) != "") {{
+                    is_empty <- FALSE
+                }}
             }}
-        }}
 
-        if (is_empty) {{
-            cat("Peak file is empty. Cannot perform peak annotation.\\n", file=stderr());
-            quit(status = 1);
-        }} else {{
-            txdb <- makeTxDbFromGFF("{params.gff}", format="gtf");
-            peakAnno <- annotatePeak(peakfile, TxDb=txdb, tssRegion=c(-3000, 3000), verbose=FALSE);
+            if (is_empty) {{
+                cat("Peak file is empty. Generating placeholder files.\\n", file=stderr());
+                file.create("{output.annotation}");
+                file.create("{output.summary}");
+                quit(status = 0);
+            }} else {{
+                txdb <- makeTxDbFromGFF("{params.gff}", format="gtf");
+                peakAnno <- annotatePeak(peakfile, TxDb=txdb, tssRegion=c(-3000, 3000), verbose=FALSE);
 
-            write.table(as.data.frame(peakAnno), "{output.annotation}", sep="\\t", row.names=FALSE, quote=FALSE);
+                write.table(as.data.frame(peakAnno), "{output.annotation}", sep="\\t", row.names=FALSE, quote=FALSE);
 
-            feature_summary <- as.data.frame(table(peakAnno@anno$annotation));
-            write.table(feature_summary, "{output.summary}", sep="\\t", row.names=FALSE, quote=FALSE);
-        }}
-        ' 2> {log}
+                feature_summary <- as.data.frame(table(peakAnno@anno$annotation));
+                write.table(feature_summary, "{output.summary}", sep="\\t", row.names=FALSE, quote=FALSE);
+            }}
+            ' 2> {log}
+        else
+            echo "QC FAILED for {wildcards.sample}. Generating placeholder files." > {log}
+            touch {output.annotation}
+            touch {output.summary}
+        fi
         """
 
 

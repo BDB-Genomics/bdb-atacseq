@@ -22,9 +22,20 @@ rule bedtools_genomecov:
 
     shell:
         """
-        bedtools genomecov \
-          -ibam {input.shifted_bam} \
-          {params.extra} \
-          > {output.bedgraph} \
-          2> {log}
+        if [ -n "{input.qc_pass}" ]; then
+            status=$(awk '{{print $2}}' {input.qc_pass})
+        else
+            status="PASSED"
+        fi
+
+        if [ "$status" = "PASSED" ]; then
+            bedtools genomecov \
+              -ibam {input.shifted_bam} \
+              {params.extra} \
+              > {output.bedgraph} \
+              2> {log}
+        else
+            echo "QC FAILED for {wildcards.sample}. Generating placeholder files." > {log}
+            touch {output.bedgraph}
+        fi
         """

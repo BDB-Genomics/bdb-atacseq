@@ -21,10 +21,15 @@ rule bigwig_conversion:
        
     shell:
         """
-        bedGraphToBigWig \
-        {input.sorted_bedgraph} \
-        {params.genome} \
-        {output.bigwig} \
-        2> {log}
+        if [ ! -s {input.sorted_bedgraph} ]; then
+            echo "Input sorted_bedgraph is empty. Generating empty/placeholder BigWig." > {log}
+            touch {output.bigwig}
+        else
+            bedGraphToBigWig \
+            {input.sorted_bedgraph} \
+            {params.genome} \
+            {output.bigwig} \
+            2> {log}
+        fi
         """
         

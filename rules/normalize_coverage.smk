@@ -22,10 +22,16 @@ rule normalize_coverage:
 
     shell: 
          """
-         bamCoverage \
-             -b {input.shifted_bam} \
-             -o {output.normalized_coverage} \
-             --normalizeUsing {params.method} \
-             --numberOfProcessors {threads} \
-             2> {log}
+         status=$(awk '{{print $2}}' {input.qc_pass})
+         if [ "$status" = "PASSED" ]; then
+             bamCoverage \
+                 -b {input.shifted_bam} \
+                 -o {output.normalized_coverage} \
+                 --normalizeUsing {params.method} \
+                 --numberOfProcessors {threads} \
+                 2> {log}
+         else
+             echo "QC FAILED for {wildcards.sample}. Generating empty/placeholder BigWig." > {log}
+             touch {output.normalized_coverage}
+         fi
          """

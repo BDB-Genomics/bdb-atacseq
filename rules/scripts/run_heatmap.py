@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 # Retrieve variables from snakemake object
 filtered_peaks = snakemake.input.filtered_peaks
 bigwig = snakemake.input.bigwig
+qc_pass = snakemake.input.qc_pass
 matrix = snakemake.output.matrix
 regions = snakemake.output.regions
 plot = snakemake.output.plot
@@ -26,6 +27,14 @@ os.makedirs(os.path.dirname(matrix), exist_ok=True)
 os.makedirs(os.path.dirname(regions), exist_ok=True)
 os.makedirs(os.path.dirname(plot), exist_ok=True)
 
+# Check qc_pass status
+status = "PASSED"
+if os.path.exists(qc_pass):
+    with open(qc_pass, 'r') as f:
+        line = f.readline().strip()
+        if line:
+            status = line.split('\t')[1]
+
 # Check if peaks file is empty
 is_empty = True
 if os.path.exists(filtered_peaks) and os.path.getsize(filtered_peaks) > 0:
@@ -35,11 +44,18 @@ if os.path.exists(filtered_peaks) and os.path.getsize(filtered_peaks) > 0:
                 is_empty = False
                 break
 
-if is_empty:
+if status == "FAILED" or is_empty:
     import sys
+    # Generate empty placeholder files
+    with gzip.open(matrix, 'wb') as f:
+        pass
+    with open(regions, 'w') as f:
+        pass
+    with open(plot, 'w') as f:
+        pass
     with open(log_matrix, 'w') as f:
-        f.write("[ERROR] Peak file is empty. Cannot generate heatmap.\n")
-    sys.exit(1)
+        f.write(f"QC status: {status}, Peak is_empty: {is_empty}. Generating placeholders.\n")
+    sys.exit(0)
 else:
     # Run computeMatrix
     cmd_matrix = [
