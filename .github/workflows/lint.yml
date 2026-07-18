@@ -241,7 +241,7 @@ jobs:
 
       - name: Run Pipeline (Singularity Mode)
         run: |
-          snakemake --use-singularity --profile profiles/test \
+          snakemake --deployment-method apptainer --profile profiles/test \
             --cores 4 \
             --latency-wait 60
 
@@ -311,7 +311,7 @@ jobs:
 
       - name: Run Pipeline (scATAC Singularity Mode)
         run: |
-          snakemake --use-singularity --profile profiles/test \
+          snakemake --deployment-method apptainer --profile profiles/test \
             --cores 4 \
             --latency-wait 60
 

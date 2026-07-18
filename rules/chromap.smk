@@ -44,4 +44,5 @@ rule chromap_align:
         mv {output.BAM}.tmp {output.BAM}
 
         samtools view -bS {output.BAM} > {output.tagBam} 2>> {log}
+        samtools index {output.tagBam} 2>> {log}
         """
