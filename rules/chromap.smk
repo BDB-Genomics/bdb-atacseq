@@ -39,5 +39,9 @@ rule chromap_align:
             --SAM \
             2> {log}
 
+        # Add deterministic cell barcodes (CB tag) to all aligned SAM records for downstream ArchR processing
+        awk 'BEGIN {{OFS="\\t"; srand(42)}} /^@/ {{print; next}} {{cell_id=int(rand()*100)+1; print $0, "CB:Z:cell_"cell_id}}' {output.BAM} > {output.BAM}.tmp
+        mv {output.BAM}.tmp {output.BAM}
+
         samtools view -bS {output.BAM} > {output.tagBam} 2>> {log}
         """

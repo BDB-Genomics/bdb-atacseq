@@ -23,3 +23,9 @@ differential_accessibility:
   params:
     fdr_threshold: 0.99
     log2fc_threshold: 0.0
+
+archr:
+  params:
+    min_tss: 0.0
+    min_frags: 10
+    doublet_threshold: 1.0
