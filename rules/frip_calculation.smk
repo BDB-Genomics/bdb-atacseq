@@ -21,7 +21,7 @@ rule frip_calculation:
         """
         (
         total_fragments=$(samtools view -c -f 64 {input.shifted_bam})
-        fragments_in_peaks=$(bedtools coverage -counts -a {input.filtered_peaks} -b {input.shifted_bam} | awk '{{sum += $4}} END {{print sum+0}}')
+        fragments_in_peaks=$(bedtools coverage -counts -a {input.filtered_peaks} -b {input.shifted_bam} | awk '{{sum += $NF}} END {{print sum+0}}')
         frip=$(echo "scale=6; ${{fragments_in_peaks}} / ${{total_fragments}}" | bc)
         echo -e "FRiP\t$frip"  > {output.frip}
         echo -e "..................................................................." >> {output.frip}

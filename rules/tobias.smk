@@ -86,18 +86,12 @@ rule tobias_bindetect:
     shell:
         """
         mkdir -p {output.bindetect_dir}
-        if [ ! -s {input.peaks} ] || [ $(wc -l < {input.peaks}) -eq 0 ]; then
-            echo "[WARNING] No peaks found in consensus peaks file {input.peaks}. Creating empty bindetect directory." >> {log}
-        else
-            if ! TOBIAS BINDetect \
-                {params.signals_flag} \
-                --motifs {input.motif_db} \
-                --genome {input.genome} \
-                --peaks {input.peaks} \
-                --outdir {output.bindetect_dir} \
-                --cores {threads} \
-                2> {log}; then
-                echo "[WARNING] TOBIAS BINDetect failed. Creating empty bindetect directory for CI fallback." >> {log}
-            fi
-        fi
+        TOBIAS BINDetect \
+            {params.signals_flag} \
+            --motifs {input.motif_db} \
+            --genome {input.genome} \
+            --peaks {input.peaks} \
+            --outdir {output.bindetect_dir} \
+            --cores {threads} \
+            2> {log}
         """

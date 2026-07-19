@@ -92,7 +92,8 @@ genome_obj <- FaFile(genome_fa)
         pfm <- PFMatrix(
             ID = "MA0001.1",
             name = "Mock_Motif",
-            matrix = matrix(c(10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 10), nrow=4, dimnames=list(c("A","C","G","T"))),
+            profileMatrix = matrix(c(10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 10), nrow=4, dimnames=list(c("A","C","G","T"))),
+            matrixClass = "Unknown",
             bg = c(A=0.25, C=0.25, G=0.25, T=0.25),
             tags = list(species="Homo sapiens")
         )

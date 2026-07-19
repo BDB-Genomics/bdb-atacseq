@@ -34,16 +34,9 @@ rule idr_analysis:
             --output-file {output.idr_peaks} \
             --idr-threshold {params.idr_threshold} \
             --plot \
-            --log-output-file {log} 2>&1 | tee -a {log} || {{
-                echo "[WARNING] IDR failed (likely due to insufficient peaks < 20 in test data). Creating fallback files." >> {log}
-                cat {input.rep1} {input.rep2} | sort -k1,1 -k2,2n > {output.idr_peaks}
-            }}
+            --log-output-file {log} 2>&1 | tee -a {log}
 
-        if [ -f {output.idr_peaks}.png ]; then
-            mv {output.idr_peaks}.png {output.plot}
-        else
-            touch {output.plot}
-        fi
+        mv {output.idr_peaks}.png {output.plot}
 
         cp {output.idr_peaks} {output.opt_peaks}
         """

@@ -47,13 +47,9 @@ rule fragment_size_analysis:
         write.table(fragments, "{output.fragment_sizes}", row.names=FALSE, col.names=FALSE, quote=FALSE)
      
         # Generate histogram
-        tryCatch({{
-            png("{output.histogram}")
-            hist(fragments, main="Fragment Size Distribution", xlab="Fragment Size (bp)", col="skyblue", breaks=50)
-            dev.off()
-        }}, error = function(e) {{
-            cat("Plot generation failed:", conditionMessage(e), "\n")
-        }})
+        png("{output.histogram}")
+        hist(fragments, main="Fragment Size Distribution", xlab="Fragment Size (bp)", col="skyblue", breaks=50)
+        dev.off()
      
         # Generate statistics
         stats_summary <- c(

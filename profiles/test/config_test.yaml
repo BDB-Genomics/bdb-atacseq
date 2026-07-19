@@ -2,18 +2,18 @@ ci_mode: true
 
 qc_gate:
   params:
-    min_frip: 0.0
-    min_tss_enr: 0.0
-    min_mapping_rate: 0.0
-    max_duplicate_rate: 100.0
+    min_frip: 0.01
+    min_tss_enr: 0.5
+    min_mapping_rate: 10.0
+    max_duplicate_rate: 95.0
 
 macs2:
   params:
-    qvalue: 0.99
+    qvalue: 0.9
 
 idr:
   params:
-    idr_threshold: 0.99
+    idr_threshold: 0.9
 
 consensus_peaks:
   params:
