@@ -2,7 +2,7 @@
 # Usage: snakemake --profile profile/slurm
 
 executor: slurm
-use-conda: true
+software-deployment-method: ["conda"]
 jobs: 100
 printshellcmds: true
 show-failed-logs: true

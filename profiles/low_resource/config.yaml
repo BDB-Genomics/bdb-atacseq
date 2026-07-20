@@ -2,7 +2,7 @@
 # For workstations with ≤8GB RAM, ≤4 cores
 # Usage: snakemake --profile profile/low_resource
 
-use-conda: true
+software-deployment-method: ["conda"]
 jobs: 2
 printshellcmds: true
 show-failed-logs: true

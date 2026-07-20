@@ -33,7 +33,7 @@ fragment_files <- vapply(seq_along(bam_files), function(i) {
     
     # Coordinate sort and compress using bgzip (which is required by tabix)
     cmd_sort <- paste(
-        "sort -k1,1 -k2,2n -k3,3n", shQuote(temp_frag),
+        "LC_ALL=C sort -k1,1 -k2,2n -k3,3n", shQuote(temp_frag),
         "| bgzip -c >", shQuote(frag)
     )
     ret_sort <- system(cmd_sort)
@@ -42,7 +42,8 @@ fragment_files <- vapply(seq_along(bam_files), function(i) {
     unlink(temp_frag)
     
     # Index the fragment file
-    system(paste("tabix -p bed", shQuote(frag)))
+    ret_tabix <- system(paste("tabix -p bed", shQuote(frag)))
+    if (ret_tabix != 0) stop("tabix index generation failed for: ", frag)
     frag
 }, character(1))
 

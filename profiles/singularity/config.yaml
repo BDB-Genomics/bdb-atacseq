@@ -1,7 +1,7 @@
-# Snakemake Local Profile
-# Usage: snakemake --profile profile/local
+# Snakemake Singularity Profile
+# Usage: snakemake --profile profile/singularity
 
-software-deployment-method: ["conda"]
+software-deployment-method: ["apptainer"]
 jobs: 8
 printshellcmds: true
 show-failed-logs: true
