@@ -18,8 +18,8 @@ rule idr_analysis:
 
     log: "logs/idr/{condition}_rep{rep1}_rep{rep2}.err"
     benchmark: "benchmarks/idr/{condition}_rep{rep1}_rep{rep2}.txt"
-    conda: "envs/05_peak_calling/idr.yaml"
-    container: "docker://quay.io/biocontainers/idr:2.0.4.2--py39h031d066_12"
+    conda: "envs/05_peak_calling/idr.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/idr:2.0.4.2--py39h031d066_12" if config.get("use_container", True) else None
     threads: config['idr']['threads']
     message: "[IDR] Condition: {wildcards.condition} | Reps: {wildcards.rep1},{wildcards.rep2} | Output: {output.idr_peaks}"
 

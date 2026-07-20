@@ -18,8 +18,8 @@ rule tss_enrichment:
   
     log: "logs/tss_enrichment/{sample}.err"
     benchmark: "benchmarks/tss_enrichment/{sample}.txt"
-    conda: "envs/04_metrics_qc/tss_enrichment.yaml"
-    container: "docker://quay.io/biocontainers/bioconductor-atacseqqc:1.22.0--r42hdfd78af_0"
+    conda: "envs/04_metrics_qc/tss_enrichment.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bioconductor-atacseqqc:1.22.0--r42hdfd78af_0" if config.get("use_container", True) else None
     threads: config['tss_enrichment']['threads']
     message: "[TSS ENRICHMENT] SAMPLE: {wildcards.sample}| INPUT: {input.shifted_bam} {input.shifted_bam_index} | OUTPUT: {output.text} {output.pdf}| ANNOTATION: {params.annotation}| UPSTREAM: {params.upstream}| DOWNSTREAM: {params.downstream}  "
         

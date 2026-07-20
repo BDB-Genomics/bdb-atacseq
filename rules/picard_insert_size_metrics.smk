@@ -16,8 +16,8 @@ rule picard_CollectInsertSizeMetrics:
 
     log: "logs/picard/CollectInsertSizeMetrics/{sample}.err"
     benchmark: "benchmarks/picard/CollectInsertSizeMetrics/{sample}.txt"
-    conda: "envs/04_metrics_qc/picard.yaml"
-    container: "docker://quay.io/biocontainers/picard:3.0.0--hdfd78af_1"
+    conda: "envs/04_metrics_qc/picard.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/picard:3.0.0--hdfd78af_1" if config.get("use_container", True) else None
     threads: config['picard']['insert_metrics']['threads']
     message: "[PICARD COLLECTINSERTSIZEMETRICS] SAMPLES: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.insert_metrics} {output.insert_histogram}|m: {params.m}| VALIDATION STRINGENCY: {params.validation_stringency}"
 

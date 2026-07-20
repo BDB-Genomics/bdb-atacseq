@@ -20,8 +20,8 @@ rule chromap_align:
 
     log: "logs/chromap/{sample}.err"
     benchmark: "benchmarks/chromap/{sample}.txt"
-    conda: "envs/02_alignment/chromap.yaml"
-    container: "docker://quay.io/biocontainers/chromap:0.2.6--hdcf5f25_1"
+    conda: "envs/02_alignment/chromap.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/chromap:0.2.6--hdcf5f25_1" if config.get("use_container", True) else None
     threads: config['chromap']['threads']
     message: "[CHROMAP] Sample: {wildcards.sample} | Mode: scATAC-seq | Preset: {params.preset}"
 

@@ -20,8 +20,8 @@ rule qc_gate:
         
     log: "logs/qc_gate/{sample}.log"
     benchmark: "benchmarks/qc_gate/{sample}.txt"
-    conda: "envs/04_metrics_qc/qc_gate.yaml"
-    container: "docker://python:3.10-slim"
+    conda: "envs/04_metrics_qc/qc_gate.yaml" if config.get("use_conda", True) else None
+    container: "docker://python:3.10-slim" if config.get("use_container", True) else None
     threads: config['qc_gate']['threads']
     message: "[QC GATE] Checking ATAC-seq metrics for Sample: {wildcards.sample}"
     

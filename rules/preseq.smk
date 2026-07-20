@@ -14,8 +14,8 @@ rule preseq:
         
     log: "logs/preseq/{sample}.err"
     benchmark: "benchmarks/preseq/{sample}.txt"
-    conda: "envs/04_metrics_qc/preseq.yaml"
-    container: "docker://quay.io/biocontainers/preseq:3.2.0--hdcf5f25_6"
+    conda: "envs/04_metrics_qc/preseq.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/preseq:3.2.0--hdcf5f25_6" if config.get("use_container", True) else None
     threads: config['preseq'].get('threads', 1)
     message: "[Preseq Sample: {wildcards.sample} | Bam: {input.bam} | Complexity: {output.complexity} | Extra: {params.extra} ]"
     

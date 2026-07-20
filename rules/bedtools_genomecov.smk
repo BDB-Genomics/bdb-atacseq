@@ -15,8 +15,8 @@ rule bedtools_genomecov:
 
     log: "logs/bedtools_genomecov/{sample}.err"
     benchmark: "benchmarks/bedtools_genomecov/{sample}.txt"
-    conda: "envs/03_post_alignment/bedtools.yaml"
-    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
+    conda: "envs/03_post_alignment/bedtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3" if config.get("use_container", True) else None
     threads: config['bedtools_genomecov']['threads']
     message: "[bedtools genomecov] sample: {wildcards.sample} | BAM : {input.shifted_bam}| Output: {output.bedgraph}..."
 

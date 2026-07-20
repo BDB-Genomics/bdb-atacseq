@@ -18,8 +18,8 @@ rule fastqc:
                             
     log: "logs/fastqc/{sample}.err"
     benchmark: "benchmarks/fastqc/{sample}.txt"
-    conda: "envs/01_preprocessing/fastqc.yaml"
-    container: "docker://quay.io/biocontainers/fastqc:0.11.9--0"
+    conda: "envs/01_preprocessing/fastqc.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/fastqc:0.11.9--0" if config.get("use_container", True) else None
     threads: config["fastqc"]["threads"]
     message: "[FASTQC] SAMPLES: {wildcards.sample}|INPUT: {input.R1_trimmed} {input.R2_trimmed}|OUTPUT: {output.R1_report} {output.R1_zip} {output.R2_report} {output.R2_zip}|DIRECTORY: {params.out_dir}"
                

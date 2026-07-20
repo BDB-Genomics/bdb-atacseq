@@ -18,8 +18,8 @@ rule peak_annotation:
 
     log: "logs/peak_annotation/{sample}.err"
     benchmark: "benchmarks/peak_annotation/{sample}.txt"
-    conda: "envs/05_peak_calling/chipseeker.yaml"
-    container: "docker://quay.io/biocontainers/bioconductor-chipseeker:1.42.0--r44hdfd78af_0"
+    conda: "envs/05_peak_calling/chipseeker.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bioconductor-chipseeker:1.42.0--r44hdfd78af_0" if config.get("use_container", True) else None
     threads: config['peak_annotation']['threads']
     message: "[Peak annotation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.annotation}"
 

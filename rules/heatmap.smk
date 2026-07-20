@@ -20,8 +20,8 @@ rule heatmap:
 
     log: matrix="logs/heatmap/matrix/{sample}.err", plot="logs/heatmap/plot/{sample}.err"
     benchmark: "benchmarks/heatmap/{sample}.txt"
-    conda: "envs/06_visualization/deeptools.yaml"
-    container: "docker://quay.io/biocontainers/deeptools:3.5.1--py_0"
+    conda: "envs/06_visualization/deeptools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/deeptools:3.5.1--py_0" if config.get("use_container", True) else None
     threads: config['heatmap']['threads']
     message: "[deepTools heatmap] Sample: {wildcards.sample} | BigWig: {input.bigwig} | Peaks: {input.filtered_peaks} | Output: {output.plot}"
 

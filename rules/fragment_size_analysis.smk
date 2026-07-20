@@ -19,8 +19,8 @@ rule fragment_size_analysis:
 
     log: "logs/fragment_size_analysis/{sample}.err"
     benchmark: "benchmarks/fragment_size_analysis/{sample}.txt"
-    conda: "envs/04_metrics_qc/fragment_analysis.yaml"
-    container: "docker://quay.io/biocontainers/picard:3.0.0--hdfd78af_1"
+    conda: "envs/04_metrics_qc/fragment_analysis.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/picard:3.0.0--hdfd78af_1" if config.get("use_container", True) else None
     threads: config['fragment_size_analysis']['threads']
     message: "[FRAGMENT SIZE ANALYSIS] SAMPLES: {wildcards.sample}| INPUT: {input.metrics}| OUTPUT: {output.fragment_sizes} {output.histogram} {output.stats}|MIN LENGTH: {params.min_length}| MAX LENGTH: {params.max_length}| MAX FRAGMENT: {params.max_fragment} "
         

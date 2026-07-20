@@ -14,8 +14,8 @@ rule bigwig_conversion:
             
     log: "logs/bigwig/{sample}.err"
     benchmark: "benchmarks/bigwig/{sample}.txt"
-    conda: "envs/06_visualization/bedGraph_to_bigwig.yaml"
-    container: "docker://quay.io/biocontainers/ucsc-bedgraphtobigwig:445--h954228d_0"
+    conda: "envs/06_visualization/bedGraph_to_bigwig.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/ucsc-bedgraphtobigwig:445--h954228d_0" if config.get("use_container", True) else None
     threads: config['bigwig']['threads']   
     message: "[bedGraphToBigWig] Sample: {wildcards.sample} | Sorted BedGraph: {input.sorted_bedgraph} | BigWig: {output.bigwig} | Genome: {params.genome}... "
        

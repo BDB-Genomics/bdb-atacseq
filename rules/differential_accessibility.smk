@@ -21,8 +21,8 @@ rule differential_accessibility:
 
     log: "logs/differential_accessibility/diff.err"
     benchmark: "benchmarks/differential_accessibility/diff.txt"
-    conda: "envs/05_peak_calling/diff_accessibility.yaml"
-    container: "docker://quay.io/biocontainers/bioconductor-deseq2:1.40.2--r43hf17093f_0"
+    conda: "envs/05_peak_calling/diff_accessibility.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bioconductor-deseq2:1.40.2--r43hf17093f_0" if config.get("use_container", True) else None
     threads: config['differential_accessibility']['threads']
     message: "[Differential Accessibility] Running DESeq2 on {params.n_counts} samples"
 

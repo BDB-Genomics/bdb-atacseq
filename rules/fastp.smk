@@ -20,8 +20,8 @@ rule fastp_trim :
           
     benchmark: "benchmarks/fastp/{sample}.txt"
     log: "logs/fastp/{sample}.err"
-    conda:  "envs/01_preprocessing/fastp.yaml"
-    container: "docker://quay.io/biocontainers/fastp:0.24.0--heae3180_1"
+    conda:  "envs/01_preprocessing/fastp.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/fastp:0.24.0--heae3180_1" if config.get("use_container", True) else None
     threads: config["fastp"]["threads"]
     message: "[FASTP] SAMPLES: {input.R1} {input.R2}|OUTPUT: {output.R1_trimmed} {output.R2_trimmed} {output.html} {output.json}| TRIMFRONT1: {params.trim_front1}| TRIMFRONT2: {params.trim_front2}|LENGTH REQUIRED: {params.length_required}"
     

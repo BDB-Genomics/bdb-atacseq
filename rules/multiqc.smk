@@ -33,8 +33,8 @@ rule multiqc:
         time=lambda wildcards, attempt: config['multiqc']['resources']['time'] * attempt,
 
     log: "logs/multiqc/multiqc.err"
-    conda: "envs/01_preprocessing/multiqc.yaml"
-    container: "docker://quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0"
+    conda: "envs/01_preprocessing/multiqc.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0" if config.get("use_container", True) else None
     threads: config['multiqc']['threads']
     message: "Running MultiQC to aggregate all QC reports| INPUT: {input}"
         

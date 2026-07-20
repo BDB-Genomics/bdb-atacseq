@@ -12,8 +12,8 @@ rule count_peaks:
 
     log: "logs/count_peaks/{sample}.err"
     benchmark: "benchmarks/count_peaks/{sample}.txt"
-    conda: "envs/05_peak_calling/consensus.yaml"
-    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
+    conda: "envs/05_peak_calling/consensus.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3" if config.get("use_container", True) else None
     threads: config['count_peaks']['threads']
     message: "[Count Peaks] Sample: {wildcards.sample} | Consensus: {input.consensus} | Output: {output.counts}"
 

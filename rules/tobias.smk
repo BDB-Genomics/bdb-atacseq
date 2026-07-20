@@ -20,8 +20,8 @@ rule tobias_atacorrect:
 
     log: "logs/tobias/{sample}_atacorrect.err"
     benchmark: "benchmarks/tobias/{sample}_atacorrect.txt"
-    conda: "envs/05_peak_calling/tobias.yaml"
-    container: "docker://quay.io/biocontainers/tobias:0.17.3--py310h20b60a1_1"
+    conda: "envs/05_peak_calling/tobias.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/tobias:0.17.3--py310h20b60a1_1" if config.get("use_container", True) else None
     threads: config['tobias']['threads']
     message: "[TOBIAS ATACorrect] Sample: {wildcards.sample} | BAM: {input.bam} | Peaks: {input.peaks} | Genome: {input.genome}"
 
@@ -46,8 +46,8 @@ rule tobias_score_bigwig:
 
     log: "logs/tobias/{sample}_score.err"
     benchmark: "benchmarks/tobias/{sample}_score.txt"
-    conda: "envs/05_peak_calling/tobias.yaml"
-    container: "docker://quay.io/biocontainers/tobias:0.17.3--py310h20b60a1_1"
+    conda: "envs/05_peak_calling/tobias.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/tobias:0.17.3--py310h20b60a1_1" if config.get("use_container", True) else None
     threads: config['tobias']['threads']
     message: "[TOBIAS FootprintScores] Sample: {wildcards.sample} | BigWig: {input.corrected_bw} | Peaks: {input.peaks}"
 
@@ -78,8 +78,8 @@ rule tobias_bindetect:
 
     log: "logs/tobias/bindetect.err"
     benchmark: "benchmarks/tobias/bindetect.txt"
-    conda: "envs/05_peak_calling/tobias.yaml"
-    container: "docker://quay.io/biocontainers/tobias:0.17.3--py310h20b60a1_1"
+    conda: "envs/05_peak_calling/tobias.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/tobias:0.17.3--py310h20b60a1_1" if config.get("use_container", True) else None
     threads: config['tobias']['threads']
     message: "[TOBIAS BINDetect] Running differential TF binding analysis on {params.n_bams} samples"
 

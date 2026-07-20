@@ -11,8 +11,8 @@ rule samtools_index_post_filter:
 
     log: "logs/samtools_index_post_filter/{sample}.out"
     benchmark: "benchmarks/samtools_index_post_filter/{sample}.txt"
-    conda: "envs/03_post_alignment/samtools.yaml"
-    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
+    conda: "envs/03_post_alignment/samtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0" if config.get("use_container", True) else None
     threads: config['samtools_index_post_filter']['threads']
     message: "[SAMTOOLS INDEX POST FILTER] SAMPLE: {wildcards.sample}| INPUT: {input.filtered_bam}| OUTPUT: {output.filtered_bam_indexed}"
         

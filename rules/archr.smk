@@ -18,8 +18,8 @@ rule archr_pseudobulk:
 
     log: "logs/archr/pseudobulk.err"
     benchmark: "benchmarks/archr/pseudobulk.txt"
-    conda: "envs/scatac/archr.yaml"
-    container: "docker://quay.io/biocontainers/r-archr:1.0.3--r43h503566f_2"
+    conda: "envs/scatac/archr.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/r-archr:1.0.3--r43h503566f_2" if config.get("use_container", True) else None
     threads: config['archr']['threads']
     message: "[ArchR Pseudo-bulk] Creating Arrow files from scATAC-seq BAMs"
 
@@ -43,8 +43,8 @@ rule archr_doublet_detection:
 
     log: "logs/archr/doublets.err"
     benchmark: "benchmarks/archr/doublets.txt"
-    conda: "envs/scatac/archr.yaml"
-    container: "docker://quay.io/biocontainers/r-archr:1.0.3--r43h503566f_2"
+    conda: "envs/scatac/archr.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/r-archr:1.0.3--r43h503566f_2" if config.get("use_container", True) else None
     threads: config['archr']['threads']
     message: "[ArchR Doublet Detection] Removing doublets from scATAC-seq data"
 
@@ -72,8 +72,8 @@ rule archr_clustering:
 
     log: "logs/archr/clustering.err"
     benchmark: "benchmarks/archr/clustering.txt"
-    conda: "envs/scatac/archr.yaml"
-    container: "docker://quay.io/biocontainers/r-archr:1.0.3--r43h503566f_2"
+    conda: "envs/scatac/archr.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/r-archr:1.0.3--r43h503566f_2" if config.get("use_container", True) else None
     threads: config['archr']['threads']
     message: "[ArchR Clustering] Identifying cell types from scATAC-seq data"
 

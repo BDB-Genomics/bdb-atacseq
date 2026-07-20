@@ -11,8 +11,8 @@ rule samtools_index_postmarkdup:
              
     log: "logs/samtools_index/post_markdup/{sample}.err"
     benchmark: "benchmarks/samtools_index/post_markdup/{sample}.txt"
-    conda: "envs/03_post_alignment/samtools.yaml"
-    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
+    conda: "envs/03_post_alignment/samtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0" if config.get("use_container", True) else None
     threads: config['samtools_index_post_markdup']['threads']
     message: "[SAMTOOLS INDEX POST MARKDUP] SAMPLE: {wildcards.sample}| INPUT: {input.markdup_bam}| OUTPUT: {output.indexed_markdup_bam}"
         

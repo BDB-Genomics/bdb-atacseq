@@ -14,8 +14,8 @@ rule blacklist_region_filter:
 
     log: "logs/blacklist_region_filter/{sample}.err"
     benchmark: "benchmarks/blacklist_region_filter/{sample}.txt"
-    conda: "envs/03_post_alignment/bedtools.yaml"
-    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
+    conda: "envs/03_post_alignment/bedtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3" if config.get("use_container", True) else None
     threads: config['blacklist_filter']['threads']
     message: "[Bedtools intersect] Sample: {wildcards.sample} | Peaks: {input.peaks} | Filtered Peaks: {output.filtered_peaks} | Blacklist: {params.blacklist}"
 

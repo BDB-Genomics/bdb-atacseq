@@ -1,6 +1,8 @@
 # ==============================================================================
 # BDB Genomics — ATAC-seq Framework Configuration
 # ==============================================================================
+use_conda: True
+use_container: True
 #
 # This file is the single source of truth for the BDB-Genomics ATAC-seq
 # framework. Every tool, path, resource limit, and QC threshold is declared

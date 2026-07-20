@@ -17,8 +17,8 @@ rule correlation_analysis:
 
     log: "logs/correlation_analysis/correlation_analysis.err"
     benchmark: "benchmarks/correlation_analysis/correlation_analysis.txt"
-    conda: "envs/06_visualization/deeptools.yaml"
-    container: "docker://quay.io/biocontainers/deeptools:3.5.1--py_0"
+    conda: "envs/06_visualization/deeptools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/deeptools:3.5.1--py_0" if config.get("use_container", True) else None
     threads: config['correlation_analysis']['threads']
     message: "[multiBigwigSummary +  plotCorrelation] | BigWigs: {input.bigwig} | Outputs: {output.npz}, {output.tab}, {output.heatmap} | Binsize: {params.bin_size} ..."
                 

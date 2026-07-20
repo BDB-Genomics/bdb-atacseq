@@ -15,8 +15,8 @@ rule samtools_view:
 
     log: "logs/samtools_view/{sample}.out"
     benchmark: "benchmarks/samtools_view/{sample}.txt"
-    conda: "envs/03_post_alignment/samtools.yaml"
-    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
+    conda: "envs/03_post_alignment/samtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0" if config.get("use_container", True) else None
     threads: config['samtools_view']['threads']
     message: "[SAMTOOLS VIEW] SAMPLE: {wildcards.sample} | INPUT: {input.dedup_bam} | OUTPUT: {output.filtered_bam}| MINIMUM MAPQ: {params.minimum_mapq} | FILTER FLAGS: {params.filter_flags}"
         

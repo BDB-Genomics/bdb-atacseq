@@ -11,8 +11,8 @@ rule sorted_bedgraph:
     
     log: "logs/sorted_bedgraph/{sample}.err"
     benchmark: "benchmarks/sorted_bedgraph/{sample}.txt"
-    conda: "envs/06_visualization/sorted_bedgraph.yaml"
-    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
+    conda: "envs/06_visualization/sorted_bedgraph.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3" if config.get("use_container", True) else None
     threads: config['sorted_bedgraph']['threads']
     message: "[sort]  Sample:  {wildcards.sample} | BedGraph: {input.bedgraph} | Sorted BedGraph: {output.sorted_bedgraph} | Resources: {resources.mem_mb}...  "
             

@@ -17,8 +17,8 @@ rule consensus_peaks:
 
     log: "logs/consensus_peaks/consensus.err"
     benchmark: "benchmarks/consensus_peaks/consensus.txt"
-    conda: "envs/05_peak_calling/consensus.yaml"
-    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
+    conda: "envs/05_peak_calling/consensus.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3" if config.get("use_container", True) else None
     threads: config['consensus_peaks']['threads']
     message: "[Consensus Peaks] Merging {params.n_peaks} peak sets | Min samples: {params.min_samples}"
 

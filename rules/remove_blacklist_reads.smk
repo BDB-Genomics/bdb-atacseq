@@ -6,8 +6,8 @@ rule remove_blacklist_reads:
         bam=f"{config['remove_blacklist_reads']['output']['filtered_bam_clean']}/{{sample}}.filtered.bam"
     log: "logs/remove_blacklist_reads/{sample}.err"
     benchmark: "benchmarks/remove_blacklist_reads/{sample}.txt"
-    conda: "envs/03_post_alignment/bedtools.yaml"
-    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3"
+    conda: "envs/03_post_alignment/bedtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bedtools:2.30.0--h468198e_3" if config.get("use_container", True) else None
     threads: config['remove_blacklist_reads'].get('threads', 2)
     resources:
         mem_mb=lambda wildcards, input, attempt: max(config['remove_blacklist_reads']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt,

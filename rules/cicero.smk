@@ -21,8 +21,8 @@ rule cicero_coaccessibility:
 
     log: "logs/cicero/coaccessibility.err"
     benchmark: "benchmarks/cicero/coaccessibility.txt"
-    conda: "envs/scatac/cicero.yaml"
-    container: "docker://quay.io/biocontainers/bioconductor-cicero:1.20.0--r43hdfd78af_0"
+    conda: "envs/scatac/cicero.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/bioconductor-cicero:1.20.0--r43hdfd78af_0" if config.get("use_container", True) else None
     threads: config['cicero']['threads']
     message: "[Cicero] Computing chromatin co-accessibility networks"
 

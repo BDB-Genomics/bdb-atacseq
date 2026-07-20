@@ -15,8 +15,8 @@ rule calculate_mito_reads:
 
     log: "logs/mitoATAC_calculate/{sample}.err"
     benchmark: "benchmarks/mitoATAC_calculate/{sample}.txt"
-    conda: "envs/03_post_alignment/samtools.yaml"
-    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
+    conda: "envs/03_post_alignment/samtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0" if config.get("use_container", True) else None
     threads: config['mitoATAC_calculate']['threads']
     message: "[MITOCHONDRIAL READS] SAMPLES: {wildcards.sample}|INPUT: {input.sorted_bam}|OUTPUT: {output.mito_stats}|PATTERN: {params.mito_chr}"
         

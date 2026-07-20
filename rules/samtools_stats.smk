@@ -11,8 +11,8 @@ rule samtools_stats:
                     
     log: "logs/samtools_stats/{sample}.err"
     benchmark: "benchmarks/samtools_stats/{sample}.txt"
-    conda: "envs/03_post_alignment/samtools.yaml"
-    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
+    conda: "envs/03_post_alignment/samtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0" if config.get("use_container", True) else None
     threads: config['samtools_stats']['threads']
     message: "[SAMTOOLS STATISTICS] SAMPLE: {wildcards.sample}| INPUT: {input.filtered_bam}| OUTPUT: {output.stats}"
         

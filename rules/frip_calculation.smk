@@ -12,8 +12,8 @@ rule frip_calculation:
 
     log: "logs/frip/{sample}.err"
     benchmark: "benchmarks/frip/{sample}.txt"
-    conda: "envs/03_post_alignment/bedtools.yaml"
-    container: "docker://quay.io/biocontainers/mulled-v2-ac74a7f02cebcfcc07d8e8d1d750af9c83b4d45a:a0ffedb52808e102887f6ce600d092675bf3528a-0"
+    conda: "envs/03_post_alignment/bedtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/mulled-v2-ac74a7f02cebcfcc07d8e8d1d750af9c83b4d45a:a0ffedb52808e102887f6ce600d092675bf3528a-0" if config.get("use_container", True) else None
     threads: config['frip_calculation']['threads']
     message: "[FRiP calculation] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | BAM: {input.shifted_bam} | Output: {output.frip}"
         

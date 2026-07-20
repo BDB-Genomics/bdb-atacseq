@@ -47,7 +47,7 @@ rule benchmark_summary:
         time="00:10:00"
 
     log: "logs/reporting/benchmark_summary.log"
-    conda: "envs/misc/template_tool.yaml"
+    conda: "envs/misc/template_tool.yaml" if config.get("use_conda", True) else None
     message: "[Benchmark Summary] Aggregating {params.n_benchmarks} benchmark files"
 
     shell:

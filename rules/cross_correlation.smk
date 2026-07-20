@@ -16,8 +16,8 @@ rule cross_correlation:
 
     log: "logs/cross_correlation/{sample}.err"
     benchmark: "benchmarks/cross_correlation/{sample}.txt"
-    conda: "envs/04_metrics_qc/cross_correlation.yaml"
-    container: "docker://quay.io/biocontainers/phantompeakqualtools:1.2.2--hdfd78af_1"
+    conda: "envs/04_metrics_qc/cross_correlation.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/phantompeakqualtools:1.2.2--hdfd78af_1" if config.get("use_container", True) else None
     threads: config['cross_correlation']['threads']
     message: "[Cross-Correlation] Sample: {wildcards.sample} | BAM: {input.filtered_bam} | Output: {output.stats}"
 

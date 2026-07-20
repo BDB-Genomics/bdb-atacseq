@@ -16,8 +16,8 @@ rule motif_analysis:
 
     log: "logs/motif_analysis/{sample}.log"
     benchmark: "benchmarks/motif_analysis/{sample}.txt"
-    conda: "envs/05_peak_calling/motif_analysis.yaml"
-    container: "docker://quay.io/biocontainers/homer:4.11--pl526hc9558a2_3"
+    conda: "envs/05_peak_calling/motif_analysis.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/homer:4.11--pl526hc9558a2_3" if config.get("use_container", True) else None
     threads: config['motif_analysis']['threads']
     message: "[Motif analysis] Sample: {wildcards.sample} | Peaks: {input.filtered_peaks} | Output: {output.html}"
 

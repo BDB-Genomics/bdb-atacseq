@@ -14,8 +14,8 @@ rule remove_mito_reads:
         
     log: "logs/remove_mito_reads/{sample}_noMT_sorted_bam.err"
     benchmark: "benchmarks/remove_mito_reads/{sample}_noMT_sorted_bam.txt"
-    conda: "envs/03_post_alignment/samtools.yaml"
-    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
+    conda: "envs/03_post_alignment/samtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0" if config.get("use_container", True) else None
     threads: config['remove_mito_reads']['threads']
     message: "[REMOVE MITOCHONDRIAL READS] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam}|OUTPUT: {output.noMT_sorted_bam}| PATTERN: {params.mito_chr}|"
 

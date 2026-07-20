@@ -19,8 +19,8 @@ rule template_tool:
     
 
     log: "logs/template_category/template_tool/{sample}.log"
-    conda: "envs/misc/template_tool.yaml"
-    container: "docker://python:3.10-slim"
+    conda: "envs/misc/template_tool.yaml" if config.get("use_conda", True) else None
+    container: "docker://python:3.10-slim" if config.get("use_container", True) else None
     threads: config['template_category']['template_tool']['threads']
 
     # [TEMPLATE] Specify where logs and benchmarks will be saved.

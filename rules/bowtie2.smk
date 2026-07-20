@@ -17,8 +17,8 @@ rule bowtie2_align:
 
     log: "logs/bowtie2/{sample}.err"
     benchmark: "benchmarks/bowtie2/{sample}.txt"
-    conda: "envs/02_alignment/bowtie2.yaml"
-    container: "docker://quay.io/biocontainers/mulled-v2-ac74a7f02cebcfcc07d8e8d1d750af9c83b4d45a:a0ffedb52808e102887f6ce600d092675bf3528a-0"
+    conda: "envs/02_alignment/bowtie2.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/mulled-v2-ac74a7f02cebcfcc07d8e8d1d750af9c83b4d45a:a0ffedb52808e102887f6ce600d092675bf3528a-0" if config.get("use_container", True) else None
     threads: config['bowtie2']['threads']
     message: "[BOWTIE2 ALIGN] SAMPLE: {wildcards.sample} |INPUT: {input.R1_fastp} {input.R2_fastp}|OUTPUT: {output.BAM}|PARAMS: {params.index}"
         

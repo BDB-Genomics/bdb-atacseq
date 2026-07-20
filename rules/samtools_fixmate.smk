@@ -11,8 +11,8 @@ rule samtools_fixmate:
 
     log: "logs/samtools_fixmate/{sample}.err"
     benchmark: "benchmarks/samtools_fixmate/{sample}.txt"
-    conda: "envs/03_post_alignment/samtools.yaml"
-    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0"
+    conda: "envs/03_post_alignment/samtools.yaml" if config.get("use_conda", True) else None
+    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0" if config.get("use_container", True) else None
     threads: config["samtools_fixmate"]["threads"]
     message: "[SAMTOOLS FIXMATE] SAMPLE: {wildcards.sample}| INPUT: {input.sorted_bam_noMT}| OUTPUT: {output.sorted_bam_noMT_fixmate}"
  
