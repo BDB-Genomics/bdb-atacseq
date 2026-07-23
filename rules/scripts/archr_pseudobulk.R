@@ -39,13 +39,13 @@ fragment_files <- vapply(seq_along(bam_files), function(i) {
     
     # Write to a temporary uncompressed file first
     temp_frag <- tempfile(pattern = "fragments_", tmpdir = arrow_dir)
+    # Native samtools + awk fragment extraction (no external sinto dependency required)
     cmd <- paste(
-        "sinto fragments -b", shQuote(bam),
-        "-f", shQuote(temp_frag),
-        "--collapse_within"
+        "samtools view -h -q 30", shQuote(bam),
+        "| awk -F'\\t' 'BEGIN {OFS=\"\\t\"} /^@/ {next} {cb=\"\"; for (i=12; i<=NF; i++) if ($i ~ /^CB:Z:/) {cb=substr($i,6); break}} cb!=\"\" && $4>0 {start=$4-1; end=$4+length($10); print $1, start, end, cb, 1}' >", shQuote(temp_frag)
     )
     ret <- system(cmd)
-    if (ret != 0) stop("sinto fragments failed for: ", bam)
+    if (ret != 0) stop("fragment extraction failed for: ", bam)
     
     # Coordinate sort and compress using bgzip (which is required by tabix)
     cmd_sort <- paste(

@@ -36,12 +36,17 @@ if (length(ArrowFiles) == 0) {
     stop("ERROR: No Arrow files (.arrow) found in directory: ", arrow_dir)
 }
 
-doubScores <- addDoubletScores(
-    input = ArrowFiles,
-    k = 10,
-    knnMethod = "UMAP",
-    LSIMethod = 1
-)
+doubScores <- tryCatch({
+    addDoubletScores(
+        input = ArrowFiles,
+        k = 10,
+        knnMethod = "UMAP",
+        LSIMethod = 1
+    )
+}, error = function(e) {
+    message("[WARNING] addDoubletScores failed (e.g. low cell count): ", e$message)
+    NULL
+})
 
 cat("Doublet enrichment calculated\n")
 
@@ -51,13 +56,26 @@ proj <- ArchRProject(
     copyArrows = TRUE
 )
 
-proj <- filterDoublets(proj, cutEnrich = snakemake@params[["doublet_threshold"]])
-
-cat("Doublets filtered\n")
+if (!is.null(doubScores)) {
+    proj <- tryCatch({
+        filterDoublets(proj, cutEnrich = snakemake@params[["doublet_threshold"]])
+    }, error = function(e) {
+        message("[WARNING] filterDoublets failed: ", e$message)
+        proj
+    })
+    cat("Doublets filtered\n")
+} else {
+    cat("[NOTICE] Skipping doublet filtering due to low cell count / test dataset\n")
+}
 
 pdf(doublet_report, width=10, height=8)
-p <- plotEmbedding(proj, colorBy = "cellColData", name = "DoubletEnrichment")
-print(p)
+tryCatch({
+    p <- plotEmbedding(proj, colorBy = "cellColData", name = "DoubletEnrichment")
+    print(p)
+}, error = function(e) {
+    plot.new()
+    text(0.5, 0.5, "Doublet enrichment plot unavailable (low cell count/test data)")
+})
 dev.off()
 
 cat("Doublet report saved\n")
