@@ -5,7 +5,8 @@ rule chromap_align:
         index=config['chromap']['params']['index']
 
     output:
-        SAM=temp(f"{config['chromap']['output']}/{{sample}}_aligned.sam")
+        BAM=f"{config['chromap']['output']}/{{sample}}.bam",
+        tagBam=f"{config['chromap']['output']}/{{sample}}_tag.bam"
 
     params:
         preset=config['chromap']['params']['preset'],
@@ -34,29 +35,14 @@ rule chromap_align:
             -2 {input.R2_fastp} \
             -t {threads} \
             {params.extra} \
-            -o {output.SAM} \
+            -o {output.BAM} \
             --SAM \
             2> {log}
-        """
 
-rule chromap_add_cb_tag:
-    input:
-        SAM=f"{config['chromap']['output']}/{{sample}}_aligned.sam"
-    output:
-        BAM=f"{config['chromap']['output']}/{{sample}}.bam",
-        tagBam=f"{config['chromap']['output']}/{{sample}}_tag.bam",
-        tagBamIdx=f"{config['chromap']['output']}/{{sample}}_tag.bam.bai"
-    log: "logs/chromap/{sample}_tag.err"
-    benchmark: "benchmarks/chromap/{sample}_tag.txt"
-    conda: "envs/02_alignment/samtools.yaml" if config.get("use_conda", True) else None
-    container: "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0" if config.get("use_container", True) else None
-    threads: 1
-    message: "[CHROMAP] Sample: {wildcards.sample} | Adding CB tag and converting to BAM"
-    shell:
-        """
-        awk 'BEGIN {{OFS="\\t"; srand(42)}} /^@/ {{print; next}} {{cell_id=int(rand()*100)+1; print $0, "CB:Z:cell_"cell_id}}' {input.SAM} | \
-        samtools view -bS - > {output.BAM} 2> {log}
+        # Add deterministic cell barcodes (CB tag) to all aligned SAM records for downstream ArchR processing
+        awk 'BEGIN {{OFS="\\t"; srand(42)}} /^@/ {{print; next}} {{cell_id=int(rand()*100)+1; print $0, "CB:Z:cell_"cell_id}}' {output.BAM} > {output.BAM}.tmp
+        mv {output.BAM}.tmp {output.BAM}
 
-        cp {output.BAM} {output.tagBam}
+        samtools view -bS {output.BAM} > {output.tagBam} 2>> {log}
         samtools index {output.tagBam} 2>> {log}
         """
