@@ -23,6 +23,12 @@ MODE = os.getenv("ATAC_MODE", config.get("global", {}).get("mode", "bulk"))
 if MODE not in ("bulk", "scatac"):
     raise ValueError(f"Invalid mode '{MODE}'. Use 'bulk' or 'scatac'. Set via ATAC_MODE env var or config.yaml global.mode")
 
+# Fix boolean string coercion from CLI overrides (e.g. --config use_conda=False is parsed as string "False")
+if "use_conda" in config:
+    config["use_conda"] = str(config["use_conda"]).lower() not in ("false", "0", "no", "none")
+if "use_container" in config:
+    config["use_container"] = str(config["use_container"]).lower() not in ("false", "0", "no", "none")
+
 config_file = workflow.overwrite_configfiles[0] if (workflow.overwrite_configfiles and not config.get("ci_mode")) else "config.yaml"
 
 try:

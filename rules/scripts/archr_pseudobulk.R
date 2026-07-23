@@ -53,7 +53,7 @@ setwd(arrow_dir)
 
 cat("Creating Arrow files from fragment files\n")
 ArrowFiles <- createArrowFiles(
-    inputFiles = fragment_files,
+    inputFiles = basename(fragment_files),
     sampleNames = samples_info$sample,
     filterTSS = snakemake@params[["min_tss"]],
     filterFrags = snakemake@params[["min_frags"]],
