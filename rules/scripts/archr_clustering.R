@@ -16,11 +16,21 @@ if (exists("snakemake") && length(snakemake@log) > 0) {
 }
 
 addArchRThreads(threads=as.integer(snakemake@threads))
-tryCatch({
+
+# Robustly set hg38 genome: try addArchRGenome first, fall back to bundled annotations
+genome_set <- tryCatch({
     addArchRGenome("hg38")
+    TRUE
 }, error = function(e) {
-    message("[WARNING] addArchRGenome failed: ", e$message)
+    message("[WARNING] addArchRGenome failed (BSgenome/BiocManager unavailable): ", e$message)
+    message("[INFO] Falling back to ArchR bundled hg38 annotations...")
+    FALSE
 })
+if (!genome_set) {
+    ArchR:::.setArchRGenome("hg38",
+        geneAnnotation  = ArchR:::geneAnnoHg38,
+        genomeAnnotation = ArchR:::genomeAnnoHg38)
+}
 
 cat("===========================================\n")
 cat("ArchR: Clustering & Marker Identification\n")
@@ -68,9 +78,13 @@ markers <- getMarkerFeatures(
     bias = c("TSSEnrichment", "log10(nFrags)")
 )
 
-markerList <- getMarkers(markers, cutOff = "FDR <= 0.1 & Log2FC >= 0.5")
-
-write.table(markerList$pos, markers_out, sep="\t", quote=FALSE, row.names=FALSE)
+# getMarkers returns a named list keyed by cluster; combine all into one data.frame
+markerDF <- do.call(rbind, lapply(names(markerList), function(cl) {
+    df <- as.data.frame(markerList[[cl]])
+    if (nrow(df) > 0) df$Cluster <- cl
+    df
+}))
+write.table(markerDF, markers_out, sep="\t", quote=FALSE, row.names=FALSE)
 
 cat("Marker genes saved\n")
 
@@ -92,9 +106,9 @@ write.table(clusters_df, clusters_out, sep="\t", quote=FALSE, row.names=FALSE)
 cat("Cell clusters saved\n")
 
 pdf(full_report, width=14, height=10)
-plotEmbedding(ArchRProj=proj, color="TSSEnrichment", title="TSS Enrichment", size=0.1)
-plotEmbedding(ArchRProj=proj, color="log10(nFrags)", title="Log10 Fragments", size=0.1)
-plotEmbedding(ArchRProj=proj, color="Clusters", title="Clusters", palette="Set3", size=0.1)
+print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="TSSEnrichment", title="TSS Enrichment", size=0.1))
+print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="nFrags", title="nFrags", size=0.1))
+print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="Clusters", title="Clusters", size=0.1))
 dev.off()
 
 cat("Full report saved\n")

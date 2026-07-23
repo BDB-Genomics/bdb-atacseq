@@ -18,11 +18,21 @@ if (exists("snakemake") && length(snakemake@log) > 0) {
 }
 
 addArchRThreads(threads=as.integer(snakemake@threads))
-tryCatch({
+
+# Robustly set hg38 genome: try addArchRGenome first, fall back to bundled annotations
+genome_set <- tryCatch({
     addArchRGenome("hg38")
+    TRUE
 }, error = function(e) {
-    message("[WARNING] addArchRGenome failed: ", e$message)
+    message("[WARNING] addArchRGenome failed (BSgenome/BiocManager unavailable): ", e$message)
+    message("[INFO] Falling back to ArchR bundled hg38 annotations...")
+    FALSE
 })
+if (!genome_set) {
+    ArchR:::.setArchRGenome("hg38",
+        geneAnnotation  = ArchR:::geneAnnoHg38,
+        genomeAnnotation = ArchR:::genomeAnnoHg38)
+}
 
 cat("===========================================\n")
 cat("Cicero: Co-accessibility Analysis\n")
