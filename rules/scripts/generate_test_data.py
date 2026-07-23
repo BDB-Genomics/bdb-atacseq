@@ -46,11 +46,11 @@ GENE_START_OFFSET = 10_000  # first gene starts here
 # ---------------------------------------------------------------------------
 # FASTQ parameters
 # ---------------------------------------------------------------------------
-READS_PER_SAMPLE = 100000
+READS_PER_SAMPLE = 250000
 READ_LENGTH = 75
 FRAGMENT_MEAN = 200
 FRAGMENT_SD = 30
-TSS_TARGETED_FRACTION = 0.75   # fraction of reads placed near TSSes
+TSS_TARGETED_FRACTION = 0.80   # fraction of reads placed near TSSes
 TSS_WINDOW = 2000              # how far from TSS we scatter targeted reads
 SAMPLES = ["sample1", "sample2", "sample3", "sample4"]
 
@@ -209,7 +209,7 @@ def generate_fastq_paired(
         if chrom in genome_seqs and chrom in tss_by_chrom:
             seq = genome_seqs[chrom]
             num_peaks = min(15, len(tss_by_chrom[chrom]))
-            reads_per_peak = max(1, 1000 // num_peaks)
+            reads_per_peak = max(1, 5000 // num_peaks)
             for i in range(num_peaks):
                 tss = tss_by_chrom[chrom][i]
                 for _ in range(reads_per_peak):

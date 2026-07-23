@@ -3,8 +3,24 @@ suppressPackageStartupMessages({
     library(ggplot2)
 })
 
+if (exists("snakemake") && length(snakemake@log) > 0) {
+    dir.create(dirname(snakemake@log[[1]]), showWarnings = FALSE, recursive = TRUE)
+    log_file <- file(snakemake@log[[1]], open = "wt")
+    sink(log_file)
+    sink(log_file, type = "message")
+    on.exit({
+        try(sink(type = "message"), silent = TRUE)
+        try(sink(), silent = TRUE)
+        close(log_file)
+    }, add = TRUE)
+}
+
 addArchRThreads(threads=as.integer(snakemake@threads))
-addArchRGenome("hg38")
+tryCatch({
+    addArchRGenome("hg38")
+}, error = function(e) {
+    message("[WARNING] addArchRGenome failed: ", e$message)
+})
 
 cat("===========================================\n")
 cat("ArchR: Clustering & Marker Identification\n")
