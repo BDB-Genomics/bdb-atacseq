@@ -48,7 +48,14 @@ rule chromap_align:
         samtools view -bS {output.BAM} > {output.tagBam} 2>> {log}
         samtools index {output.tagBam} 2>> {log}
 
-        # Extract coordinate-sorted 10x ATAC fragment file, bgzip compress, and index with tabix
-        awk -F'\\t' 'BEGIN {{OFS="\\t"}} /^@/ {{next}} {{cb=""; for (i=12; i<=NF; i++) if ($i ~ /^CB:Z:/) {{cb=substr($i,6); break}}}} cb!="" && $4>0 {{start=$4-1; end=$4+length($10); print $1, start, end, cb, 1}}' {output.BAM} | sort -k1,1 -k2,2n -k3,3n | bgzip -c > {output.fragments} 2>> {log}
+        # Extract coordinate-sorted 10x ATAC fragment file from SAM (stream SAM text via samtools view -h)
+        # Use TLEN ($9) for proper paired-end fragment end; fall back to read length if TLEN<=0
+        samtools view -h {output.tagBam} | \
+        awk -F'\t' 'BEGIN {{OFS="\t"}} /^@/ {{next}} \
+            {{cb=""; for (i=12; i<=NF; i++) if ($i ~ /^CB:Z:/) {{cb=substr($i,6); break}}}} \
+            cb!="" && $4>0 && ($2%32)<16 \
+            {{start=$4-1; tlen=($9<0?-$9:$9); end=(tlen>0 ? $4-1+tlen : $4-1+length($10)); \
+              if (end>start) print $1, start, end, cb, 1}}' | \
+        sort -k1,1 -k2,2n -k3,3n | bgzip -c > {output.fragments} 2>> {log}
         tabix -p bed {output.fragments} 2>> {log}
         """

@@ -15,11 +15,26 @@ if (exists("snakemake") && length(snakemake@log) > 0) {
 }
 
 addArchRThreads(threads=as.integer(snakemake@threads))
-tryCatch({
+
+# Robustly set hg38 genome: try addArchRGenome first, then fall back to
+# ArchR's bundled internal annotation objects (no BSgenome/BiocManager needed)
+genome_set <- tryCatch({
     addArchRGenome("hg38")
+    TRUE
 }, error = function(e) {
-    message("[WARNING] addArchRGenome failed: ", e$message)
+    message("[WARNING] addArchRGenome failed (BSgenome/BiocManager unavailable): ", e$message)
+    message("[INFO] Falling back to ArchR bundled hg38 annotations...")
+    FALSE
 })
+
+if (!genome_set) {
+    # ArchR ships pre-built annotation objects internally for hg38
+    geneAnnotation  <- ArchR:::geneAnnoHg38
+    genomeAnnotation <- ArchR:::genomeAnnoHg38
+} else {
+    geneAnnotation  <- getGeneAnnotation()
+    genomeAnnotation <- getGenomeAnnotation()
+}
 
 cat("===========================================\n")
 cat("ArchR: Creating Arrow Files\n")
@@ -43,6 +58,8 @@ cat("Creating Arrow files from fragment files\n")
 ArrowFiles <- createArrowFiles(
     inputFiles = fragment_files,
     sampleNames = samples_info$sample,
+    geneAnnotation  = geneAnnotation,
+    genomeAnnotation = genomeAnnotation,
     minTSS = snakemake@params[["min_tss"]],
     minFrags = snakemake@params[["min_frags"]],
     addTileMat = TRUE,
