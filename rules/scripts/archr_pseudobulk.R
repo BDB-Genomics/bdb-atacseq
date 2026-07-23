@@ -32,7 +32,8 @@ arrow_dir <- snakemake@output[["arrow_dir"]]
 samples_info <- read.delim(sample_sheet, header=TRUE, sep="\t")
 
 # Use pre-generated bgzipped and indexed fragment files from chromap_align
-fragment_files <- unlist(snakemake@input[["fragments"]])
+# Resolve to absolute paths BEFORE setwd() changes the working directory
+fragment_files <- normalizePath(unlist(snakemake@input[["fragments"]]), mustWork = TRUE)
 
 # Set working directory to arrow_dir so that Arrow files are created inside it
 dir.create(arrow_dir, showWarnings = FALSE, recursive = TRUE)
@@ -40,10 +41,10 @@ setwd(arrow_dir)
 
 cat("Creating Arrow files from fragment files\n")
 ArrowFiles <- createArrowFiles(
-    inputFiles = normalizePath(fragment_files),
+    inputFiles = fragment_files,
     sampleNames = samples_info$sample,
-    filterTSS = snakemake@params[["min_tss"]],
-    filterFrags = snakemake@params[["min_frags"]],
+    minTSS = snakemake@params[["min_tss"]],
+    minFrags = snakemake@params[["min_frags"]],
     addTileMat = TRUE,
     addGeneScoreMat = TRUE
 )
