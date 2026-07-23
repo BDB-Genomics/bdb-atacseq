@@ -6,7 +6,9 @@ rule chromap_align:
 
     output:
         BAM=f"{config['chromap']['output']}/{{sample}}.bam",
-        tagBam=f"{config['chromap']['output']}/{{sample}}_tag.bam"
+        tagBam=f"{config['chromap']['output']}/{{sample}}_tag.bam",
+        fragments=f"{config['chromap']['output']}/{{sample}}_fragments.tsv.gz",
+        fragments_idx=f"{config['chromap']['output']}/{{sample}}_fragments.tsv.gz.tbi"
 
     params:
         preset=config['chromap']['params']['preset'],
@@ -45,4 +47,8 @@ rule chromap_align:
 
         samtools view -bS {output.BAM} > {output.tagBam} 2>> {log}
         samtools index {output.tagBam} 2>> {log}
+
+        # Extract coordinate-sorted 10x ATAC fragment file, bgzip compress, and index with tabix
+        awk -F'\\t' 'BEGIN {{OFS="\\t"}} /^@/ {{next}} {{cb=""; for (i=12; i<=NF; i++) if ($i ~ /^CB:Z:/) {{cb=substr($i,6); break}}}} cb!="" && $4>0 {{start=$4-1; end=$4+length($10); print $1, start, end, cb, 1}}' {output.BAM} | sort -k1,1 -k2,2n -k3,3n | bgzip -c > {output.fragments} 2>> {log}
+        tabix -p bed {output.fragments} 2>> {log}
         """

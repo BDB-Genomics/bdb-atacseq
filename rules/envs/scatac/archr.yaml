@@ -11,4 +11,5 @@ dependencies:
   - python=3.10
   - sinto
   - htslib
+  - samtools
   - setuptools<70.0.0

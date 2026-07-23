@@ -1,6 +1,8 @@
 rule archr_pseudobulk:
     input:
         bam=expand("{path}/{sample}_tag.bam", path=config['chromap']['output'], sample=SAMPLES),
+        fragments=expand("{path}/{sample}_fragments.tsv.gz", path=config['chromap']['output'], sample=SAMPLES),
+        fragments_idx=expand("{path}/{sample}_fragments.tsv.gz.tbi", path=config['chromap']['output'], sample=SAMPLES),
         sample_sheet=config['global']['samples']
 
     output:
