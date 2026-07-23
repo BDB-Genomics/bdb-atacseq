@@ -31,6 +31,11 @@ if "use_container" in config:
 
 config_file = workflow.overwrite_configfiles[0] if (workflow.overwrite_configfiles and not config.get("ci_mode")) else "config.yaml"
 
+# Lower ArchR thresholds drastically for synthetic CI test datasets
+if config.get("ci_mode") and "archr" in config and "params" in config["archr"]:
+    config["archr"]["params"]["min_tss"] = 0.0
+    config["archr"]["params"]["min_frags"] = 1
+
 try:
     subprocess.run(
         [sys.executable, "rules/scripts/validate_config.py", config_file],

@@ -19,7 +19,7 @@ rule footprinting:
     log: "logs/footprinting/{sample}.err"
     benchmark: "benchmarks/footprinting/{sample}.txt"
     conda: "envs/05_peak_calling/footprinting.yaml" if config.get("use_conda", True) else None
-    container: "docker://quay.io/biocontainers/rgt:0.13.2--py39h1f90b4d_0" if config.get("use_container", True) else None
+    container: "docker://quay.io/biocontainers/rgt:1.0.2--py37he4a0461_0" if config.get("use_container", True) else None
     threads: config['footprinting']['threads']
     message: "[Footprinting] {wildcards.sample} | organism: {params.organism}"
 
