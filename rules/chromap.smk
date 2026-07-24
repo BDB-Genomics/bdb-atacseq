@@ -55,7 +55,7 @@ rule chromap_align:
             {{cb=""; for (i=12; i<=NF; i++) if ($i ~ /^CB:Z:/) {{cb=substr($i,6); break}}}} \
             cb!="" && $4>0 && ($2%32)<16 \
             {{start=$4-1; tlen=($9<0?-$9:$9); end=(tlen>0 ? $4-1+tlen : $4-1+length($10)); \
-              if (end>start) print $1, start, end, cb, 1}}' | \
+              if (end>start) print $3, start, end, cb, 1}}' | \
         sort -k1,1 -k2,2n -k3,3n | bgzip -c > {output.fragments} 2>> {log}
         tabix -p bed {output.fragments} 2>> {log}
         """
