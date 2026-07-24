@@ -129,23 +129,58 @@ if (!have_hg38) {
     cat("[INFO] Using hg38 gene/genome annotation.\n")
 }
 
-# Set working directory to arrow_dir so Arrow files are created inside it
+# Disable ArchR file locking (not needed on a single machine; locking suppresses
+# sub-threading and can cause silent mclapply failures in CI environments)
+addArchRLocking(FALSE)
 
+# In CI/synthetic mode force 1 thread so errors surface directly instead of
+# being caught-and-swallowed inside mclapply workers
+if (!have_hg38) {
+    cat("[INFO] CI mode: forcing threads=1 for sequential Arrow creation (cleaner error output).\n")
+    addArchRThreads(threads = 1, force = TRUE)
+}
+
+# Set working directory to arrow_dir so Arrow files are created inside it
 dir.create(arrow_dir, showWarnings = FALSE, recursive = TRUE)
 setwd(arrow_dir)
 
 cat("Creating Arrow files from fragment files\n")
-ArrowFiles <- createArrowFiles(
-    inputFiles       = fragment_files,
-    sampleNames      = samples_info$sample,
-    geneAnnotation   = geneAnnotation,
-    genomeAnnotation = genomeAnnotation,
-    minTSS           = snakemake@params[["min_tss"]],
-    minFrags         = snakemake@params[["min_frags"]],
-    addTileMat       = TRUE,
-    addGeneScoreMat  = TRUE
-)
+ArrowFiles <- tryCatch({
+    createArrowFiles(
+        inputFiles       = fragment_files,
+        sampleNames      = samples_info$sample,
+        geneAnnotation   = geneAnnotation,
+        genomeAnnotation = genomeAnnotation,
+        minTSS           = snakemake@params[["min_tss"]],
+        minFrags         = snakemake@params[["min_frags"]],
+        addTileMat       = TRUE,
+        addGeneScoreMat  = TRUE
+    )
+}, error = function(e) {
+    cat("[ERROR] createArrowFiles threw an exception:\n")
+    cat(conditionMessage(e), "\n")
+    character(0)
+})
+
+# ── Print the ArchR internal log so CI shows the actual per-worker error ──────
+archr_log_dir <- "ArchRLogs"
+if (dir.exists(archr_log_dir)) {
+    log_files <- list.files(archr_log_dir, pattern = "\\.log$", full.names = TRUE)
+    if (length(log_files) > 0) {
+        latest_log <- log_files[which.max(file.mtime(log_files))]
+        cat("\n=== ArchR Internal Log (", basename(latest_log), ") ===\n", sep = "")
+        writeLines(readLines(latest_log))
+        cat("=== End of ArchR Log ===\n\n")
+    }
+}
 
 cat("Arrow files created:", length(ArrowFiles), "\n")
+
+if (length(ArrowFiles) == 0) {
+    stop("[FATAL] createArrowFiles produced 0 Arrow files — all samples failed. ",
+         "See ArchR log printed above for the per-worker error details.")
+}
+
 cat("ArchR Arrow files creation complete\n")
+
 
