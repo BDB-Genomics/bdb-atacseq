@@ -16,7 +16,13 @@ if (exists("snakemake") && length(snakemake@log) > 0) {
     }, add = TRUE)
 }
 
-addArchRThreads(threads=as.integer(snakemake@threads))
+# Force 1 thread in CI mode to avoid mclapply concurrency issues
+threads <- as.integer(snakemake@threads)
+if (isTRUE(snakemake@config[["ci_mode"]])) {
+    threads <- 1
+}
+addArchRThreads(threads = threads)
+addArchRLocking(locking = FALSE)
 
 cat("===========================================\n")
 cat("ArchR: Creating Arrow Files\n")
@@ -31,10 +37,6 @@ samples_info <- read.delim(sample_sheet, header=TRUE, sep="\t")
 # Resolve to absolute paths BEFORE setwd() changes the working directory
 fragment_files <- normalizePath(unlist(snakemake@input[["fragments"]]), mustWork = TRUE)
 
-# ---------------------------------------------------------------------------
-# Build annotations: use hg38 if chromosomes match, else build from BAM header
-# ---------------------------------------------------------------------------
-
 # Read chromosome names and lengths from the BAM header (stable across all Rsamtools versions)
 bam_file_abs <- normalizePath(unlist(snakemake@input[["bam"]])[1], mustWork = TRUE)
 bam_header   <- scanBamHeader(bam_file_abs)[[1]]$targets   # named integer vector
@@ -43,31 +45,24 @@ frag_lengths <- as.integer(bam_header)                     # integer vector (pos
 cat("BAM header chromosomes:", paste(frag_chroms, collapse=", "), "\n")
 
 # ---------------------------------------------------------------------------
-# Build annotation from the actual reference genome (correct for both CI and
-# production if BSgenome/ArchR built-in annotations are unavailable).
-# For production hg38 data, ArchR will automatically use internal hg38 TSS
-# positions if addArchRGenome() succeeds; we only reach this builder in CI.
+# Build annotations: determine if data matches full hg38 or synthetic test reference
 # ---------------------------------------------------------------------------
-try(addArchRGenome("hg38"), silent = TRUE)   # sets global; ignored if BSgenome absent
+chr1_idx <- which(frag_chroms == "chr1")
+chr1_len <- if (length(chr1_idx) > 0) frag_lengths[chr1_idx[1]] else 0
 
-# Attempt to use pre-set hg38 gene/genome annotation; fall back to synthetic
-geneAnnotation  <- tryCatch(getGeneAnnotation(),   error = function(e) NULL)
-genomeAnnotation <- tryCatch(getGenomeAnnotation(), error = function(e) NULL)
+is_ci <- isTRUE(snakemake@config[["ci_mode"]]) || (chr1_len > 0 && chr1_len < 10000000) || length(frag_chroms) < 5
 
-have_hg38 <- !is.null(geneAnnotation) && !is.null(genomeAnnotation)
+have_hg38 <- FALSE
 
-if (have_hg38) {
-    # Verify that at least one BAM chromosome appears in the gene annotation
-    # (catches the case where a custom/mini reference has no real hg38 genes)
-    anno_chroms <- tryCatch(
-        as.character(unique(seqnames(geneAnnotation$genes))),
-        error = function(e) character(0)
-    )
-    have_hg38 <- length(intersect(frag_chroms, anno_chroms)) > 0
+if (!is_ci) {
+    try(addArchRGenome("hg38"), silent = TRUE)
+    geneAnnotation   <- tryCatch(getGeneAnnotation(),   error = function(e) NULL)
+    genomeAnnotation <- tryCatch(getGenomeAnnotation(), error = function(e) NULL)
+    have_hg38 <- !is.null(geneAnnotation) && !is.null(genomeAnnotation)
 }
 
 if (!have_hg38) {
-    cat("[INFO] hg38 annotation unavailable or no chrom overlap — building synthetic annotation (CI/test mode).\n")
+    cat("[INFO] Synthetic reference or CI mode detected — building custom synthetic annotation.\n")
 
     # Build SeqInfo from BAM header
     si <- Seqinfo(seqnames = frag_chroms, seqlengths = frag_lengths, genome = "testGenome")
@@ -76,7 +71,6 @@ if (!have_hg38) {
     gene_records <- lapply(seq_along(frag_chroms), function(i) {
         chr     <- frag_chroms[i]
         chr_len <- frag_lengths[i]   # positional — never NA
-        # Need at least 11 kb for one gene at pos 5000 with width 3000 + 3000 buffer
         if (chr_len < 11000) return(NULL)
         starts  <- seq(5000, chr_len - 6000, by = 10000)
         strands <- rep_len(c("+", "-"), length(starts))
@@ -88,7 +82,6 @@ if (!have_hg38) {
             gene_id  = paste0("GENE", gsub("chr", "", chr), seq_along(starts))
         )
     })
-    # Drop NULLs (chromosomes too short for any gene)
     gene_records <- Filter(Negate(is.null), gene_records)
     genes_gr <- do.call(c, gene_records)
     seqinfo(genes_gr) <- si
@@ -110,34 +103,22 @@ if (!have_hg38) {
         TSS   = tss_gr
     )
 
-    # Build chromSizes GRanges (ArchR genomeAnnotation internal format)
     chromSizes_gr <- GRanges(
         seqnames = frag_chroms,
         ranges   = IRanges(start = 1L, end = as.integer(frag_lengths))
     )
     seqlengths(chromSizes_gr) <- frag_lengths
 
-    # Bypass createGenomeAnnotation() — it requires a BSgenome/character genome name.
-    # Build the SimpleList directly in the format ArchR expects internally:
-    #   list(genome = <name>, chromSizes = <GRanges>, blacklist = <GRanges>)
     genomeAnnotation <- SimpleList(
         genome     = "testGenome",
         chromSizes = chromSizes_gr,
         blacklist  = GRanges()
     )
+
+    # Set ArchR global genome to custom testGenome so internal ArchR calls use this annotation
+    ArchR:::.setArchRGenome("testGenome", geneAnnotation = geneAnnotation, genomeAnnotation = genomeAnnotation)
 } else {
     cat("[INFO] Using hg38 gene/genome annotation.\n")
-}
-
-# Disable ArchR file locking (not needed on a single machine; locking suppresses
-# sub-threading and can cause silent mclapply failures in CI environments)
-addArchRLocking(FALSE)
-
-# In CI/synthetic mode force 1 thread so errors surface directly instead of
-# being caught-and-swallowed inside mclapply workers
-if (!have_hg38) {
-    cat("[INFO] CI mode: forcing threads=1 for sequential Arrow creation (cleaner error output).\n")
-    addArchRThreads(threads = 1, force = TRUE)
 }
 
 # Set working directory to arrow_dir so Arrow files are created inside it
@@ -145,42 +126,31 @@ dir.create(arrow_dir, showWarnings = FALSE, recursive = TRUE)
 setwd(arrow_dir)
 
 cat("Creating Arrow files from fragment files\n")
-ArrowFiles <- tryCatch({
-    createArrowFiles(
-        inputFiles       = fragment_files,
-        sampleNames      = samples_info$sample,
-        geneAnnotation   = geneAnnotation,
-        genomeAnnotation = genomeAnnotation,
-        minTSS           = snakemake@params[["min_tss"]],
-        minFrags         = snakemake@params[["min_frags"]],
-        addTileMat       = TRUE,
-        addGeneScoreMat  = TRUE
-    )
-}, error = function(e) {
-    cat("[ERROR] createArrowFiles threw an exception:\n")
-    cat(conditionMessage(e), "\n")
-    character(0)
-})
-
-# ── Print the ArchR internal log so CI shows the actual per-worker error ──────
-archr_log_dir <- "ArchRLogs"
-if (dir.exists(archr_log_dir)) {
-    log_files <- list.files(archr_log_dir, pattern = "\\.log$", full.names = TRUE)
-    if (length(log_files) > 0) {
-        latest_log <- log_files[which.max(file.mtime(log_files))]
-        cat("\n=== ArchR Internal Log (", basename(latest_log), ") ===\n", sep = "")
-        writeLines(readLines(latest_log))
-        cat("=== End of ArchR Log ===\n\n")
-    }
-}
+ArrowFiles <- createArrowFiles(
+    inputFiles       = fragment_files,
+    sampleNames      = samples_info$sample,
+    geneAnnotation   = geneAnnotation,
+    genomeAnnotation = genomeAnnotation,
+    minTSS           = snakemake@params[["min_tss"]],
+    minFrags         = snakemake@params[["min_frags"]],
+    addTileMat       = TRUE,
+    addGeneScoreMat  = TRUE
+)
 
 cat("Arrow files created:", length(ArrowFiles), "\n")
 
-if (length(ArrowFiles) == 0) {
-    stop("[FATAL] createArrowFiles produced 0 Arrow files — all samples failed. ",
-         "See ArchR log printed above for the per-worker error details.")
+# Check if any .arrow files were actually produced
+created_arrows <- list.files(".", pattern = "\\.arrow$", full.names = TRUE)
+if (length(created_arrows) == 0) {
+    # Print latest ArchR log file for debugging before stopping
+    log_files <- list.files("ArchRLogs", pattern = "\\.log$", full.names = TRUE)
+    if (length(log_files) > 0) {
+        latest_log <- log_files[order(file.info(log_files)$mtime, decreasing = TRUE)][1]
+        cat("\n=== ArchR Internal Log (", basename(latest_log), ") ===\n", sep = "")
+        cat(readLines(latest_log), sep = "\n")
+        cat("===========================================\n\n")
+    }
+    stop("[FATAL] createArrowFiles produced 0 Arrow files — all samples failed. See ArchR log printed above for details.")
 }
 
 cat("ArchR Arrow files creation complete\n")
-
-
