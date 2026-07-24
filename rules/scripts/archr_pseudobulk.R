@@ -114,9 +114,6 @@ if (!have_hg38) {
         chromSizes = chromSizes_gr,
         blacklist  = GRanges()
     )
-
-    # Set ArchR global genome to custom testGenome so internal ArchR calls use this annotation
-    ArchR:::.setArchRGenome("testGenome", geneAnnotation = geneAnnotation, genomeAnnotation = genomeAnnotation)
 } else {
     cat("[INFO] Using hg38 gene/genome annotation.\n")
 }

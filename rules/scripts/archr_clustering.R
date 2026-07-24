@@ -27,9 +27,7 @@ genome_set <- tryCatch({
     FALSE
 })
 if (!genome_set) {
-    ArchR:::.setArchRGenome("hg38",
-        geneAnnotation  = ArchR:::geneAnnoHg38,
-        genomeAnnotation = ArchR:::genomeAnnoHg38)
+    options(ArchRGenome = "hg38")
 }
 
 cat("===========================================\n")
