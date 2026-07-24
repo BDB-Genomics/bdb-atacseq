@@ -110,13 +110,19 @@ if (!have_hg38) {
         TSS   = tss_gr
     )
 
-    genomeAnnotation <- createGenomeAnnotation(
-        genome     = si,
-        chromSizes = data.frame(
-            chr   = frag_chroms,
-            start = 1L,
-            end   = frag_lengths
-        ),
+    # Build chromSizes GRanges (ArchR genomeAnnotation internal format)
+    chromSizes_gr <- GRanges(
+        seqnames = frag_chroms,
+        ranges   = IRanges(start = 1L, end = as.integer(frag_lengths))
+    )
+    seqlengths(chromSizes_gr) <- frag_lengths
+
+    # Bypass createGenomeAnnotation() — it requires a BSgenome/character genome name.
+    # Build the SimpleList directly in the format ArchR expects internally:
+    #   list(genome = <name>, chromSizes = <GRanges>, blacklist = <GRanges>)
+    genomeAnnotation <- SimpleList(
+        genome     = "testGenome",
+        chromSizes = chromSizes_gr,
         blacklist  = GRanges()
     )
 } else {
