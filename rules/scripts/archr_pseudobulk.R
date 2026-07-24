@@ -71,8 +71,8 @@ if (!have_hg38) {
     gene_records <- lapply(seq_along(frag_chroms), function(i) {
         chr     <- frag_chroms[i]
         chr_len <- frag_lengths[i]   # positional — never NA
-        if (chr_len < 11000) return(NULL)
-        starts  <- seq(5000, chr_len - 6000, by = 10000)
+        if (chr_len < 16000) return(NULL)
+        starts  <- seq(10000, chr_len - 6000, by = 10000)
         strands <- rep_len(c("+", "-"), length(starts))
         GRanges(
             seqnames = chr,
@@ -118,6 +118,9 @@ if (!have_hg38) {
     cat("[INFO] Using hg38 gene/genome annotation.\n")
 }
 
+# Extract clean sample names directly matching input fragment_files
+sample_names <- sub("_fragments\\.tsv\\.gz$", "", basename(fragment_files))
+
 # Set working directory to arrow_dir so Arrow files are created inside it
 dir.create(arrow_dir, showWarnings = FALSE, recursive = TRUE)
 setwd(arrow_dir)
@@ -125,7 +128,7 @@ setwd(arrow_dir)
 cat("Creating Arrow files from fragment files\n")
 ArrowFiles <- createArrowFiles(
     inputFiles       = fragment_files,
-    sampleNames      = samples_info$sample,
+    sampleNames      = sample_names,
     geneAnnotation   = geneAnnotation,
     genomeAnnotation = genomeAnnotation,
     minTSS           = snakemake@params[["min_tss"]],
