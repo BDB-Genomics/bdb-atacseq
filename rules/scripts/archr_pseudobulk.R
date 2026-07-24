@@ -1,6 +1,7 @@
 suppressPackageStartupMessages({
     library(ArchR)
     library(GenomicRanges)
+    library(Rsamtools)
 })
 
 if (exists("snakemake") && length(snakemake@log) > 0) {
@@ -31,17 +32,15 @@ samples_info <- read.delim(sample_sheet, header=TRUE, sep="\t")
 fragment_files <- normalizePath(unlist(snakemake@input[["fragments"]]), mustWork = TRUE)
 
 # ---------------------------------------------------------------------------
-# Build annotations: use hg38 if chromosomes match, else build from data
+# Build annotations: use hg38 if chromosomes match, else build from BAM header
 # ---------------------------------------------------------------------------
-suppressPackageStartupMessages(library(Rsamtools))
 
-# Peek at chromosomes and sizes in the first fragment file
-tbi_path   <- paste0(fragment_files[1], ".tbi")
-tbx        <- TabixFile(fragment_files[1])
-frag_seqinfo <- seqinfo(tbx)
-frag_chroms  <- seqnames(frag_seqinfo)
-frag_lengths <- seqlengths(frag_seqinfo)
-cat("Fragment file chromosomes:", paste(frag_chroms, collapse=", "), "\n")
+# Read chromosome names and lengths from the BAM header (stable across all Rsamtools versions)
+bam_file_abs <- normalizePath(unlist(snakemake@input[["bam"]])[1], mustWork = TRUE)
+bam_header   <- scanBamHeader(bam_file_abs)[[1]]$targets
+frag_chroms  <- names(bam_header)
+frag_lengths <- as.integer(bam_header)
+cat("BAM header chromosomes:", paste(frag_chroms, collapse=", "), "\n")
 
 # Try loading hg38 bundled annotations
 hg38_gene_anno <- tryCatch({
