@@ -65,7 +65,7 @@ if (!have_hg38) {
     cat("[INFO] Synthetic reference or CI mode detected — building custom synthetic annotation.\n")
 
     # Build SeqInfo from BAM header
-    si <- Seqinfo(seqnames = frag_chroms, seqlengths = frag_lengths, genome = "testGenome")
+    si <- Seqinfo(seqnames = frag_chroms, seqlengths = frag_lengths, genome = "nullGenome")
 
     # Spread synthetic genes every 10 kb across each chromosome (positional indexing)
     gene_records <- lapply(seq_along(frag_chroms), function(i) {
@@ -110,7 +110,7 @@ if (!have_hg38) {
     seqlengths(chromSizes_gr) <- frag_lengths
 
     genomeAnnotation <- SimpleList(
-        genome     = "testGenome",
+        genome     = "nullGenome",
         chromSizes = chromSizes_gr,
         blacklist  = GRanges()
     )
