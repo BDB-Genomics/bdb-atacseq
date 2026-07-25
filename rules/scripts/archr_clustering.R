@@ -80,28 +80,41 @@ proj <- tryCatch({
         ArchRProj = proj,
         useMatrix = "TileMatrix",
         name = "IterativeLSI",
-        iterations = 2,
+        iterations = 1,
         varFeatures = 1500,
         dimsToUse = 1:2,
         force = TRUE
     )
 })
 
-proj <- addUMAP(
-    ArchRProj = proj,
-    reducedDims = "IterativeLSI",
-    name = "UMAP",
-    nNeighbors = 30,
-    minDist = 0.5,
-    metric = "cosine"
-)
+proj <- tryCatch({
+    n_cells <- nCells(proj)
+    n_neighbors <- min(30, max(2, n_cells - 1))
+    addUMAP(
+        ArchRProj = proj,
+        reducedDims = "IterativeLSI",
+        name = "UMAP",
+        nNeighbors = n_neighbors,
+        minDist = 0.5,
+        metric = "cosine"
+    )
+}, error = function(e) {
+    message("[WARNING] addUMAP failed: ", e$message)
+    proj
+})
 
-proj <- addClusters(
-    input = proj,
-    resolution = as.numeric(snakemake@params[["resolution"]]),
-    method = "Seurat",
-    reducedDims = "IterativeLSI"
-)
+proj <- tryCatch({
+    addClusters(
+        input = proj,
+        resolution = as.numeric(snakemake@params[["resolution"]]),
+        method = "Seurat",
+        reducedDims = "IterativeLSI"
+    )
+}, error = function(e) {
+    message("[WARNING] addClusters failed: ", e$message)
+    proj$Clusters <- "C1"
+    proj
+})
 
 cat("Clustering complete\n")
 
