@@ -3,6 +3,14 @@ suppressPackageStartupMessages({
     library(ggplot2)
 })
 
+# Mock .available.genomes to prevent it from calling available.packages() which fails when BiocManager is missing
+try({
+    ns <- asNamespace("ArchR")
+    unlockBinding(".available.genomes", ns)
+    assign(".available.genomes", function(...) c("hg19","hg38","mm9","mm10"), envir = ns)
+    lockBinding(".available.genomes", ns)
+}, silent=TRUE)
+
 if (exists("snakemake") && length(snakemake@log) > 0) {
     dir.create(dirname(snakemake@log[[1]]), showWarnings = FALSE, recursive = TRUE)
     log_file <- file(snakemake@log[[1]], open = "wt")

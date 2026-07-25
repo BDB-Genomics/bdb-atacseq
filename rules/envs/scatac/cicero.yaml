@@ -3,10 +3,10 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - r-base=4.4
-  - bioconductor-cicero
-  - r-monocle3
-  - bioconductor-gviz=1.46
-  - r-ggplot2=3.5
-  - r-igraph=1.6
+  - r-base=4.4.3
+  - bioconductor-cicero=1.24.0
+  - r-monocle3=1.4.26
+  - bioconductor-gviz=1.50.0
+  - r-ggplot2=4.0.3
+  - r-igraph=2.3.3
   - r-archr
