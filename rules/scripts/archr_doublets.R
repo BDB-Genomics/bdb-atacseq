@@ -87,4 +87,5 @@ tryCatch({
 dev.off()
 
 cat("Doublet report saved\n")
-cat("Filtered Arrow files saved to:", filtered_arrow_dir, "\n")
+saveArchRProject(ArchRProj = proj, outputDirectory = filtered_arrow_dir, load = FALSE)
+cat("Filtered Arrow files and ArchRProject saved to:", filtered_arrow_dir, "\n")

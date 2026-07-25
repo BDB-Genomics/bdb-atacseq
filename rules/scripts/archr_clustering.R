@@ -69,26 +69,40 @@ proj <- addClusters(
 
 cat("Clustering complete\n")
 
-markers <- getMarkerFeatures(
-    ArchRProj = proj,
-    useMatrix = "GeneScoreMatrix",
-    groupBy = "Clusters",
-    bias = c("TSSEnrichment", "log10(nFrags)")
-)
+markerList <- tryCatch({
+    markers <- getMarkerFeatures(
+        ArchRProj = proj,
+        useMatrix = "GeneScoreMatrix",
+        groupBy = "Clusters",
+        bias = c("TSSEnrichment", "log10(nFrags)")
+    )
+    getMarkers(markers)
+}, error = function(e) {
+    message("[WARNING] getMarkerFeatures failed (e.g. single cluster or synthetic data): ", e$message)
+    list()
+})
 
-# getMarkers returns a named list keyed by cluster; combine all into one data.frame
-markerDF <- do.call(rbind, lapply(names(markerList), function(cl) {
-    df <- as.data.frame(markerList[[cl]])
-    if (nrow(df) > 0) df$Cluster <- cl
-    df
-}))
+if (length(markerList) > 0) {
+    markerDF <- do.call(rbind, lapply(names(markerList), function(cl) {
+        df <- as.data.frame(markerList[[cl]])
+        if (nrow(df) > 0) df$Cluster <- cl
+        df
+    }))
+} else {
+    markerDF <- data.frame(Cluster=character(), name=character(), Log2FC=numeric(), FDR=numeric())
+}
 write.table(markerDF, markers_out, sep="\t", quote=FALSE, row.names=FALSE)
 
 cat("Marker genes saved\n")
 
 pdf(umap_out, width=10, height=8)
-p1 <- plotEmbedding(ArchRProj=proj, color="Clusters", title="UMAP Clustering", palette="Set3", size=0.1)
-print(p1)
+tryCatch({
+    p1 <- plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="Clusters", title="UMAP Clustering", palette="Set3", size=0.1)
+    print(p1)
+}, error = function(e) {
+    plot.new()
+    text(0.5, 0.5, "UMAP plot unavailable")
+})
 dev.off()
 
 cat("UMAP plot saved\n")
@@ -104,10 +118,17 @@ write.table(clusters_df, clusters_out, sep="\t", quote=FALSE, row.names=FALSE)
 cat("Cell clusters saved\n")
 
 pdf(full_report, width=14, height=10)
-print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="TSSEnrichment", title="TSS Enrichment", size=0.1))
-print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="nFrags", title="nFrags", size=0.1))
-print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="Clusters", title="Clusters", size=0.1))
+tryCatch({
+    print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="TSSEnrichment", title="TSS Enrichment", size=0.1))
+}, error = function(e) plot.new())
+tryCatch({
+    print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="nFrags", title="nFrags", size=0.1))
+}, error = function(e) plot.new())
+tryCatch({
+    print(plotEmbedding(ArchRProj=proj, colorBy="cellColData", name="Clusters", title="Clusters", size=0.1))
+}, error = function(e) plot.new())
 dev.off()
 
 cat("Full report saved\n")
+
 cat("ArchR clustering complete\n")

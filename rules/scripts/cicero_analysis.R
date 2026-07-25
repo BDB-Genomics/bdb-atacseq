@@ -47,9 +47,25 @@ plot_out <- snakemake@output[["plot"]]
 
 proj <- loadArchRProject(arrow_dir)
 
-cat("Extracting PeakMatrix from ArchR project\n")
-# PeakMatrix must exist or be calculated. We ensure PeakMatrix counts are fetched.
-peak_mat <- getMatrixFromProject(proj, useMatrix = "PeakMatrix")
+cat("Extracting PeakMatrix or TileMatrix from ArchR project\n")
+peak_mat <- tryCatch({
+    getMatrixFromProject(proj, useMatrix = "PeakMatrix")
+}, error = function(e) {
+    message("[INFO] PeakMatrix not found, attempting addReproduciblePeakSet & addPeakMatrix...")
+    proj_peaks <- tryCatch({
+        p <- addReproduciblePeakSet(proj, groupBy = "Clusters")
+        addPeakMatrix(p)
+    }, error = function(e2) NULL)
+    if (!is.null(proj_peaks)) {
+        tryCatch(getMatrixFromProject(proj_peaks, useMatrix = "PeakMatrix"), error = function(e3) NULL)
+    } else NULL
+})
+
+if (is.null(peak_mat)) {
+    message("[INFO] Falling back to TileMatrix for Cicero analysis...")
+    peak_mat <- getMatrixFromProject(proj, useMatrix = "TileMatrix")
+}
+
 counts <- assay(peak_mat)
 peaks <- rowRanges(peak_mat)
 peaks_char <- paste(seqnames(peaks), start(peaks), end(peaks), sep = "_")
