@@ -78,8 +78,8 @@ proj <- ArchRProject(
     ArrowFiles = ArrowFiles,
     outputDirectory = filtered_arrow_dir,
     copyArrows = TRUE,
-    geneAnnotation = getGeneAnnotation(ArrowFiles[1]),
-    genomeAnnotation = getGenomeAnnotation(ArrowFiles[1])
+    geneAnnotation = createGeneAnnotation(TSS=GRanges(), exons=GRanges(), genes=GRanges()),
+    genomeAnnotation = createGenomeAnnotation(genome="hg38", chromSizes=GRanges("chr1", IRanges(1,100)))
 )
 
 if (!is.null(doubScores)) {
