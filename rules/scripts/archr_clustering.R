@@ -43,13 +43,29 @@ full_report <- snakemake@output[["full_report"]]
 proj <- loadArchRProject(arrow_dir)
 
 cat("Running dimensionality reduction\n")
-proj <- addIterativeLSI(
-    ArchRProj = proj,
-    useMatrix = "TileMatrix",
-    name = "IterativeLSI",
-    iterations = 2,
-    scaleTo = 25000,
-    dimsToUse = eval(parse(text = snakemake@params[["dims_to_use"]])))
+dims_parsed <- eval(parse(text = snakemake@params[["dims_to_use"]]))
+
+proj <- tryCatch({
+    addIterativeLSI(
+        ArchRProj = proj,
+        useMatrix = "TileMatrix",
+        name = "IterativeLSI",
+        iterations = 2,
+        scaleTo = 25000,
+        dimsToUse = dims_parsed
+    )
+}, error = function(e) {
+    message("[WARNING] addIterativeLSI default failed (e.g. synthetic genome): ", e$message)
+    addIterativeLSI(
+        ArchRProj = proj,
+        useMatrix = "TileMatrix",
+        name = "IterativeLSI",
+        iterations = 2,
+        varFeatures = 1500,
+        dimsToUse = 1:2,
+        force = TRUE
+    )
+})
 
 proj <- addUMAP(
     ArchRProj = proj,

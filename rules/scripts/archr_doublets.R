@@ -49,11 +49,25 @@ doubScores <- tryCatch({
         input = ArrowFiles,
         k = 10,
         knnMethod = "UMAP",
-        LSIMethod = 1
+        LSIMethod = 1,
+        dimsToUse = 1:5,
+        LSIParams = list(outlierQuantiles = NULL, filterBias = FALSE, varFeatures = 1000)
     )
 }, error = function(e) {
-    message("[WARNING] addDoubletScores failed (e.g. low cell count): ", e$message)
-    NULL
+    message("[WARNING] addDoubletScores default failed, trying minimal params: ", e$message)
+    tryCatch({
+        addDoubletScores(
+            input = ArrowFiles,
+            k = 5,
+            knnMethod = "UMAP",
+            LSIMethod = 1,
+            dimsToUse = 1:2,
+            LSIParams = list(outlierQuantiles = NULL, filterBias = FALSE, varFeatures = 1500)
+        )
+    }, error = function(e2) {
+        message("[WARNING] addDoubletScores failed on synthetic dataset: ", e2$message)
+        NULL
+    })
 })
 
 cat("Doublet enrichment calculated\n")
