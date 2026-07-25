@@ -51,6 +51,7 @@ doubScores <- tryCatch({
         knnMethod = "UMAP",
         LSIMethod = 1,
         dimsToUse = 1:5,
+        outDir = dirname(doublet_report),
         LSIParams = list(outlierQuantiles = NULL, filterBias = FALSE, varFeatures = 1000)
     )
 }, error = function(e) {
@@ -62,6 +63,7 @@ doubScores <- tryCatch({
             knnMethod = "UMAP",
             LSIMethod = 1,
             dimsToUse = 1:2,
+            outDir = dirname(doublet_report),
             LSIParams = list(outlierQuantiles = NULL, filterBias = FALSE, varFeatures = 1500)
         )
     }, error = function(e2) {
@@ -75,7 +77,9 @@ cat("Doublet enrichment calculated\n")
 proj <- ArchRProject(
     ArrowFiles = ArrowFiles,
     outputDirectory = filtered_arrow_dir,
-    copyArrows = TRUE
+    copyArrows = TRUE,
+    geneAnnotation = getGeneAnnotation(ArrowFiles[1]),
+    genomeAnnotation = getGenomeAnnotation(ArrowFiles[1])
 )
 
 if (!is.null(doubScores)) {
