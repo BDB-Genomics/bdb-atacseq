@@ -10,7 +10,17 @@ try({
     lockBinding(".available.genomes", ns)
 }, silent=TRUE)
 
-# Mock utils::available.packages to prevent "Install BiocManager" error from get_data_annotation_contrib_url
+# Mock .validGenomeAnnotation to bypass genome package validation in CI
+try({
+    ns <- asNamespace("ArchR")
+    if (exists(".validGenomeAnnotation", envir = ns)) {
+        unlockBinding(".validGenomeAnnotation", ns)
+        assign(".validGenomeAnnotation", function(...) TRUE, envir = ns)
+        lockBinding(".validGenomeAnnotation", ns)
+    }
+}, silent=TRUE)
+
+# Mock utils::available.packages and get_data_annotation_contrib_url to prevent "Install BiocManager" errors
 try({
     ns <- asNamespace("utils")
     unlockBinding("available.packages", ns)
@@ -19,6 +29,15 @@ try({
         tryCatch(orig_av(...), error = function(e) matrix(character(0), nrow=0, ncol=0))
     }, envir = ns)
     lockBinding("available.packages", ns)
+}, silent=TRUE)
+
+try({
+    ns <- asNamespace("utils")
+    if (exists("get_data_annotation_contrib_url", envir = ns)) {
+        unlockBinding("get_data_annotation_contrib_url", ns)
+        assign("get_data_annotation_contrib_url", function(...) "http://bioconductor.org", envir = ns)
+        lockBinding("get_data_annotation_contrib_url", ns)
+    }
 }, silent=TRUE)
 
 
