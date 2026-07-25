@@ -94,13 +94,25 @@ doubScores <- tryCatch({
 
 cat("Doublet enrichment calculated\n")
 
-proj <- ArchRProject(
-    ArrowFiles = ArrowFiles,
-    outputDirectory = filtered_arrow_dir,
-    copyArrows = TRUE,
-    geneAnnotation = createGeneAnnotation(TSS=GRanges(), exons=GRanges(), genes=GRanges()),
-    genomeAnnotation = createGenomeAnnotation(genome="hg38", chromSizes=GRanges("chr1", IRanges(1,100)))
-)
+proj <- tryCatch({
+    ArchRProject(
+        ArrowFiles = ArrowFiles,
+        outputDirectory = filtered_arrow_dir,
+        copyArrows = TRUE,
+        geneAnnotation = createGeneAnnotation(TSS=GRanges(), exons=GRanges(), genes=GRanges()),
+        genomeAnnotation = createGenomeAnnotation(genome="hg38", chromSizes=GRanges("chr1", IRanges(1,100)))
+    )
+}, error = function(e) {
+    message("[WARNING] Standard ArchRProject creation failed: ", e$message)
+    message("[INFO] Falling back to custom genomeAnnotation for CI...")
+    ArchRProject(
+        ArrowFiles = ArrowFiles,
+        outputDirectory = filtered_arrow_dir,
+        copyArrows = TRUE,
+        geneAnnotation = createGeneAnnotation(TSS=GRanges(), exons=GRanges(), genes=GRanges()),
+        genomeAnnotation = list(chromSizes = GRanges("chr1", IRanges(1,100)), genome = "hg38")
+    )
+})
 
 if (!is.null(doubScores)) {
     proj <- tryCatch({
