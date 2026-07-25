@@ -65,7 +65,18 @@ genome_set <- tryCatch({
     FALSE
 })
 if (!genome_set) {
-    options(ArchRGenome = "hg38")
+    dummy_gene_anno <- createGeneAnnotation(
+        TSS = GRanges("chr1", IRanges(1, 100)),
+        exons = GRanges("chr1", IRanges(1, 100)),
+        genes = GRanges("chr1", IRanges(1, 100))
+    )
+    dummy_genome_anno <- list(
+        chromSizes = GRanges("chr1", IRanges(1, 100)),
+        blacklist = GRanges(),
+        genome = "hg38"
+    )
+    options(ArchRGeneAnnotation = dummy_gene_anno)
+    options(ArchRGenomeAnnotation = dummy_genome_anno)
 }
 
 cat("===========================================\n")
