@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - r-base=4.3
+  - r-base=4.4
   - r-archr=1.0.3
   - bioconductor-bsgenome.hsapiens.ucsc.hg38=1.4.5
   - r-ggplot2=3.5
