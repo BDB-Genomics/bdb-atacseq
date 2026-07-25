@@ -13,6 +13,18 @@ try({
     lockBinding(".available.genomes", ns)
 }, silent=TRUE)
 
+# Mock utils::available.packages to prevent "Install BiocManager" error from get_data_annotation_contrib_url
+try({
+    ns <- asNamespace("utils")
+    unlockBinding("available.packages", ns)
+    orig_av <- utils::available.packages
+    assign("available.packages", function(...) {
+        tryCatch(orig_av(...), error = function(e) matrix(character(0), nrow=0, ncol=0))
+    }, envir = ns)
+    lockBinding("available.packages", ns)
+}, silent=TRUE)
+
+
 if (exists("snakemake") && length(snakemake@log) > 0) {
     dir.create(dirname(snakemake@log[[1]]), showWarnings = FALSE, recursive = TRUE)
     log_file <- file(snakemake@log[[1]], open = "wt")
