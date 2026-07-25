@@ -110,7 +110,7 @@ proj <- tryCatch({
         outputDirectory = filtered_arrow_dir,
         copyArrows = TRUE,
         geneAnnotation = createGeneAnnotation(TSS=GRanges(), exons=GRanges(), genes=GRanges()),
-        genomeAnnotation = list(chromSizes = GRanges("chr1", IRanges(1,100)), genome = "hg38")
+        genomeAnnotation = list(chromSizes = GRanges("chr1", IRanges(1,100)), blacklist = GRanges(), genome = "hg38")
     )
 })
 
