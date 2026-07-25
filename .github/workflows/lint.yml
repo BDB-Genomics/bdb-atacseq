@@ -106,7 +106,7 @@ jobs:
       - name: Run Pipeline (Test Mode)
         run: |
           snakemake --use-conda --conda-frontend mamba --profile profiles/test \
-            --config use_conda=True use_container=False \
+            --config use_conda=True use_container=False ci_mode=True \
             --cores 4 \
             --latency-wait 60
 
@@ -175,7 +175,7 @@ jobs:
       - name: Run Pipeline (scATAC Mode)
         run: |
           snakemake --use-conda --conda-frontend mamba --profile profiles/test \
-            --config use_conda=True use_container=False \
+            --config use_conda=True use_container=False ci_mode=True \
             --cores 4 \
             --latency-wait 60
 
@@ -244,7 +244,7 @@ jobs:
       - name: Run Pipeline (Singularity Mode)
         run: |
           snakemake --deployment-method apptainer --profile profiles/test \
-            --config use_conda=False use_container=True \
+            --config use_conda=False use_container=True ci_mode=True \
             --cores 4 \
             --latency-wait 60
 
@@ -315,7 +315,7 @@ jobs:
       - name: Run Pipeline (scATAC Singularity Mode)
         run: |
           snakemake --deployment-method apptainer --profile profiles/test \
-            --config use_conda=False use_container=True \
+            --config use_conda=False use_container=True ci_mode=True \
             --cores 4 \
             --latency-wait 60
 
