@@ -99,7 +99,7 @@ proj <- ArchRProject(
     outputDirectory = filtered_arrow_dir,
     copyArrows = TRUE,
     geneAnnotation = createGeneAnnotation(TSS=GRanges(), exons=GRanges(), genes=GRanges()),
-    genomeAnnotation = if (isTRUE(snakemake@config[["ci_mode"]])) createGenomeAnnotation(genome=NULL, chromSizes=GRanges("chr1", IRanges(1,100))) else createGenomeAnnotation(genome="hg38")
+    genomeAnnotation = createGenomeAnnotation(genome="hg38", chromSizes=GRanges("chr1", IRanges(1,100)))
 )
 
 if (!is.null(doubScores)) {
