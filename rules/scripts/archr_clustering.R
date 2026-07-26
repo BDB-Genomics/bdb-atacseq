@@ -62,9 +62,14 @@ if (!genome_set) {
     try({
         ns <- asNamespace("ArchR")
         env <- get(".ArchREnv", envir = ns)
+        
         unlockBinding("ArchRGenome", env)
         assign("ArchRGenome", dummy_genome_anno, envir = env)
         lockBinding("ArchRGenome", env)
+
+        unlockBinding("ArchRGeneAnnotation", env)
+        assign("ArchRGeneAnnotation", dummy_gene_anno, envir = env)
+        lockBinding("ArchRGeneAnnotation", env)
     }, silent = TRUE)
 }
 
