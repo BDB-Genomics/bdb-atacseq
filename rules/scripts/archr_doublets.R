@@ -88,6 +88,10 @@ if (!genome_set) {
         unlockBinding("ArchRGeneAnnotation", env)
         assign("ArchRGeneAnnotation", dummy_gene_anno, envir = env)
         lockBinding("ArchRGeneAnnotation", env)
+
+        unlockBinding("ArchRGenomeAnnotation", env)
+        assign("ArchRGenomeAnnotation", dummy_genome_anno, envir = env)
+        lockBinding("ArchRGenomeAnnotation", env)
     }, silent = TRUE)
 }
 
