@@ -275,7 +275,7 @@ def generate_motif_db(filepath: str) -> None:
 
 
 def generate_bt2_index(index_dir: str, genome_fa: str) -> None:
-    """Build a real Bowtie2 index."""
+    """Build a real Bowtie2 index if bowtie2-build is available."""
     os.makedirs(index_dir, exist_ok=True)
     try:
         subprocess.run(
@@ -286,11 +286,11 @@ def generate_bt2_index(index_dir: str, genome_fa: str) -> None:
         )
         print("  Bowtie2 index built successfully.")
     except Exception as e:
-        raise ValueError(f"Failed to build Bowtie2 index: {e}")
+        print(f"  [WARNING] Could not build Bowtie2 index ({e}). Skipping index generation.")
 
 
 def generate_chromap_index(index_dir: str, genome_fa: str) -> None:
-    """Build a real Chromap index."""
+    """Build a real Chromap index if chromap is available."""
     os.makedirs(index_dir, exist_ok=True)
     try:
         subprocess.run(
@@ -301,7 +301,7 @@ def generate_chromap_index(index_dir: str, genome_fa: str) -> None:
         )
         print("  Chromap index built successfully.")
     except Exception as e:
-        raise ValueError(f"Failed to build Chromap index: {e}")
+        print(f"  [WARNING] Could not build Chromap index ({e}). Skipping index generation.")
 
 
 def generate_samples_tsv(filepath: str) -> None:
