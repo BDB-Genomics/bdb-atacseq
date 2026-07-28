@@ -8,7 +8,7 @@ sink(log_file, type = "message")
 tryCatch({
   library(ChIPseeker)
   library(GenomicFeatures)
-  library(txdbmaker)
+  if (requireNamespace("txdbmaker", quietly = TRUE)) library(txdbmaker)
   
   peakfile <- snakemake@input[["filtered_peaks"]]
   gff_file <- snakemake@params[["gff"]]
