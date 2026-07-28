@@ -14,7 +14,7 @@ rule tn5_shift:
     log: "logs/tn5_shift/{sample}.err"
     benchmark: "benchmarks/tn5_shift/{sample}.txt"
     conda: "envs/06_visualization/deeptools.yaml" if config.get("use_conda", True) else None
-    container: "docker://quay.io/biocontainers/deeptools:3.5.5--pyhdfd78af_0" if config.get("use_container", True) else None
+    container: "docker://quay.io/biocontainers/mulled-v2-e660fed99245af0d40212353a2956c9a35e4e73e:4475cc504192b0c2662c19e59bf4070a3c77d611-0" if config.get("use_container", True) else None
     threads: config['tn5_shift']['threads']
     message: "[TN5 SHIFT: Adjusting ATAC-seq read positions by +4-5 bp to reflect true Tn5 cut sites] SAMPLE:  {wildcards.sample}| INPUT: {input.filtered_bam} {input.filtered_bam_index} | OUTPUT: {output.shifted_filtered_bam} {output.shifted_filtered_bam_index}"
         
