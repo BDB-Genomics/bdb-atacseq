@@ -349,7 +349,9 @@ cat("Panel 1: Computing TSS enrichment profile...\n")
             cex.main = 1.3)
     
     # Add enrichment score
-    text(1.5, max(c(peak_signal, flanking_signal)) * 0.9,
+    all_sig <- c(peak_signal, flanking_signal)
+    max_y <- if (length(all_sig) > 0 && !all(is.na(all_sig)) && max(all_sig, na.rm = TRUE) > 0) max(all_sig, na.rm = TRUE) else 1.0
+    text(1.5, max_y * 0.9,
          paste0("Enrichment: ", round(tsse_score, 2), "x\n",
                 "Quality: ", quality),
          cex = 1.4, col = color, font = 2)
