@@ -2,7 +2,7 @@
 if (Sys.getenv("SNAKEMAKE_DEBUG") == "TRUE") {
     library(ATACseqQC)
     library(GenomicFeatures)
-    library(txdbmaker)
+    if (requireNamespace("txdbmaker", quietly = TRUE)) library(txdbmaker)
     library(GenomicAlignments)
     library(Rsamtools)
     library(ChIPpeakAnno)
@@ -11,7 +11,7 @@ if (Sys.getenv("SNAKEMAKE_DEBUG") == "TRUE") {
     suppressPackageStartupMessages({
         library(ATACseqQC)
         library(GenomicFeatures)
-        library(txdbmaker)
+        if (requireNamespace("txdbmaker", quietly = TRUE)) library(txdbmaker)
         library(GenomicAlignments)
         library(Rsamtools)
         library(ChIPpeakAnno)
