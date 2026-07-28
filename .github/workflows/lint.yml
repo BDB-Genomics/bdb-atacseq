@@ -216,4 +216,4 @@ jobs:
 
       - name: Test R Scripts Syntax & Execution Paths
         run: |
-          Rscript -e "for(f in list.files('rules/scripts', pattern='\\.R$', full.names=TRUE)) { parse(f); cat('Syntax OK:', f, '\n') }"
+          Rscript -e "for(f in list.files('rules/scripts', pattern='[.][R]$', full.names=TRUE)) { parse(f); cat('Syntax OK:', f, '\n') }"
