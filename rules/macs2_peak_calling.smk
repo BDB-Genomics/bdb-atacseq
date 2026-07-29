@@ -10,6 +10,9 @@ rule macs2_peak_calling:
         qval=config['macs2']['params']['qvalue'],
         nomodel=config['macs2']['params']['nomodel'],
         format=config['macs2']['params']['format'],
+        bootstrap_dir=".snakemake/macs2_source",
+        site_dir=".snakemake/macs2_source/site",
+        sentinel=".snakemake/macs2_source/.installed",
         dir=lambda wildcards, output: __import__('os').path.dirname(output.peaks)
 
     resources:
@@ -19,10 +22,9 @@ rule macs2_peak_calling:
     log: "logs/macs2/{sample}.err"
     benchmark: "benchmarks/macs2/{sample}.txt"
     conda: "envs/05_peak_calling/macs2.yaml" if config.get("use_conda", True) else None
-    # Use the conda environment instead of the container image because the
-    # containerized MACS2 wheel has been failing in CI with a missing libm
-    # symbol during import.
-    container: docker pull quay.io/biocontainers/macs2:2.2.9.1--py311haab0aaa_5 if config.get("use_container", True) else None
+    # Use the newest Linux 3.10 build; the older _4 image fails at runtime in CI
+    # with an undefined symbol error when importing MACS2's compiled extension.
+    container: "docker://quay.io/biocontainers/macs2:2.2.9.1--py310h1fe012e_5" if config.get("use_container", True) else None
     threads: config['macs2']['threads']
     message: "[MACS2 PEAKCALLING] SAMPLE:  {wildcards.sample} | Shifted_Bam: {input.shifted_bam} | Peaks: {output.peaks} | Genome Size: {params.gsize} | QVal: {params.qval} | Nomodel: {params.nomodel} | Model: {params.format}]"
 
