@@ -8,7 +8,7 @@ sink(log_file, type = "message")
 tryCatch({
   library(ChIPseeker)
   library(GenomicFeatures)
-  if (requireNamespace("txdbmaker", quietly = TRUE)) library(txdbmaker)
+  has_txdbmaker <- requireNamespace("txdbmaker", quietly = TRUE)
   
   peakfile <- snakemake@input[["filtered_peaks"]]
   gff_file <- snakemake@params[["gff"]]
@@ -29,7 +29,11 @@ tryCatch({
   }
   
   message("Building TxDb database from GFF/GTF: ", gff_file)
-  txdb <- makeTxDbFromGFF(gff_file, format = "gtf")
+  if (has_txdbmaker) {
+    txdb <- txdbmaker::makeTxDbFromGFF(gff_file, format = "gtf")
+  } else {
+    txdb <- GenomicFeatures::makeTxDbFromGFF(gff_file, format = "gtf")
+  }
   
   message("Annotating peaks for file: ", peakfile)
   peakAnno <- annotatePeak(peakfile, TxDb = txdb, tssRegion = c(-3000, 3000), verbose = FALSE)

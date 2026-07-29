@@ -30,7 +30,7 @@ rule peak_annotation:
             Rscript -e '
             library(ChIPseeker);
             library(GenomicFeatures);
-            if (requireNamespace("txdbmaker", quietly = TRUE)) library(txdbmaker);
+            has_txdbmaker <- requireNamespace("txdbmaker", quietly = TRUE);
 
             peakfile <- "{input.filtered_peaks}";
 
@@ -48,7 +48,11 @@ rule peak_annotation:
                 file.create("{output.summary}");
                 quit(status = 0);
             }} else {{
-                txdb <- makeTxDbFromGFF("{params.gff}", format="gtf");
+                if (has_txdbmaker) {{
+                    txdb <- txdbmaker::makeTxDbFromGFF("{params.gff}", format="gtf");
+                }} else {{
+                    txdb <- GenomicFeatures::makeTxDbFromGFF("{params.gff}", format="gtf");
+                }}
                 peakAnno <- annotatePeak(peakfile, TxDb=txdb, tssRegion=c(-3000, 3000), verbose=FALSE);
 
                 write.table(as.data.frame(peakAnno), "{output.annotation}", sep="\\t", row.names=FALSE, quote=FALSE);
@@ -63,5 +67,4 @@ rule peak_annotation:
             touch {output.summary}
         fi
         """
-
 
