@@ -5,6 +5,4 @@ channels:
 dependencies:
   - python=3.10
   - numpy
-  - pip
-  - pip:
-    - macs2==2.2.9.1
+  - macs2=2.2.9.1
