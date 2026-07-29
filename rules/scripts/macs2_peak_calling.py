@@ -1,8 +1,20 @@
+import ctypes
+import ctypes.util
 import fcntl
 import os
 import subprocess
 import sys
 from pathlib import Path
+
+
+def _libm_preload() -> str | None:
+    return ctypes.util.find_library("m")
+
+
+def _load_libm_into_process() -> None:
+    libm = _libm_preload()
+    if libm:
+        ctypes.CDLL(libm, mode=ctypes.RTLD_GLOBAL)
 
 
 def _log_handle():
@@ -13,6 +25,7 @@ def _log_handle():
 
 def _can_import_macs2() -> bool:
     try:
+        _load_libm_into_process()
         import MACS2.callpeak_cmd  # noqa: F401
 
         return True
@@ -67,6 +80,9 @@ def main() -> None:
 
         site_dir = str(Path(snakemake.params.site_dir))
         env = os.environ.copy()
+        libm = _libm_preload()
+        if libm:
+            env["LD_PRELOAD"] = f"{libm} {env['LD_PRELOAD']}" if env.get("LD_PRELOAD") else libm
         env["PYTHONPATH"] = (
             site_dir
             if not env.get("PYTHONPATH")
