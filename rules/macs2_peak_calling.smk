@@ -19,9 +19,9 @@ rule macs2_peak_calling:
     log: "logs/macs2/{sample}.err"
     benchmark: "benchmarks/macs2/{sample}.txt"
     conda: "envs/05_peak_calling/macs2.yaml" if config.get("use_conda", True) else None
-    # Use the Python 3.10 build to avoid the py311 container runtime import crash
-    # seen in CI (MACS2's compiled extension fails to load with undefined symbols).
-    container: "docker://quay.io/biocontainers/macs2:2.2.9.1--py310h1fe012e_4" if config.get("use_container", True) else None
+    # Use the newest Linux 3.10 build; the older _4 image fails at runtime in CI
+    # with an undefined symbol error when importing MACS2's compiled extension.
+    container: "docker://quay.io/biocontainers/macs2:2.2.9.1--py310h1fe012e_5" if config.get("use_container", True) else None
     threads: config['macs2']['threads']
     message: "[MACS2 PEAKCALLING] SAMPLE:  {wildcards.sample} | Shifted_Bam: {input.shifted_bam} | Peaks: {output.peaks} | Genome Size: {params.gsize} | QVal: {params.qval} | Nomodel: {params.nomodel} | Model: {params.format}]"
 
