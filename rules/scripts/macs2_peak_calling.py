@@ -20,6 +20,13 @@ def _can_import_macs2() -> bool:
         return False
 
 
+def _running_in_container() -> bool:
+    return any(
+        os.environ.get(name)
+        for name in ("APPTAINER_CONTAINER", "SINGULARITY_CONTAINER", "SINGULARITY_NAME")
+    )
+
+
 def _bootstrap_from_source(log_file) -> None:
     bootstrap_dir = Path(snakemake.params.bootstrap_dir)
     site_dir = Path(snakemake.params.site_dir)
@@ -51,7 +58,7 @@ def _bootstrap_from_source(log_file) -> None:
 
 def main() -> None:
     with _log_handle() as log_file:
-        if not _can_import_macs2():
+        if not _running_in_container() and not _can_import_macs2():
             print(
                 "[MACS2] Prebuilt package import failed, bootstrapping from source.",
                 file=log_file,
