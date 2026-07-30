@@ -54,3 +54,14 @@ You can modify its behavior with the following flags:
 ```bash
 scripts/run_pipeline.sh -c 100 -- --profile profiles/gcp
 ```
+
+---
+
+## 🛡️ Pre-Flight Validation & Wrapper Safeguards
+
+Executing raw Snakemake commands on massive cloud or cluster profiles without pre-flight checks can burn compute budgets if inputs or sample matrices are malformed.
+
+The `run_pipeline.sh` wrapper intercepts execution, verifies your environment dependencies, runs `validate_config.py` on your inputs, and only boots Snakemake when your config passes 100% of pre-flight checks!
+
+![Script Wrapper Pre-Flight Validator Meme](../docs/images/script_wrapper_meme.png)
+
