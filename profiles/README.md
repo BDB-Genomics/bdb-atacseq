@@ -48,10 +48,13 @@ Use these profiles via the pipeline execution script. Example: `scripts/run_pipe
 
 ## ⚙️ How It Works (Snakemake 8.0)
 
-Snakemake 8.0 deprecated the old profile system in favor of **Executor Plugins**. 
+Snakemake 8.0 replaced legacy profile flags with **Executor Plugins**. 
 
-Each profile directory contains a `config.yaml` file. When you pass `--profile profiles/<name>`, Snakemake parses that YAML to determine:
+Each profile directory contains a declarative `config.yaml`. When you pass `--profile profiles/<name>`, Snakemake parses that YAML to determine:
 1. **The Plugin**: `executor: slurm` or `executor: googlebatch`
 2. **Global Rules**: Maximum concurrent jobs (`jobs: 100`), retry logic (`restart-times: 3`).
 3. **Remote Storage**: The `default-remote-provider` and `default-remote-prefix` (crucial for Cloud deployments).
 4. **Default Resources**: Fallback Memory and CPU requests if a specific `rule` doesn't define them.
+
+![Executor Plugins Meme](../docs/images/executor_plugins_meme.png)
+

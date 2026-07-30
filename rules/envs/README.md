@@ -38,6 +38,9 @@ We enforce strict isolation for Snakemake execution.
 > [!WARNING]
 > Do not add multiple unrelated bioinformatics tools to a single YAML file in this directory. If a rule requires two disjoint tools, split the rule into two rules, or ensure the tools natively co-exist without dependency clashes in the same channel space.
 
+![Tool Isolation Meme](../../docs/images/tool_isolation_meme.png)
+
+
 ---
 
 ## 📁 File Reference

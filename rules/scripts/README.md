@@ -80,6 +80,16 @@ Every analytic script implements defensive error handling to prevent a single ba
 
 ---
 
+## 🔍 Log Aggregation & Noise Filtering
+
+When Snakemake runs a complex workflow, tool `stderr` logs get flooded with thousands of non-fatal compiler warnings, Java deprecation notices, and library progress bars. 
+
+The `aggregate_logs.py` utility parses `benchmarks/` and `logs/` upon pipeline completion, filters out all false-positive warnings via a rolling buffer regex engine, and produces a clean, machine-readable `pipeline_execution_summary.json` file.
+
+![Log Aggregation & Telemetry Meme](../../docs/images/log_aggregation_meme.png)
+
+---
+
 ## 📊 Script Flowcharts
 
 ### 1. `validate_config.py` (Startup Validator)

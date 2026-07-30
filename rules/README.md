@@ -70,9 +70,21 @@ Every rule specifies its own:
 
 ---
 
+## 🛡️ Defensive Scripting & Fail-Safe Fallbacks
+
+Biological samples vary wildly in quality. If a low-coverage sample yields 0 peaks or 0 TSS overlaps, standard scripts fail with unhandled exceptions, crashing a multi-day 100-sample cohort run. 
+
+All rules in this directory delegate to defensive R and Python wrappers that intercept empty datasets and gracefully output valid empty data frames (or 0.0 scores) with correct headers, ensuring the remaining 99 samples complete without interruption!
+
+![Defensive Fallbacks Meme](../docs/images/defensive_scripting_meme.png)
+
+---
+
 ## 🔒 Best Practices Implemented
 
 1. **Strict Error Handling**: All shell directives use `set -euo pipefail` to ensure tools fail fast on hidden errors.
 2. **Deterministic Environments**: Every rule relies on a pinned Conda environment from `envs/`.
-3. **Robust Templating**: Paths are never hardcoded; they are universally referenced from `config.yaml`.
-4. **Log Redirection**: All `stderr` (`2>`) and `stdout` (`>`) are captured into rule-specific log files for telemetry parsing.
+3. **Hybrid Fallback Support**: Rules without stable runtime containers seamlessly fall back to local Conda environments.
+4. **Robust Templating**: Paths are never hardcoded; they are universally referenced from `config.yaml`.
+5. **Log Redirection**: All `stderr` (`2>`) and `stdout` (`>`) are captured into rule-specific log files for telemetry parsing.
+

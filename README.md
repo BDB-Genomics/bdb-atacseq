@@ -62,6 +62,26 @@ graph TD
 
 ---
 
+## ⚡ Core Concepts Explained
+
+### 1. Hybrid Execution Strategy (Containers + Conda)
+
+When upstream Docker/Singularity images fail or suffer from C-extension glibc mismatches (e.g. MACS2 runtime containers), the pipeline dynamically falls back to a version-pinned Conda environment without breaking workflow execution. By invoking Snakemake with `--deployment-method apptainer conda`, containerized rules run in Apptainer while custom/fallback rules run in isolated Conda environments.
+
+![Hybrid Environment Strategy](docs/images/hybrid_environment_meme.png)
+
+![Hybrid CI Power](docs/images/hybrid_ci_meme.png)
+
+---
+
+### 2. Automated Quality Control Gating
+
+An automated **QC Gate** sits between alignment metrics and downstream analysis. Samples falling below user-defined thresholds (FRiP < 1%, TSS enrichment < 0.5, or mapping rate < 10%) are flagged and halted before expensive peak calling, footprinting, or differential accessibility calculations execute.
+
+![QC Gate Halting Bad Samples](docs/images/qc_gate_meme.png)
+
+---
+
 ## 🚀 Quick Start
 
 The pipeline relies on **Snakemake 8.0+** and uses a wrapper script to bootstrap execution seamlessly.
@@ -73,8 +93,8 @@ Edit `config.yaml` to specify your parameters and ensure your metadata is in `da
 Run the pipeline using the wrapper script, which handles environment detection, pre-flight validation, and execution profiles automatically:
 
 ```bash
-# Run locally using 8 cores
-scripts/run_pipeline.sh -c 8 -- --profile profiles/local
+# Run locally using 8 cores (Hybrid Apptainer + Conda)
+scripts/run_pipeline.sh -c 8 -- --profile profiles/local --deployment-method apptainer conda
 
 # Run on an HPC cluster using SLURM
 scripts/run_pipeline.sh -- --profile profiles/slurm
@@ -107,3 +127,5 @@ For detailed architectural information, please consult the specific `README.md` 
 | **Pre-flight Validation** | The `scripts/` wrapper enforces configuration validation *before* execution. |
 | **Strict Isolation** | `rules/envs/` guarantees completely isolated tool executions. |
 | **Defensive Analytics** | R and Python scripts gracefully write placeholder outputs instead of crashing when biological data yields 0 peaks/overlaps. |
+| **Hybrid Resilience** | Seamless fallback between Apptainer containers and Conda environments for broken upstream images. |
+
