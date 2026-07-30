@@ -177,8 +177,8 @@ jobs:
 
       - name: Run Pipeline (Singularity Mode)
         run: |
-          snakemake --deployment-method apptainer --profile profiles/test \
-            --config use_conda=False use_container=True ci_mode=True \
+          snakemake --deployment-method apptainer conda --conda-frontend mamba --profile profiles/test \
+            --config use_conda=True use_container=True ci_mode=True \
             --cores 4 \
             --latency-wait 60
 
