@@ -189,15 +189,17 @@ if MODE == "bulk":
         f"{config['differential_accessibility']['output']['plots']}/volcano_plot.pdf",
         f"{config['differential_accessibility']['output']['plots']}/ma_plot.pdf",
         f"{config['differential_accessibility']['output']['plots']}/pca_plot.pdf",
-        expand("{path}/{sample}_corrected.bw", path=config['tobias']['output']['corrected_bw'], sample=SAMPLES),
-        expand("{path}/{sample}_footprints.bw", path=config['tobias']['output']['footprint_bw'], sample=SAMPLES),
-        config['tobias']['output']['bindetect'],
-        expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
         config['benchmark_summary']['output']
     ]
     if not config.get("ci_mode", False):
         QC_METRICS_TARGETS.extend(expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES))
-        PEAK_TARGETS.extend(expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES))
+        PEAK_TARGETS.extend([
+            *expand("{path}/{sample}_corrected.bw", path=config['tobias']['output']['corrected_bw'], sample=SAMPLES),
+            *expand("{path}/{sample}_footprints.bw", path=config['tobias']['output']['footprint_bw'], sample=SAMPLES),
+            config['tobias']['output']['bindetect'],
+            *expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
+            *expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES)
+        ])
 
 elif MODE == "scatac":
     QC_GATE_TARGETS = []
