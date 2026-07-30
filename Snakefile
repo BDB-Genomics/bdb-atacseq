@@ -233,6 +233,18 @@ elif MODE == "scatac":
 #TEMPLATE_TARGETS = [
 #    expand("results/template_category/template_tool/{sample}_template.txt", sample=SAMPLES)
 #]
+# Minimal smoke-test rule: runs only sample1 through the full core chain
+# (fastp → bowtie2 → markdup → tn5_shift → macs2) without QC/annotation steps.
+# Used exclusively in CI (--deployment-method apptainer) to finish in < 5 min.
+if MODE == "bulk" and SAMPLES:
+    _ci_sample = SAMPLES[0]
+    rule ci_smoke:
+        input:
+            expand("{path}/{sample}_R1_trimmed.fastq.gz", path=config['fastp']['output'], sample=[_ci_sample]),
+            expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=[_ci_sample]),
+            expand("{path}/{sample}_peaks.narrowPeak", path=config['macs2']['output']['peaks'], sample=[_ci_sample])
+
+
 rule all:
     input:
         PREPROCESSING_TARGETS,
