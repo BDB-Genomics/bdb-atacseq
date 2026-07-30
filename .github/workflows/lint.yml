@@ -108,7 +108,7 @@ jobs:
 
       - name: Run Pipeline (Test Mode)
         run: |
-          snakemake --use-conda --conda-frontend mamba --profile profiles/test \
+          snakemake --deployment-method conda --profile profiles/test \
             --config use_conda=True use_container=False ci_mode=True \
             --cores 4 \
             --latency-wait 60
