@@ -58,6 +58,18 @@ cat("Using custom FASTA file:", genome_fa, "\n")
 library(Rsamtools)
 genome_obj <- FaFile(genome_fa)
 
+# Filter out peaks that exceed chromosome boundaries (prevents Biostrings truncation errors)
+seq_lengths <- seqlengths(seqinfo(genome_obj))
+valid_idx <- start(gr_peaks) > 0 & 
+             as.character(seqnames(gr_peaks)) %in% names(seq_lengths) & 
+             end(gr_peaks) <= seq_lengths[as.character(seqnames(gr_peaks))]
+
+if (sum(!valid_idx, na.rm=TRUE) > 0) {
+    cat(sprintf("Filtering %d out-of-bounds peaks after resizing\n", sum(!valid_idx, na.rm=TRUE)))
+    gr_peaks <- gr_peaks[which(valid_idx)]
+}
+
+
 
     cat("Computing GC bias and fragment counts from BAM\n")
     # chromVAR getCounts expects: bamfile, peaks, paired=TRUE
