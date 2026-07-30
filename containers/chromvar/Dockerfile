@@ -15,14 +15,13 @@ LABEL org.opencontainers.image.source="https://github.com/BDB-Genomics/bdb-atacs
 LABEL org.opencontainers.image.description="chromVAR + motifmatchr for ATAC-seq motif accessibility analysis"
 
 # System dependencies for R packages that compile from source
+# Note: libcurl4-gnutls-dev is already in the base image; do NOT install
+# libcurl4-openssl-dev as it conflicts.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libcurl4-openssl-dev \
-    libssl-dev \
     libxml2-dev \
     zlib1g-dev \
     libbz2-dev \
     liblzma-dev \
-    libhts-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install all R/Bioconductor packages needed by chromvar_analysis.R
