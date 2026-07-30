@@ -175,6 +175,14 @@ jobs:
         run: |
           python3 rules/scripts/generate_test_data.py
 
+      - name: Cache Singularity Images
+        uses: actions/cache@v3
+        with:
+          path: .snakemake/singularity
+          key: snakemake-singularity-${{ runner.os }}-${{ hashFiles('rules/**/*.smk') }}
+          restore-keys: |
+            snakemake-singularity-${{ runner.os }}-
+
       - name: Run Pipeline (Singularity Mode)
         run: |
           snakemake --deployment-method apptainer --profile profiles/test \
