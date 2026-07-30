@@ -20,7 +20,7 @@ rule chromvar_analysis:
     log: "logs/chromvar/{sample}.err"
     benchmark: "benchmarks/chromvar/{sample}.txt"
     conda: "envs/05_peak_calling/chromvar.yaml" if config.get("use_conda", True) else None
-    container: "docker://quay.io/biocontainers/bioconductor-chromvar:1.28.0--r42hdfd78af_0" if config.get("use_container", True) else None
+    container: "docker://ghcr.io/bdb-genomics/bdb-atacseq/chromvar:1.28.0" if config.get("use_container", True) else None
     threads: config['chromvar_analysis']['threads']
     message: "[chromVAR] Sample: {wildcards.sample} | BAM: {input.shifted_bam} | Peaks: {input.peaks} | Motifs: {input.motif_db}"
 
