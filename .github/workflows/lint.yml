@@ -9,6 +9,10 @@ on:
 env:
   _JAVA_OPTIONS: "-XX:-UseContainerSupport"
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -185,6 +189,11 @@ jobs:
             snakemake-singularity-${{ runner.os }}-
 
       - name: Run Pipeline (Singularity Mode)
+        env:
+          APPTAINER_DOCKER_USERNAME: ${{ github.actor }}
+          APPTAINER_DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          SINGULARITY_DOCKER_USERNAME: ${{ github.actor }}
+          SINGULARITY_DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           snakemake --deployment-method apptainer --profile profiles/test \
             --config use_conda=False use_container=True ci_mode=True \
