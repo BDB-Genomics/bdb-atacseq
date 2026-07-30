@@ -6,18 +6,7 @@ rule macs2_peak_calling:
         peaks=f"{config['macs2']['output']['peaks']}/{{sample}}_peaks.narrowPeak"
 
     params:
-        gsize=lambda wildcards: (
-            str(config['macs2']['params']['genome_size'])
-            if config['macs2']['params'].get('genome_size') is not None
-            else str(
-                sum(
-                    int(cols[1])
-                    for line in open(config['global']['references']['genome_sizes'])
-                    for cols in [line.strip().split()]
-                    if line.strip() and not line.strip().startswith('#')
-                )
-            )
-        ),
+        gsize=sum(int(line.strip().split()[1]) for line in open(config['global']['references']['genome_sizes'])),
         qval=config['macs2']['params']['qvalue'],
         nomodel=config['macs2']['params']['nomodel'],
         format=config['macs2']['params']['format'],
