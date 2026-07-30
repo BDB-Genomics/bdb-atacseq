@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 
-def _libm_preload() -> str | None:
+def _libm_preload():
     return ctypes.util.find_library("m")
 
 
