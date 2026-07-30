@@ -111,6 +111,7 @@ jobs:
           snakemake --deployment-method conda --profile profiles/test \
             --config use_conda=True use_container=False ci_mode=True \
             --cores 4 \
+            --resources mem_mb=6000 \
             --latency-wait 60
 
       - name: Verify Output Files (Bulk)
@@ -188,6 +189,7 @@ jobs:
           snakemake --deployment-method apptainer --profile profiles/test \
             --config use_conda=False use_container=True ci_mode=True \
             --cores 4 \
+            --resources mem_mb=6000 \
             --latency-wait 60
 
       - name: Verify Output Files (Bulk)
