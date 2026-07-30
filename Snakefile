@@ -189,17 +189,15 @@ if MODE == "bulk":
         f"{config['differential_accessibility']['output']['plots']}/volcano_plot.pdf",
         f"{config['differential_accessibility']['output']['plots']}/ma_plot.pdf",
         f"{config['differential_accessibility']['output']['plots']}/pca_plot.pdf",
+        expand("{path}/{sample}_corrected.bw", path=config['tobias']['output']['corrected_bw'], sample=SAMPLES),
+        expand("{path}/{sample}_footprints.bw", path=config['tobias']['output']['footprint_bw'], sample=SAMPLES),
+        config['tobias']['output']['bindetect'],
+        expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
         config['benchmark_summary']['output']
     ]
     if not config.get("ci_mode", False):
         QC_METRICS_TARGETS.extend(expand("{path}/{sample}.ccurve.txt", path=config['preseq']['output']['predicted_complexity'], sample=SAMPLES))
-        PEAK_TARGETS.extend([
-            *expand("{path}/{sample}_corrected.bw", path=config['tobias']['output']['corrected_bw'], sample=SAMPLES),
-            *expand("{path}/{sample}_footprints.bw", path=config['tobias']['output']['footprint_bw'], sample=SAMPLES),
-            config['tobias']['output']['bindetect'],
-            *expand("{path}/{sample}_deviations.tsv", path=config['chromvar_analysis']['output']['deviations'], sample=SAMPLES),
-            *expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES)
-        ])
+        PEAK_TARGETS.extend(expand("{path}/{sample}_footprints.bed", path=config['footprinting']['output']['footprints'], sample=SAMPLES))
 
 elif MODE == "scatac":
     QC_GATE_TARGETS = []
@@ -233,17 +231,6 @@ elif MODE == "scatac":
 #TEMPLATE_TARGETS = [
 #    expand("results/template_category/template_tool/{sample}_template.txt", sample=SAMPLES)
 #]
-# Minimal smoke-test rule: runs only sample1 through the full core chain
-# (fastp → bowtie2 → markdup → tn5_shift → macs2) without QC/annotation steps.
-# Used exclusively in CI (--deployment-method apptainer) to finish in < 5 min.
-if MODE == "bulk" and SAMPLES:
-    _ci_sample = SAMPLES[0]
-    rule ci_smoke:
-        input:
-            expand("{path}/{sample}_R1_trimmed.fastq.gz", path=config['fastp']['output'], sample=[_ci_sample]),
-            expand("{path}/{sample}.filtered.shifted.bam", path=config['tn5_shift']['output']['shifted_bam'], sample=[_ci_sample]),
-            expand("{path}/{sample}_peaks.narrowPeak", path=config['macs2']['output']['peaks'], sample=[_ci_sample])
-
 
 rule all:
     input:

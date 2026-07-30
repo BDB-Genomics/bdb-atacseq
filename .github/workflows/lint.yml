@@ -111,13 +111,14 @@ jobs:
           snakemake --deployment-method conda --profile profiles/test \
             --config use_conda=True use_container=False ci_mode=True \
             --cores 4 \
-            --latency-wait 60 \
-            ci_smoke
+            --latency-wait 60
 
-      - name: Verify Output Files (Conda Smoke Test)
+      - name: Verify Output Files (Bulk)
         run: |
+          if [ ! -s results/reporting/pipeline_execution_summary.json ]; then echo "Summary JSON missing or empty"; exit 1; fi
+          if [ ! -s results/reporting/multiqc/multiqc_report.html ]; then echo "MultiQC report missing or empty"; exit 1; fi
           if [ ! -s results/peak_calling/macs2_peakcall/sample1_peaks.narrowPeak ]; then echo "MACS2 peaks missing or empty"; exit 1; fi
-          echo "Conda smoke test verified: fastp -> bowtie2 -> macs2 OK."
+          echo "All critical bulk ATAC-seq outputs verified successfully."
 
       - name: Upload Test Results
         if: always()
@@ -187,13 +188,14 @@ jobs:
           snakemake --deployment-method apptainer --profile profiles/test \
             --config use_conda=False use_container=True ci_mode=True \
             --cores 4 \
-            --latency-wait 60 \
-            ci_smoke
+            --latency-wait 60
 
-      - name: Verify Output Files (Singularity Smoke Test)
+      - name: Verify Output Files (Bulk)
         run: |
+          if [ ! -s results/reporting/pipeline_execution_summary.json ]; then echo "Summary JSON missing or empty"; exit 1; fi
+          if [ ! -s results/reporting/multiqc/multiqc_report.html ]; then echo "MultiQC report missing or empty"; exit 1; fi
           if [ ! -s results/peak_calling/macs2_peakcall/sample1_peaks.narrowPeak ]; then echo "MACS2 peaks missing or empty"; exit 1; fi
-          echo "Singularity smoke test verified: fastp -> bowtie2 -> macs2 OK."
+          echo "All critical bulk ATAC-seq outputs verified successfully."
 
       - name: Upload Test Results
         if: always()

@@ -8,7 +8,7 @@ rule qualimap_bamqc:
         
     params:
         extra="bamqc",
-        mem_gb=lambda wildcards, resources: f"{max(4, int(resources.mem_mb / 1024))}G" if isinstance(resources.mem_mb, (int, float)) else "4G"
+        mem_gb=lambda wildcards, resources: f"{max(1, int(resources.mem_mb / 1024))}G" if isinstance(resources.mem_mb, (int, float)) else "4G"
 
     resources:
         mem_mb=lambda wildcards, input, attempt: max(config['qualimap_bamqc']['resources']['mem_mb'], int(input.size_mb * 1.5)) * attempt, 
