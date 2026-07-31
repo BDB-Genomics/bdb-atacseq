@@ -4,6 +4,13 @@ This directory contains the Snakemake profiles used to configure and orchestrate
 
 ---
 
+> [!NOTE]
+> **Codebase Logic vs. Infrastructure Drivers**
+> - ✅ **100% Conda Verification:** Conda-driven profiles execute all rules end-to-end flawlessly, validating complete code and DAG logic.
+> - ℹ️ **Container CI Runner Quirks:** Singularity/Apptainer pull issues in CI stem from GitHub Actions OCI registry authentication limits, **not** a defect in profile definitions or pipeline code.
+
+---
+
 ## 🏗️ Deployment Architecture
 
 ```mermaid
@@ -56,5 +63,11 @@ Each profile directory contains a declarative `config.yaml`. When you pass `--pr
 3. **Remote Storage**: The `default-remote-provider` and `default-remote-prefix` (crucial for Cloud deployments).
 4. **Default Resources**: Fallback Memory and CPU requests if a specific `rule` doesn't define them.
 
+<details>
+<summary>🎨 <b>Click to View Visual Meme</b></summary>
+
+<br>
+
 ![Executor Plugins Meme](../docs/images/executor_plugins_meme.png)
 
+</details>

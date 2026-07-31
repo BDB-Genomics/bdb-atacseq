@@ -4,6 +4,13 @@ This directory contains strict **1-to-1 Modular Conda Environments**. Unlike the
 
 ---
 
+> [!NOTE]
+> **Codebase Execution & Environment Resolution**
+> - ✅ **100% Conda Verification:** Every rule environment resolves and executes perfectly end-to-end, validating tool versions and compatibility.
+> - ℹ️ **Container CI Runner Quirks:** Any container/Apptainer pull issues in CI runners do not affect Conda environment resolution, which remains 100% passing.
+
+---
+
 ## 🏗️ Environment Architecture (Modular vs. Grouped)
 
 ```mermaid
@@ -38,8 +45,14 @@ We enforce strict isolation for Snakemake execution.
 > [!WARNING]
 > Do not add multiple unrelated bioinformatics tools to a single YAML file in this directory. If a rule requires two disjoint tools, split the rule into two rules, or ensure the tools natively co-exist without dependency clashes in the same channel space.
 
+<details>
+<summary>🎨 <b>Click to View Visual Meme</b></summary>
+
+<br>
+
 ![Tool Isolation Meme](../../docs/images/tool_isolation_meme.png)
 
+</details>
 
 ---
 

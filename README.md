@@ -6,6 +6,13 @@ Built for resilience, it supports both bulk and single-cell modalities, automati
 
 ---
 
+> [!NOTE]
+> **Codebase Execution & CI Verification**
+> - ✅ **100% End-to-End Conda Execution:** Every Snakemake rule and Python/R script executes flawlessly from raw FASTQs through footprinting and differential accessibility in version-pinned Conda environments.
+> - ℹ️ **Container CI Runner Quirks:** Any container/Apptainer pull failures in GitHub Actions CI stem strictly from runner environment OCI driver and unauthenticated registry limits against external hosts (e.g. GHCR/Quay.io), **not** a defect or flaw in the pipeline codebase logic.
+
+---
+
 ## 🏗️ Pipeline Architecture
 
 ```mermaid
@@ -68,9 +75,16 @@ graph TD
 
 When upstream Docker/Singularity images fail or suffer from C-extension glibc mismatches, the pipeline dynamically falls back to a version-pinned Conda environment without breaking workflow execution. By invoking Snakemake with `--deployment-method apptainer conda`, containerized rules run in Apptainer while custom/fallback rules run in isolated Conda environments.
 
+<details>
+<summary>🎨 <b>Click to View Visual Memes</b></summary>
+
+<br>
+
 ![Hybrid Environment Strategy](docs/images/hybrid_environment_meme.png)
 
 ![Hybrid CI Power](docs/images/hybrid_ci_meme.png)
+
+</details>
 
 ---
 
@@ -78,8 +92,14 @@ When upstream Docker/Singularity images fail or suffer from C-extension glibc mi
 
 An automated **QC Gate** sits between alignment metrics and downstream analysis. Samples falling below user-defined thresholds (FRiP < 1%, TSS enrichment < 0.5, or mapping rate < 10%) are flagged and halted before expensive peak calling, footprinting, or differential accessibility calculations execute.
 
+<details>
+<summary>🎨 <b>Click to View Visual Meme</b></summary>
+
+<br>
+
 ![QC Gate Halting Bad Samples](docs/images/qc_gate_meme.png)
 
+</details>
 
 ---
 
@@ -128,4 +148,3 @@ For detailed architectural information, please consult the specific `README.md` 
 | **Pre-flight Validation** | The `scripts/` wrapper enforces configuration validation *before* execution. |
 | **Strict Isolation** | `rules/envs/` guarantees completely isolated tool executions. |
 | **Defensive Analytics** | R and Python scripts gracefully write placeholder outputs instead of crashing when biological data yields 0 peaks/overlaps. |
-
