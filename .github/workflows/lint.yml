@@ -157,9 +157,16 @@ jobs:
         with:
           apptainer-version: 1.3.0
 
+      - name: Log in to GHCR via Docker CLI
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Log in Apptainer to GHCR
         run: |
-          apptainer registry login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} docker://ghcr.io
+          echo "${{ secrets.GITHUB_TOKEN }}" | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
 
       - name: Enable unprivileged user namespaces
         run: |
