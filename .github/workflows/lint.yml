@@ -157,6 +157,10 @@ jobs:
         with:
           apptainer-version: 1.3.0
 
+      - name: Log in Apptainer to GHCR
+        run: |
+          apptainer registry login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} docker://ghcr.io
+
       - name: Enable unprivileged user namespaces
         run: |
           echo "kernel.apparmor_restrict_unprivileged_userns = 0" | sudo tee /etc/sysctl.d/99-userns.conf
@@ -189,11 +193,6 @@ jobs:
             snakemake-singularity-${{ runner.os }}-
 
       - name: Run Pipeline (Singularity Mode)
-        env:
-          APPTAINER_DOCKER_USERNAME: ${{ github.actor }}
-          APPTAINER_DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          SINGULARITY_DOCKER_USERNAME: ${{ github.actor }}
-          SINGULARITY_DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           snakemake --deployment-method apptainer --profile profiles/test \
             --config use_conda=False use_container=True ci_mode=True \
