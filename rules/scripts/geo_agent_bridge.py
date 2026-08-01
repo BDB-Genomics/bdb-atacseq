@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import argparse
+import yaml
 from pathlib import Path
 
 def parse_metadata_csv(csv_path: Path):

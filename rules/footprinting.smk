@@ -30,7 +30,9 @@ rule footprinting:
             exit 1
         else
             mkdir -p {params.rgt_genome_dir}
-            cp -f {params.genome_fa} {params.rgt_genome_dir}/genome_{params.organism}.fa
+            if [ "$(realpath {params.genome_fa})" != "$(realpath {params.rgt_genome_dir}/genome_{params.organism}.fa 2>/dev/null || true)" ]; then
+                cp -f {params.genome_fa} {params.rgt_genome_dir}/genome_{params.organism}.fa
+            fi
             mkdir -p {params.tmp_dir}
             if rgt-hint footprinting \
                 --atac-seq \
