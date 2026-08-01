@@ -39,3 +39,6 @@ PAT
 
 # --- Change Tracking ---
 .tracking/
+
+# License Key
+.bdb_license

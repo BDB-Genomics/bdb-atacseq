@@ -11,6 +11,22 @@ import csv
 import subprocess
 from pathlib import Path
 
+# Authorization / License Key Pre-flight Check
+_license_key = os.getenv("BDB_LICENSE_KEY", "").strip()
+_license_file = Path(".bdb_license")
+if not _license_key and _license_file.exists():
+    _license_key = _license_file.read_text().strip()
+
+if not (_license_key.startswith("BDB-ATACSEQ-AUTHORIZED") or _license_key.startswith("BDB-LOCAL-OWNER")):
+    sys.exit("\n" + "=" * 75 + "\n"
+             "   [!] PERMISSION REQUIRED: BDB-ATACSEQ AUTHORIZATION KEY MISSING\n"
+             "==========================================================================\n"
+             "   Execution of this pipeline requires authorization.\n"
+             "   Please contact Himanshu Bhandary (hbhandary@acm.org) for a license key.\n"
+             "   Set key via: export BDB_LICENSE_KEY='BDB-ATACSEQ-AUTHORIZED-<key>'\n"
+             "   or create a local '.bdb_license' file containing your key.\n"
+             "==========================================================================\n")
+
 configfile: "config.yaml"
 
 wildcard_constraints:

@@ -65,6 +65,11 @@ detect_runner() {
         return
     fi
 
+    if [[ -x "${HOME}/miniconda3/envs/snakemake_runner/bin/snakemake" ]]; then
+        SNAKEMAKE_CMD=("${HOME}/miniconda3/envs/snakemake_runner/bin/snakemake")
+        return
+    fi
+
     if command_exists conda; then
         if conda run -n snakemake_runner snakemake --version >/dev/null 2>&1; then
             SNAKEMAKE_CMD=(conda run --no-capture-output -n snakemake_runner snakemake)
@@ -166,6 +171,27 @@ require_file "${REPO_ROOT}/rules/scripts/validate_config.py" "Config validator"
 mkdir -p "$(dirname "${LOG_FILE}")"
 mkdir -p "${XDG_CACHE_HOME}"
 
+check_authorization() {
+    local key="${BDB_LICENSE_KEY:-}"
+    local key_file="${REPO_ROOT}/.bdb_license"
+    if [[ -z "${key}" && -f "${key_file}" ]]; then
+        key="$(cat "${key_file}" | tr -d '[:space:]')"
+    fi
+
+    if [[ "${key}" != BDB-ATACSEQ-AUTHORIZED* && "${key}" != BDB-LOCAL-OWNER* ]]; then
+        echo "==========================================================================" >&2
+        echo "   [!] PERMISSION REQUIRED: BDB-ATACSEQ AUTHORIZATION KEY MISSING         " >&2
+        echo "==========================================================================" >&2
+        echo "   Execution of this pipeline requires authorization." >&2
+        echo "   Please contact Himanshu Bhandary (hbhandary@acm.org) for a license key." >&2
+        echo "   Set your key via: export BDB_LICENSE_KEY=\"BDB-ATACSEQ-AUTHORIZED-<key>\" " >&2
+        echo "   or create a local file named '.bdb_license' containing your key." >&2
+        echo "==========================================================================" >&2
+        exit 1
+    fi
+}
+
+check_authorization
 detect_runner
 detect_python
 
